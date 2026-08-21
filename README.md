@@ -184,11 +184,13 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
-Live landing with a **Vercel Web Analytics** dashboard:
+Live site:
 
-**https://educlopez.github.io/analytics-kit/**
+- Landing — https://educlopez.github.io/analytics-kit/
+- Docs — https://educlopez.github.io/analytics-kit/docs
+- Components (every variant + config) — https://educlopez.github.io/analytics-kit/components
 
-The demo (`apps/demo`) is the Analytics Kit product page. Widgets use `@analytics-kit/connector-vercel` when `VITE_VERCEL_TOKEN` and `VITE_VERCEL_PROJECT_ID` are set (GitHub Actions secrets for Pages); otherwise they fall back to a Vercel-profile mock shaped like [smoothui.dev](https://smoothui.dev) traffic.
+The demo (`apps/demo`) is the Analytics Kit product page. The landing shows a short chart teaser; Docs covers install, the provider, connectors, and the query model; Components lists every chart variant and its props. Widgets use `@analytics-kit/connector-vercel` when `VITE_VERCEL_TOKEN` and `VITE_VERCEL_PROJECT_ID` are set (GitHub Actions secrets for Pages); otherwise they fall back to a Vercel-profile mock shaped like [smoothui.dev](https://smoothui.dev) traffic.
 
 ```bash
 pnpm install

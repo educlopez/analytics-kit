@@ -120,6 +120,17 @@ img {
   white-space: nowrap;
 }
 
+.nav-links a.active,
+.nav-links a.is-active {
+  color: var(--text);
+}
+
+a.ghost {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -387,7 +398,9 @@ h3 {
 .vista,
 .stat-plate,
 .faq,
-.foot {
+.foot,
+.page-head,
+.docs-layout {
   width: min(1120px, calc(100% - (var(--page-pad) * 2)));
   margin-left: auto;
   margin-right: auto;
@@ -597,6 +610,174 @@ html[data-theme="dark"] .style-switch button.is-active {
   color: var(--muted);
 }
 
+.teaser-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.page-head {
+  padding: 48px 0 12px;
+}
+
+.page-head h1 {
+  max-width: 16ch;
+  font-size: clamp(36px, 7vw, 72px);
+}
+
+.page-head .lede {
+  margin-left: 0;
+  max-width: 52ch;
+}
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 40px;
+  margin-bottom: 72px;
+  align-items: start;
+}
+
+.docs-toc {
+  position: sticky;
+  top: 72px;
+  display: grid;
+  gap: 8px;
+  padding: 8px 0 24px;
+}
+
+.docs-toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.docs-toc a:hover {
+  color: var(--text);
+}
+
+.docs-body {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.docs-section {
+  scroll-margin-top: 88px;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 16px;
+}
+
+.docs-body > .docs-section:first-child {
+  border-top: 0;
+  padding-top: 8px;
+}
+
+.docs-section h2 {
+  font-size: clamp(26px, 4vw, 40px);
+}
+
+.docs-subhead {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.docs-section .lede {
+  margin-top: 0;
+}
+
+.docs-section .install,
+.docs-section .snippet,
+.docs-section .dashboard-frame {
+  width: 100%;
+  max-width: none;
+}
+
+.props-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  -webkit-overflow-scrolling: touch;
+}
+
+.props-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.props-table th,
+.props-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.props-table th {
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.props-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.props-table code {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.variant-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.variant-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  min-width: 0;
+  box-shadow: var(--shadow);
+}
+
+.variant-card h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+.variant-card > code {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.variant-card .ak-widget {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
 .stat-plate {
   margin-top: 48px;
   min-height: min(54vh, 540px);
@@ -774,8 +955,29 @@ html[data-theme="dark"] .style-switch button.is-active {
     --page-pad: 14px;
   }
 
-  .nav-links a:not(.btn) {
+  .nav-links a:not(.btn):not(.nav-keep) {
     display: none;
+  }
+
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .docs-toc {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding-bottom: 8px;
+  }
+
+  .variant-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-head {
+    padding-top: 28px;
   }
 
   .hero-stage,

@@ -1,14 +1,27 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 
+function githubPagesSpaFallback() {
+  return {
+    name: "github-pages-spa-fallback",
+    closeBundle() {
+      const index = path.resolve(root, "dist/index.html");
+      if (fs.existsSync(index)) {
+        fs.copyFileSync(index, path.resolve(root, "dist/404.html"));
+      }
+    },
+  };
+}
+
 export default defineConfig({
   base: process.env.VITE_BASE || "/",
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), githubPagesSpaFallback()],
   resolve: {
     alias: [
       {
