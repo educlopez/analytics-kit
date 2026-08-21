@@ -27,7 +27,66 @@ export function Stats() {
   );
 }`;
 
-const PROVIDERS = ["Vercel", "Plausible", "GA4", "Umami", "PostHog"] as const;
+const TICKER = [
+  "12.4k visitors this week",
+  "Posted /docs/components/siri-orb",
+  "github.com is the top referrer",
+  "Desktop 62% · Mobile 31%",
+  "smoothui.dev · Vercel Analytics",
+  "Swapped Plausible → Vercel",
+];
+
+const FEATURES = [
+  {
+    title: "Widgets stay canonical",
+    body: "Visitors, pages, referrers, devices. The dashboard asks for metrics — not vendor field names.",
+  },
+  {
+    title: "Capabilities, not crashes",
+    body: "Vercel has no bounce rate. The widget knows, and sits out, instead of lying or throwing.",
+  },
+  {
+    title: "Keys stay on the server",
+    body: "The Next handler (or any Fetch route) holds the token. The browser talks to your endpoint.",
+  },
+];
+
+const STEPS = [
+  {
+    n: "01",
+    title: "Pick a connector",
+    body: "Vercel, Plausible, GA4, Umami, PostHog — or write one with defineConnector.",
+  },
+  {
+    n: "02",
+    title: "Drop the dashboard",
+    body: "AnalyticsProvider + Dashboard. Same widgets, same query model.",
+  },
+  {
+    n: "03",
+    title: "Swap the vendor",
+    body: "Change the constructor. The UI does not care which analytics tool you used last quarter.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Is this tied to Vercel?",
+    a: "No. This landing uses the Vercel connector as the example. Plausible, GA4, Umami, and PostHog ship in the same release. The widgets do not change.",
+  },
+  {
+    q: "Where do API tokens live?",
+    a: "On the server. Use @analytics-kit/next (or createHttpConnector against your own route). Do not put vendor keys in the browser bundle.",
+  },
+  {
+    q: "What if a provider cannot answer a metric?",
+    a: "Connectors declare capabilities. Widgets that need bounceRate on Vercel render an unsupported state instead of failing the page.",
+  },
+  {
+    q: "Can I add my own provider or widget?",
+    a: "Yes. defineConnector and defineWidget are the extension points. See examples/ in the repo.",
+  },
+];
 
 function createDemoConnector(): { connector: AnalyticsConnector; live: boolean } {
   const token = import.meta.env.VITE_VERCEL_TOKEN;
@@ -50,11 +109,12 @@ function createDemoConnector(): { connector: AnalyticsConnector; live: boolean }
 
 export function App() {
   const [{ connector, live }] = useState(createDemoConnector);
-  const [theme, setTheme] = useState<AnalyticsTheme>("dark");
+  const [theme, setTheme] = useState<AnalyticsTheme>("light");
   const [copied, setCopied] = useState<"install" | "snippet" | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("light", theme === "light");
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   const copy = async (value: string, which: "install" | "snippet") => {
@@ -78,15 +138,15 @@ export function App() {
   );
 
   return (
-    <div className={`page ${theme}`}>
+    <div className="shell">
       <nav className="nav">
-        <a className="brand" href="https://github.com/educlopez/analytics-kit">
+        <a className="brand" href="#top">
           <span className="mark" aria-hidden="true" />
           Analytics Kit
         </a>
         <div className="nav-links">
-          <a href="https://github.com/educlopez/analytics-kit#packages">Docs</a>
-          <a href="https://www.npmjs.com/package/@analytics-kit/core">npm</a>
+          <a href="#dashboard">Demo</a>
+          <a href="#how">How it works</a>
           <a href="https://github.com/educlopez/analytics-kit">GitHub</a>
           <button
             type="button"
@@ -95,95 +155,125 @@ export function App() {
           >
             {theme === "dark" ? "Light" : "Dark"}
           </button>
+          <a className="btn btn-ink" href="#dashboard">
+            Get started
+          </a>
         </div>
       </nav>
 
-      <header className="hero">
-        <div className="hero-copy">
-          <p className="kicker">Provider-agnostic analytics</p>
+      <header className="hero" id="top">
+        <div className="hero-stage">
+          <p className="kicker">Analytics, without the vendor lock-in</p>
           <h1>
             One dashboard.
             <em> Any analytics tool.</em>
           </h1>
           <p className="lede">
-            Connectors for Vercel, Plausible, GA4, Umami, and PostHog. Widgets speak a canonical
-            query model — swap the provider, keep the UI. This page renders a Vercel Web Analytics
-            dashboard for{" "}
-            <a href="https://smoothui.dev" target="_blank" rel="noreferrer">
-              smoothui.dev
-            </a>
-            .
+            One query model. Five connectors. Widgets that render Vercel today and Plausible
+            tomorrow — without rewriting the page.
           </p>
-          <ul className="providers" aria-label="Supported providers">
-            {PROVIDERS.map((name) => (
-              <li key={name} className={name === "Vercel" ? "is-active" : undefined}>
-                {name}
-              </li>
-            ))}
-          </ul>
+          <div className="ticker" aria-hidden="true">
+            <div className="ticker-track">
+              {[...TICKER, ...TICKER].map((item, i) => (
+                <span key={`${item}-${i}`}>{item}</span>
+              ))}
+            </div>
+          </div>
           <div className="actions">
-            <a className="btn candy" href="#dashboard">
-              See Vercel widgets
+            <a className="btn btn-ink" href="#dashboard">
+              See it on Vercel data
             </a>
-            <a
-              className="btn outline"
-              href="https://www.npmjs.com/package/@analytics-kit/connector-vercel"
-            >
-              @analytics-kit/connector-vercel
+            <a className="btn btn-paper" href="https://www.npmjs.com/org/analytics-kit">
+              npm @analytics-kit
             </a>
           </div>
-          <button type="button" className="install" onClick={() => void copy(INSTALL, "install")}>
-            <span>$</span>
-            <code>{INSTALL}</code>
-            <em>{copied === "install" ? "Copied" : "Copy"}</em>
-          </button>
-          <ul className="facts">
-            <li>
-              <strong>5</strong> connectors
-            </li>
-            <li>
-              <strong>11</strong> widgets
-            </li>
-            <li>
-              <strong>0.1.0</strong> on npm
-            </li>
-          </ul>
-        </div>
-        <div className="hero-visual" aria-hidden="true">
-          <div className="orb" />
-          <div className="orb-ring" />
-          <p className="orb-caption">canonical query → vendor API</p>
         </div>
       </header>
+
+      <section className="band">
+        <div className="band-copy">
+          <p className="kicker">The kit</p>
+          <h2>
+            The dashboard
+            <em> does not learn a vendor.</em>
+          </h2>
+          <p className="lede wide">
+            Connectors map Vercel, Plausible, GA4, Umami, and PostHog onto the same metrics and
+            dimensions. The dashboard never learns a vendor’s dialect.
+          </p>
+        </div>
+        <ul className="feature-grid">
+          {FEATURES.map((feature) => (
+            <li key={feature.title} className="paper-card">
+              <h3>{feature.title}</h3>
+              <p>{feature.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="analytics" id="dashboard">
         <div className="analytics-head">
           <div>
-            <p className="kicker">Example · Vercel Web Analytics</p>
-            <h2>smoothui.dev traffic</h2>
+            <p className="kicker">Live example</p>
+            <h2>
+              smoothui.dev,
+              <em> through Vercel.</em>
+            </h2>
             <p className="lede compact">
               {live
                 ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel capability profile (no bounce rate / realtime) with SmoothUI routes. Pass VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the live project."}
+                : "Vercel capability profile with SmoothUI routes. Add VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the real project."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>
-            {live ? "Live Vercel" : "Vercel profile · SmoothUI sample"}
+            {live ? "Live Vercel" : "Vercel profile · sample"}
           </span>
         </div>
-        <AnalyticsProvider connector={connector} theme={theme} range="7d">
-          <Dashboard widgets={widgets} showRange columns={4} />
-        </AnalyticsProvider>
+        <div className="dashboard-frame">
+          <AnalyticsProvider connector={connector} theme={theme} range="7d">
+            <Dashboard widgets={widgets} showRange columns={4} />
+          </AnalyticsProvider>
+        </div>
+      </section>
+
+      <section className="stat">
+        <p className="stat-figure">1</p>
+        <h2>
+          constructor change
+          <em> to leave a vendor.</em>
+        </h2>
+      </section>
+
+      <section className="band" id="how">
+        <div className="band-copy">
+          <p className="kicker">How it works</p>
+          <h2>
+            Three steps.
+            <em> Then you stop thinking about it.</em>
+          </h2>
+        </div>
+        <ol className="steps">
+          {STEPS.map((step) => (
+            <li key={step.n} className="paper-card">
+              <span className="step-n">{step.n}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className="snippet-block">
         <div className="analytics-head">
           <div>
             <p className="kicker">Drop-in</p>
-            <h2>Same widgets, Vercel connector</h2>
+            <h2>
+              Same widgets.
+              <em> Vercel connector.</em>
+            </h2>
             <p className="lede compact">
-              Keep API tokens on the server in production. This snippet is the constructor change —
-              Plausible or GA4 swap the import.
+              Keep tokens on the server in production. Swap the import for Plausible or GA4.
             </p>
           </div>
           <button type="button" className="ghost" onClick={() => void copy(SNIPPET, "snippet")}>
@@ -193,15 +283,53 @@ export function App() {
         <pre className="snippet">
           <code>{SNIPPET}</code>
         </pre>
+        <button type="button" className="install" onClick={() => void copy(INSTALL, "install")}>
+          <span>$</span>
+          <code>{INSTALL}</code>
+          <em>{copied === "install" ? "Copied" : "Copy"}</em>
+        </button>
+      </section>
+
+      <section className="band faq">
+        <div className="band-copy">
+          <p className="kicker">FAQ</p>
+          <h2>
+            The usual
+            <em> questions.</em>
+          </h2>
+        </div>
+        <div className="faq-list">
+          {FAQS.map((item, index) => {
+            const open = openFaq === index;
+            return (
+              <div key={item.q} className={`faq-item ${open ? "is-open" : ""}`}>
+                <button type="button" onClick={() => setOpenFaq(open ? null : index)}>
+                  {item.q}
+                  <span aria-hidden="true">{open ? "–" : "+"}</span>
+                </button>
+                {open ? <p>{item.a}</p> : null}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="close">
+        <h2>
+          Ship the dashboard.
+          <em> Keep the provider.</em>
+        </h2>
+        <a className="btn btn-paper" href="https://github.com/educlopez/analytics-kit">
+          Get started on GitHub
+        </a>
       </section>
 
       <footer className="foot">
         <p>
           <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
-          {" · "}
-          sample data from <a href="https://smoothui.dev">smoothui.dev</a>
-          {" · "}
-          MIT
+          <span> · sample from </span>
+          <a href="https://smoothui.dev">smoothui.dev</a>
+          <span> · MIT</span>
         </p>
       </footer>
     </div>
