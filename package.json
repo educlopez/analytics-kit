@@ -31,6 +31,7 @@
       "esbuild"
     ]
   },
+  "homepage": "https://educlopez.github.io/analytics-kit/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/educlopez/analytics-kit.git"

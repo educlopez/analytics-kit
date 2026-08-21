@@ -1,12 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
 import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import { AnalyticsProvider, Dashboard, type AnalyticsTheme } from "@analytics-kit/react";
+import {
+  AnalyticsProvider,
+  Dashboard,
+  type AnalyticsTheme,
+  type DashboardItem,
+} from "@analytics-kit/react";
 import type { AnalyticsConnector } from "@analytics-kit/core";
 
-const COMPONENT_COUNT = 130;
-const BLOCK_COUNT = 34;
-const INSTALL = "npx shadcn@latest add @smoothui/dynamic-island";
+const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
+
+const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
+import { createVercelConnector } from "@analytics-kit/connector-vercel";
+
+const connector = createVercelConnector({
+  token: process.env.VERCEL_TOKEN!,
+  projectId: process.env.VERCEL_PROJECT_ID!,
+});
+
+export function Stats() {
+  return (
+    <AnalyticsProvider connector={connector}>
+      <Dashboard />
+    </AnalyticsProvider>
+  );
+}`;
+
+const PROVIDERS = ["Vercel", "Plausible", "GA4", "Umami", "PostHog"] as const;
 
 function createDemoConnector(): { connector: AnalyticsConnector; live: boolean } {
   const token = import.meta.env.VITE_VERCEL_TOKEN;
@@ -30,29 +51,19 @@ function createDemoConnector(): { connector: AnalyticsConnector; live: boolean }
 export function App() {
   const [{ connector, live }] = useState(createDemoConnector);
   const [theme, setTheme] = useState<AnalyticsTheme>("dark");
-  const [copied, setCopied] = useState(false);
-  const [stars, setStars] = useState(931);
-
-  useEffect(() => {
-    void fetch("https://api.github.com/repos/educlopez/smoothui")
-      .then((response) => response.json())
-      .then((payload: { stargazers_count?: number }) => {
-        if (payload.stargazers_count) setStars(payload.stargazers_count);
-      })
-      .catch(() => undefined);
-  }, []);
+  const [copied, setCopied] = useState<"install" | "snippet" | null>(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle("light", theme === "light");
   }, [theme]);
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(INSTALL);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+  const copy = async (value: string, which: "install" | "snippet") => {
+    await navigator.clipboard.writeText(value);
+    setCopied(which);
+    setTimeout(() => setCopied(null), 1600);
   };
 
-  const widgets = useMemo(
+  const widgets = useMemo<DashboardItem[]>(
     () => [
       { widget: "visitors" },
       { widget: "pageviews" },
@@ -69,20 +80,14 @@ export function App() {
   return (
     <div className={`page ${theme}`}>
       <nav className="nav">
-        <a className="brand" href="https://smoothui.dev" target="_blank" rel="noreferrer">
+        <a className="brand" href="https://github.com/educlopez/analytics-kit">
           <span className="mark" aria-hidden="true" />
-          SmoothUI
+          Analytics Kit
         </a>
         <div className="nav-links">
-          <a href="https://smoothui.dev/docs/components" target="_blank" rel="noreferrer">
-            Components
-          </a>
-          <a href="https://smoothui.dev/docs" target="_blank" rel="noreferrer">
-            Docs
-          </a>
-          <a href="https://github.com/educlopez/smoothui" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
+          <a href="https://github.com/educlopez/analytics-kit#packages">Docs</a>
+          <a href="https://www.npmjs.com/package/@analytics-kit/core">npm</a>
+          <a href="https://github.com/educlopez/analytics-kit">GitHub</a>
           <button
             type="button"
             className="ghost"
@@ -95,71 +100,75 @@ export function App() {
 
       <header className="hero">
         <div className="hero-copy">
-          <p className="kicker">Analytics Kit × SmoothUI</p>
+          <p className="kicker">Provider-agnostic analytics</p>
           <h1>
-            Animated React components
-            <em> for shadcn/ui</em>
+            One dashboard.
+            <em> Any analytics tool.</em>
           </h1>
           <p className="lede">
-            {COMPONENT_COUNT} drop-in components for your shadcn/ui project — one command,
-            Motion-powered, fully typed. This landing embeds Analytics Kit widgets on{" "}
-            <a href="https://smoothui.dev">smoothui.dev</a> traffic.
+            Connectors for Vercel, Plausible, GA4, Umami, and PostHog. Widgets speak a canonical
+            query model — swap the provider, keep the UI. This page renders a Vercel Web Analytics
+            dashboard for{" "}
+            <a href="https://smoothui.dev" target="_blank" rel="noreferrer">
+              smoothui.dev
+            </a>
+            .
           </p>
+          <ul className="providers" aria-label="Supported providers">
+            {PROVIDERS.map((name) => (
+              <li key={name} className={name === "Vercel" ? "is-active" : undefined}>
+                {name}
+              </li>
+            ))}
+          </ul>
           <div className="actions">
-            <a
-              className="btn candy"
-              href="https://smoothui.dev/docs/components"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Browse components
+            <a className="btn candy" href="#dashboard">
+              See Vercel widgets
             </a>
             <a
               className="btn outline"
-              href="https://smoothui.dev/docs"
-              target="_blank"
-              rel="noreferrer"
+              href="https://www.npmjs.com/package/@analytics-kit/connector-vercel"
             >
-              Read the docs
+              @analytics-kit/connector-vercel
             </a>
           </div>
-          <button type="button" className="install" onClick={() => void copy()}>
+          <button type="button" className="install" onClick={() => void copy(INSTALL, "install")}>
             <span>$</span>
             <code>{INSTALL}</code>
-            <em>{copied ? "Copied" : "Copy"}</em>
+            <em>{copied === "install" ? "Copied" : "Copy"}</em>
           </button>
           <ul className="facts">
             <li>
-              <strong>{COMPONENT_COUNT}</strong> components
+              <strong>5</strong> connectors
             </li>
             <li>
-              <strong>{BLOCK_COUNT}</strong> blocks
+              <strong>11</strong> widgets
             </li>
             <li>
-              <strong>{stars.toLocaleString()}</strong> GitHub stars
+              <strong>0.1.0</strong> on npm
             </li>
           </ul>
         </div>
         <div className="hero-visual" aria-hidden="true">
           <div className="orb" />
           <div className="orb-ring" />
-          <p className="orb-caption">Smoothy</p>
+          <p className="orb-caption">canonical query → vendor API</p>
         </div>
       </header>
 
-      <section className="analytics">
+      <section className="analytics" id="dashboard">
         <div className="analytics-head">
           <div>
-            <p className="kicker">smoothui.dev</p>
-            <h2>Traffic, rendered with Analytics Kit</h2>
+            <p className="kicker">Example · Vercel Web Analytics</p>
+            <h2>smoothui.dev traffic</h2>
             <p className="lede compact">
               {live
                 ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel-shaped widgets using SmoothUI routes (homepage, docs, Siri Orb, Dynamic Island). Pass VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the real dashboard."}
+                : "Vercel capability profile (no bounce rate / realtime) with SmoothUI routes. Pass VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the live project."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>
-            {live ? "Live Vercel" : "SmoothUI sample · Vercel profile"}
+            {live ? "Live Vercel" : "Vercel profile · SmoothUI sample"}
           </span>
         </div>
         <AnalyticsProvider connector={connector} theme={theme} range="7d">
@@ -167,10 +176,32 @@ export function App() {
         </AnalyticsProvider>
       </section>
 
+      <section className="snippet-block">
+        <div className="analytics-head">
+          <div>
+            <p className="kicker">Drop-in</p>
+            <h2>Same widgets, Vercel connector</h2>
+            <p className="lede compact">
+              Keep API tokens on the server in production. This snippet is the constructor change —
+              Plausible or GA4 swap the import.
+            </p>
+          </div>
+          <button type="button" className="ghost" onClick={() => void copy(SNIPPET, "snippet")}>
+            {copied === "snippet" ? "Copied" : "Copy snippet"}
+          </button>
+        </div>
+        <pre className="snippet">
+          <code>{SNIPPET}</code>
+        </pre>
+      </section>
+
       <footer className="foot">
         <p>
-          Components from <a href="https://smoothui.dev">smoothui.dev</a> · Kit widgets stay
-          provider-agnostic.
+          <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
+          {" · "}
+          sample data from <a href="https://smoothui.dev">smoothui.dev</a>
+          {" · "}
+          MIT
         </p>
       </footer>
     </div>
