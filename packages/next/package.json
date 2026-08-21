@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/next",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Next.js / Fetch handlers that proxy Analytics Kit connectors without exposing API keys.",
   "type": "module",
   "main": "./dist/index.cjs",
