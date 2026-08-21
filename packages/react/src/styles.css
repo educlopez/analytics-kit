@@ -1,0 +1,274 @@
+.ak-root {
+  --ak-bg: #0b0f14;
+  --ak-surface: #141b24;
+  --ak-surface-2: #1b2430;
+  --ak-border: rgba(255, 255, 255, 0.08);
+  --ak-text: #eef3f8;
+  --ak-muted: #8b9bb0;
+  --ak-accent: #6ea8ff;
+  --ak-up: #3dd68c;
+  --ak-down: #ff6b7a;
+  --ak-radius: 18px;
+  --ak-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  --ak-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ak-text);
+  font-family: var(--ak-font);
+}
+
+.ak-root[data-ak-theme="light"] {
+  --ak-bg: #f5f7fb;
+  --ak-surface: #ffffff;
+  --ak-surface-2: #eef2f7;
+  --ak-border: rgba(15, 23, 42, 0.1);
+  --ak-text: #0f172a;
+  --ak-muted: #64748b;
+  --ak-accent: #2563eb;
+  --ak-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.ak-dashboard {
+  display: grid;
+  gap: 18px;
+}
+
+.ak-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ak-eyebrow {
+  margin: 0 0 4px;
+  color: var(--ak-muted);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ak-heading {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.ak-range {
+  display: flex;
+  gap: 6px;
+  background: var(--ak-surface);
+  border: 1px solid var(--ak-border);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.ak-range button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ak-muted);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.ak-range button.is-active {
+  background: var(--ak-surface-2);
+  color: var(--ak-text);
+}
+
+.ak-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.ak-widget {
+  background: var(--ak-surface);
+  border: 1px solid var(--ak-border);
+  border-radius: var(--ak-radius);
+  box-shadow: var(--ak-shadow);
+  padding: 16px 16px 14px;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ak-widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ak-widget-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ak-muted);
+}
+
+.ak-widget-desc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--ak-muted);
+}
+
+.ak-widget-body {
+  min-height: 64px;
+}
+
+.ak-metric-value {
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ak-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ak-metric-meta,
+.ak-chart-caption {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ak-muted {
+  color: var(--ak-muted);
+  margin: 0;
+  font-size: 13px;
+}
+
+.ak-delta-up {
+  color: var(--ak-up);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ak-delta-down {
+  color: var(--ak-down);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ak-live {
+  color: var(--ak-up);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ak-chart-svg,
+.ak-donut-svg,
+.ak-spark {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ak-chart-label {
+  fill: var(--ak-muted);
+  font-size: 10px;
+}
+
+.ak-rank,
+.ak-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.ak-rank-top,
+.ak-legend li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.ak-rank-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-rank-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ak-surface-2);
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.ak-rank-fill {
+  height: 100%;
+  background: var(--ak-accent);
+}
+
+.ak-donut {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.ak-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.ak-legend li {
+  align-items: center;
+}
+
+.ak-unsupported {
+  color: var(--ak-muted);
+  font-size: 13px;
+}
+
+.ak-skeleton {
+  display: grid;
+  gap: 10px;
+}
+
+.ak-skel-line {
+  height: 10px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--ak-surface-2), transparent, var(--ak-surface-2));
+  animation: ak-pulse 1.4s ease infinite;
+}
+
+.ak-skel-lg {
+  height: 28px;
+  width: 46%;
+}
+
+@keyframes ak-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 900px) {
+  .ak-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .ak-widget {
+    grid-column: span 1 !important;
+  }
+  .ak-donut {
+    grid-template-columns: 1fr;
+  }
+}

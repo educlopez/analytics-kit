@@ -1,0 +1,28 @@
+{
+  "name": "analytics-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Provider-agnostic analytics connectors and UI widgets for any website dashboard.",
+  "type": "module",
+  "packageManager": "pnpm@10.33.3",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter=./packages/* run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r --filter=./packages/* run typecheck",
+    "dev": "pnpm --filter @analytics-kit/demo dev",
+    "clean": "pnpm -r exec rm -rf dist"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

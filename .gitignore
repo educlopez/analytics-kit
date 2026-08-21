@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+.DS_Store
+*.log
+.turbo
+.vite
+*.tsbuildinfo
+.idea
+.vscode
+apps/demo/dist
+agent-tools
