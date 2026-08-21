@@ -83,9 +83,7 @@ export const defaultMetricCatalog: { [K in BuiltinMetric]: MetricDefinition } = 
   },
 };
 
-const metricRegistry = new Map<string, MetricDefinition>(
-  Object.entries(defaultMetricCatalog),
-);
+const metricRegistry = new Map<string, MetricDefinition>(Object.entries(defaultMetricCatalog));
 
 export function registerMetric(id: string, definition: MetricDefinition): void {
   metricRegistry.set(id, definition);

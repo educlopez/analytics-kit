@@ -37,9 +37,7 @@ export function WidgetFrame({
       </header>
       <div className="ak-widget-body">
         {status === "loading" || status === "idle" ? <Skeleton /> : null}
-        {status === "unsupported" ? (
-          <Unsupported missing={missing} />
-        ) : null}
+        {status === "unsupported" ? <Unsupported missing={missing} /> : null}
         {status === "error" ? (
           <p className="ak-muted">{error?.message ?? "Could not load analytics."}</p>
         ) : null}
@@ -62,9 +60,7 @@ export function Unsupported({ missing }: { missing: string[] }) {
   return (
     <div className="ak-unsupported">
       <p>Not available with this analytics provider.</p>
-      {missing.length ? (
-        <p className="ak-muted">Missing: {missing.join(", ")}</p>
-      ) : null}
+      {missing.length ? <p className="ak-muted">Missing: {missing.join(", ")}</p> : null}
     </div>
   );
 }

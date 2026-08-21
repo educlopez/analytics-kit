@@ -43,11 +43,7 @@ export function MetricCard({ metric, title, range, span }: MetricCardProps) {
     >
       <MetricValueBlock
         value={formatMetric(metric, value)}
-        delta={
-          delta == null
-            ? null
-            : { text: formatDelta(delta), positive: delta >= 0 }
-        }
+        delta={delta == null ? null : { text: formatDelta(delta), positive: delta >= 0 }}
       />
     </WidgetFrame>
   );
@@ -86,9 +82,24 @@ export function DurationCard(props: Omit<MetricCardProps, "metric">) {
   return <MetricCard metric="avgDuration" title="Avg. duration" {...props} />;
 }
 
-registerWidget({ id: "visitors", title: "Visitors", required: { metrics: ["visitors"] }, component: VisitorsCard });
-registerWidget({ id: "pageviews", title: "Pageviews", required: { metrics: ["pageviews"] }, component: PageviewsCard });
-registerWidget({ id: "visits", title: "Visits", required: { metrics: ["visits"] }, component: VisitsCard });
+registerWidget({
+  id: "visitors",
+  title: "Visitors",
+  required: { metrics: ["visitors"] },
+  component: VisitorsCard,
+});
+registerWidget({
+  id: "pageviews",
+  title: "Pageviews",
+  required: { metrics: ["pageviews"] },
+  component: PageviewsCard,
+});
+registerWidget({
+  id: "visits",
+  title: "Visits",
+  required: { metrics: ["visits"] },
+  component: VisitsCard,
+});
 registerWidget({
   id: "bounce-rate",
   title: "Bounce rate",

@@ -1,4 +1,10 @@
-export { BUILTIN_METRICS, defaultMetricCatalog, getMetric, listMetrics, registerMetric } from "./metrics.js";
+export {
+  BUILTIN_METRICS,
+  defaultMetricCatalog,
+  getMetric,
+  listMetrics,
+  registerMetric,
+} from "./metrics.js";
 export type { BuiltinMetric, MetricCatalog, MetricDefinition, MetricId } from "./metrics.js";
 
 export {
@@ -9,7 +15,13 @@ export {
   listDimensions,
   registerDimension,
 } from "./dimensions.js";
-export type { BuiltinDimension, DimensionCatalog, DimensionDefinition, DimensionId, TimeGranularity } from "./dimensions.js";
+export type {
+  BuiltinDimension,
+  DimensionCatalog,
+  DimensionDefinition,
+  DimensionId,
+  TimeGranularity,
+} from "./dimensions.js";
 
 export {
   EMPTY_CAPABILITIES,
@@ -54,4 +66,10 @@ export type { AnalyticsConnector, ConnectorInfo, DefineConnectorInput } from "./
 export { providerFetch, providerJson } from "./http.js";
 export { createHttpConnector } from "./remote.js";
 export type { RemoteConnectorOptions } from "./remote.js";
-export { formatCurrency, formatDelta, formatDuration, formatMetric, formatNumber } from "./format.js";
+export {
+  formatCurrency,
+  formatDelta,
+  formatDuration,
+  formatMetric,
+  formatNumber,
+} from "./format.js";

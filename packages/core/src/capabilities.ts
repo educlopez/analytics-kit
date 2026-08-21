@@ -61,10 +61,7 @@ export function hasDimension(caps: ConnectorCapabilities, id: DimensionId): bool
   return caps.dimensions[id] === true;
 }
 
-export function hasGranularity(
-  caps: ConnectorCapabilities,
-  granularity: TimeGranularity,
-): boolean {
+export function hasGranularity(caps: ConnectorCapabilities, granularity: TimeGranularity): boolean {
   return caps.granularity.includes(granularity);
 }
 

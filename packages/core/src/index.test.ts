@@ -35,7 +35,10 @@ describe("resolveRange", () => {
   });
 
   it("builds a previous period of the same length", () => {
-    const range = resolveRange({ from: "2026-08-15T00:00:00.000Z", to: "2026-08-21T23:59:59.999Z" });
+    const range = resolveRange({
+      from: "2026-08-15T00:00:00.000Z",
+      to: "2026-08-21T23:59:59.999Z",
+    });
     const prev = previousRange(range);
     expect(prev.to.getTime()).toBeLessThan(range.from.getTime());
     const duration = range.to.getTime() - range.from.getTime();

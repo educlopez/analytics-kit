@@ -1,9 +1,16 @@
-import { isAnalyticsError, type AnalyticsConnector, type AnalyticsQuery } from "@analytics-kit/core";
+import {
+  isAnalyticsError,
+  type AnalyticsConnector,
+  type AnalyticsQuery,
+} from "@analytics-kit/core";
 
 export interface AnalyticsHandlerOptions {
   connector: AnalyticsConnector;
   cors?: boolean | { origin?: string };
-  beforeQuery?: (query: AnalyticsQuery, request: Request) => AnalyticsQuery | Promise<AnalyticsQuery>;
+  beforeQuery?: (
+    query: AnalyticsQuery,
+    request: Request,
+  ) => AnalyticsQuery | Promise<AnalyticsQuery>;
 }
 
 export function createAnalyticsHandler(options: AnalyticsHandlerOptions) {
@@ -51,7 +58,11 @@ export function createAnalyticsHandler(options: AnalyticsHandlerOptions) {
                 : 502;
         return json({ error: error.message, code: error.code }, headers, status);
       }
-      return json({ error: error instanceof Error ? error.message : "Unknown error" }, headers, 500);
+      return json(
+        { error: error instanceof Error ? error.message : "Unknown error" },
+        headers,
+        500,
+      );
     }
   };
 }
@@ -74,7 +85,7 @@ function json(body: unknown, headers: HeadersInit, status = 200): Response {
 
 function responseHeaders(cors: AnalyticsHandlerOptions["cors"]): HeadersInit {
   if (!cors) return {};
-  const origin = typeof cors === "object" ? cors.origin ?? "*" : "*";
+  const origin = typeof cors === "object" ? (cors.origin ?? "*") : "*";
   return {
     "access-control-allow-origin": origin,
     "access-control-allow-methods": "GET,POST,OPTIONS",

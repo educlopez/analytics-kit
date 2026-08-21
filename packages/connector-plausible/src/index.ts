@@ -7,7 +7,6 @@ import {
   toIsoDate,
   type AnalyticsConnector,
   type AnalyticsFilter,
-  type AnalyticsResult,
   type ConnectorCapabilities,
   type DimensionId,
   type MetricId,
@@ -98,9 +97,7 @@ export function mapPlausibleDimension(dimension: DimensionId): string {
   return mapped;
 }
 
-export function createPlausibleConnector(
-  options: PlausibleConnectorOptions,
-): AnalyticsConnector {
+export function createPlausibleConnector(options: PlausibleConnectorOptions): AnalyticsConnector {
   const host = (options.host ?? "https://plausible.io").replace(/\/$/, "");
   const fetchImpl = options.fetch ?? fetch;
 
@@ -217,7 +214,10 @@ async function runQuery(
 }
 
 function dateRange(query: NormalizedQuery): string | [string, string] {
-  if (query.range.preset && ["24h", "7d", "28d", "30d", "month", "year"].includes(query.range.preset)) {
+  if (
+    query.range.preset &&
+    ["24h", "7d", "28d", "30d", "month", "year"].includes(query.range.preset)
+  ) {
     return query.range.preset === "28d" ? "28d" : query.range.preset;
   }
   if (query.range.preset === "90d") return "91d";

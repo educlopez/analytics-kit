@@ -141,7 +141,9 @@ function buildResult(
   const days = enumerateDays(query.range.from, query.range.to);
   const needs = queryNeeds(query);
   const result = emptyResult("mock", query);
-  const rng = mulberry32(hash(`${seed}:${toIsoDate(query.range.from)}:${toIsoDate(query.range.to)}`));
+  const rng = mulberry32(
+    hash(`${seed}:${toIsoDate(query.range.from)}:${toIsoDate(query.range.to)}`),
+  );
 
   const series: AnalyticsResult["series"] = days.map((date, index) => {
     const weekday = new Date(`${date}T00:00:00Z`).getUTCDay();
@@ -238,7 +240,12 @@ function breakdownFor(
   });
 }
 
-function put(values: Record<string, number>, metric: MetricId, value: number, requested: MetricId[]) {
+function put(
+  values: Record<string, number>,
+  metric: MetricId,
+  value: number,
+  requested: MetricId[],
+) {
   if (requested.includes(metric)) values[metric] = value;
 }
 

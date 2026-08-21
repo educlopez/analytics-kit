@@ -12,9 +12,7 @@ export const DATE_RANGE_PRESETS = [
 
 export type DateRangePreset = (typeof DATE_RANGE_PRESETS)[number];
 
-export type DateRangeInput =
-  | DateRangePreset
-  | { from: string | Date; to: string | Date };
+export type DateRangeInput = DateRangePreset | { from: string | Date; to: string | Date };
 
 export interface AbsoluteRange {
   from: Date;
@@ -59,7 +57,9 @@ export function resolveRange(input: DateRangeInput, now = new Date()): AbsoluteR
     case "90d":
       return { from: startOfDay(new Date(today.getTime() - 89 * DAY_MS)), to: end, preset: input };
     case "12mo": {
-      const from = new Date(Date.UTC(today.getUTCFullYear() - 1, today.getUTCMonth(), today.getUTCDate()));
+      const from = new Date(
+        Date.UTC(today.getUTCFullYear() - 1, today.getUTCMonth(), today.getUTCDate()),
+      );
       return { from, to: end, preset: input };
     }
     case "month":

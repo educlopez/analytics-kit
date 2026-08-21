@@ -43,7 +43,6 @@ export function useQuery(
       }),
     [capabilities, merged],
   );
-  const missingKey = missing.join("|");
 
   useEffect(() => {
     if (missing.length) {
@@ -62,14 +61,18 @@ export function useQuery(
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        const next = isAnalyticsError(err) ? err : err instanceof Error ? err : new Error(String(err));
+        const next = isAnalyticsError(err)
+          ? err
+          : err instanceof Error
+            ? err
+            : new Error(String(err));
         setError(next);
         setStatus(isAnalyticsError(err) && err.code === "UNSUPPORTED" ? "unsupported" : "error");
       });
     return () => {
       cancelled = true;
     };
-  }, [query, tick, missingKey, serialized, range, connector.id]);
+  }, [query, tick, missing, merged, connector.id]);
 
   return {
     data,
@@ -86,8 +89,10 @@ export function useRealtime(pollMs = 15_000): {
   missing: string[];
 } {
   const { realtime, capabilities } = useAnalytics();
-  const missing = capabilities.realtime ? [] : ["realtime"];
-  const missingKey = missing.join("|");
+  const missing = useMemo(
+    () => (capabilities.realtime ? [] : ["realtime"]),
+    [capabilities.realtime],
+  );
   const [data, setData] = useState<RealtimeResult>();
   const [status, setStatus] = useState<QueryStatus>("idle");
 
@@ -116,7 +121,7 @@ export function useRealtime(pollMs = 15_000): {
       cancelled = true;
       clearInterval(id);
     };
-  }, [realtime, pollMs, missingKey]);
+  }, [realtime, pollMs, missing]);
 
   return { data, status, missing };
 }

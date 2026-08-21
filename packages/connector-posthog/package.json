@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/connector-posthog",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "PostHog HogQL connector for Analytics Kit.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -8,13 +8,19 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
@@ -27,5 +33,31 @@
   "devDependencies": {
     "tsup": "^8.5.0",
     "typescript": "^5.9.2"
-  }
+  },
+  "author": "Edu Calvo <educlopez93@gmail.com>",
+  "homepage": "https://github.com/educlopez/analytics-kit/tree/main/packages/connector-posthog",
+  "bugs": {
+    "url": "https://github.com/educlopez/analytics-kit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educlopez/analytics-kit.git",
+    "directory": "packages/connector-posthog"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "analytics",
+    "dashboard",
+    "plausible",
+    "ga4",
+    "vercel",
+    "umami",
+    "posthog"
+  ],
+  "sideEffects": false
 }

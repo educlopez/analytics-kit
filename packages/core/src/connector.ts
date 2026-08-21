@@ -1,12 +1,7 @@
 import type { ConnectorCapabilities } from "./capabilities.js";
 import { AnalyticsError } from "./errors.js";
 import { normalizeQuery } from "./normalize.js";
-import type {
-  AnalyticsQuery,
-  AnalyticsResult,
-  RealtimeQuery,
-  RealtimeResult,
-} from "./query.js";
+import type { AnalyticsQuery, AnalyticsResult, RealtimeQuery, RealtimeResult } from "./query.js";
 import { emptyResult, type NormalizedQuery } from "./query.js";
 import { serializeQuery } from "./normalize.js";
 import { assertSupported } from "./validate.js";
@@ -79,10 +74,7 @@ export function defineConnector(input: DefineConnectorInput): AnalyticsConnector
   return connector;
 }
 
-export function withCache(
-  connector: AnalyticsConnector,
-  ttlMs = 30_000,
-): AnalyticsConnector {
+export function withCache(connector: AnalyticsConnector, ttlMs = 30_000): AnalyticsConnector {
   const cache = new Map<string, { expires: number; value: AnalyticsResult }>();
   const inflight = new Map<string, Promise<AnalyticsResult>>();
 
@@ -105,18 +97,17 @@ export function withCache(
   };
 }
 
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  attempts = 2,
-  delayMs = 250,
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, attempts = 2, delayMs = 250): Promise<T> {
   let lastError: unknown;
   for (let i = 0; i <= attempts; i += 1) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      if (error instanceof AnalyticsError && (error.code === "AUTH" || error.code === "UNSUPPORTED")) {
+      if (
+        error instanceof AnalyticsError &&
+        (error.code === "AUTH" || error.code === "UNSUPPORTED")
+      ) {
         throw error;
       }
       if (i < attempts) {

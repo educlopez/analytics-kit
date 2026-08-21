@@ -11,7 +11,6 @@ import {
   type ConnectorCapabilities,
   type DimensionId,
   type MetricId,
-  type NormalizedQuery,
 } from "@analytics-kit/core";
 
 export interface Ga4ConnectorOptions {
@@ -90,7 +89,8 @@ export function mapGa4Metric(metric: MetricId): string {
 
 export function mapGa4Dimension(dimension: DimensionId): string {
   const mapped = DIMENSION_MAP[dimension];
-  if (!mapped) throw new AnalyticsError("UNSUPPORTED", `GA4 does not map dimension "${dimension}".`);
+  if (!mapped)
+    throw new AnalyticsError("UNSUPPORTED", `GA4 does not map dimension "${dimension}".`);
   return mapped;
 }
 
@@ -224,11 +224,15 @@ function zip(ids: MetricId[], values?: Array<{ value?: string }>): Record<string
 }
 
 function sumMetric(body: Ga4Report, index: number): number {
-  return (body.rows ?? []).reduce((sum, row) => sum + Number(row.metricValues?.[index]?.value ?? 0), 0);
+  return (body.rows ?? []).reduce(
+    (sum, row) => sum + Number(row.metricValues?.[index]?.value ?? 0),
+    0,
+  );
 }
 
 export function formatGa4Date(value: string): string {
-  if (/^\d{8}$/.test(value)) return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
+  if (/^\d{8}$/.test(value))
+    return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
   if (/^\d{10}$/.test(value)) {
     return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}T${value.slice(8, 10)}:00:00Z`;
   }

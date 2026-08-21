@@ -34,7 +34,11 @@ body,
 body {
   font-family: var(--body);
   background:
-    radial-gradient(900px 420px at 85% -10%, color-mix(in oklch, var(--brand) 28%, transparent), transparent 60%),
+    radial-gradient(
+      900px 420px at 85% -10%,
+      color-mix(in oklch, var(--brand) 28%, transparent),
+      transparent 60%
+    ),
     var(--bg);
   color: var(--text);
 }
@@ -172,7 +176,10 @@ h2 {
 .btn.candy {
   background: var(--brand);
   color: #fff;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35), 0 0 0 1px var(--brand-2), inset 0 0.75px 0 rgb(255 255 255 / 0.2);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.35),
+    0 0 0 1px var(--brand-2),
+    inset 0 0.75px 0 rgb(255 255 255 / 0.2);
 }
 
 .btn.outline {

@@ -3,9 +3,9 @@ import { createVercelConnector, odataFilter } from "./index.js";
 
 describe("vercel connector", () => {
   it("builds OData filters", () => {
-    expect(
-      odataFilter([{ dimension: "path", op: "eq", value: "/blog" }]),
-    ).toBe("requestPath eq '/blog'");
+    expect(odataFilter([{ dimension: "path", op: "eq", value: "/blog" }])).toBe(
+      "requestPath eq '/blog'",
+    );
   });
 
   it("maps visit counts into canonical totals", async () => {

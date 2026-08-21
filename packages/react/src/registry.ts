@@ -7,7 +7,7 @@ export interface WidgetRequirements {
   realtime?: boolean;
 }
 
-export interface WidgetDefinition<P extends object = Record<string, never>> {
+export interface WidgetDefinition<P extends object = Record<string, unknown>> {
   id: string;
   title: string;
   description?: string;
@@ -15,18 +15,22 @@ export interface WidgetDefinition<P extends object = Record<string, never>> {
   component: ComponentType<P>;
 }
 
-const registry = new Map<string, WidgetDefinition<any>>();
+type RegisteredWidget = WidgetDefinition<Record<string, unknown>>;
 
-export function registerWidget<P extends object>(definition: WidgetDefinition<P>): WidgetDefinition<P> {
-  registry.set(definition.id, definition);
+const registry = new Map<string, RegisteredWidget>();
+
+export function registerWidget<P extends object>(
+  definition: WidgetDefinition<P>,
+): WidgetDefinition<P> {
+  registry.set(definition.id, definition as RegisteredWidget);
   return definition;
 }
 
-export function getWidget(id: string): WidgetDefinition<any> | undefined {
+export function getWidget(id: string): RegisteredWidget | undefined {
   return registry.get(id);
 }
 
-export function listWidgets(): WidgetDefinition<any>[] {
+export function listWidgets(): RegisteredWidget[] {
   return [...registry.values()];
 }
 

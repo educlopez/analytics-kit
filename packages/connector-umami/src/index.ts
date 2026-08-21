@@ -62,7 +62,8 @@ export const UMAMI_CAPABILITIES: ConnectorCapabilities = {
 
 export function mapUmamiDimension(dimension: DimensionId): string {
   const mapped = METRIC_TYPE[dimension];
-  if (!mapped) throw new AnalyticsError("UNSUPPORTED", `Umami does not map dimension "${dimension}".`);
+  if (!mapped)
+    throw new AnalyticsError("UNSUPPORTED", `Umami does not map dimension "${dimension}".`);
   return mapped;
 }
 
@@ -85,17 +86,11 @@ export function createUmamiConnector(options: UmamiConnectorOptions): AnalyticsC
         const series = await getJson<{
           pageviews: Array<{ x: string; y: number }>;
           sessions: Array<{ x: string; y: number }>;
-        }>(
-          fetchImpl,
-          host,
-          options,
-          `/api/websites/${options.websiteId}/pageviews`,
-          {
-            startAt: String(query.range.from.getTime()),
-            endAt: String(query.range.to.getTime()),
-            unit,
-          },
-        );
+        }>(fetchImpl, host, options, `/api/websites/${options.websiteId}/pageviews`, {
+          startAt: String(query.range.from.getTime()),
+          endAt: String(query.range.to.getTime()),
+          unit,
+        });
         result.series = (series.pageviews ?? []).map((point, index) => {
           const visits = series.sessions?.[index]?.y ?? 0;
           const values: Record<string, number> = {};

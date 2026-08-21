@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "educlopez/analytics-kit" }],
+  "commit": false,
+  "fixed": [
+    [
+      "@analytics-kit/core",
+      "@analytics-kit/react",
+      "@analytics-kit/next",
+      "@analytics-kit/connector-mock",
+      "@analytics-kit/connector-plausible",
+      "@analytics-kit/connector-vercel",
+      "@analytics-kit/connector-ga4",
+      "@analytics-kit/connector-umami",
+      "@analytics-kit/connector-posthog"
+    ]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["@analytics-kit/demo"]
+}

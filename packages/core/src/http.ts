@@ -33,11 +33,11 @@ export async function providerFetch(
       details,
     });
   }
-  throw new AnalyticsError(
-    "PROVIDER",
-    `${connectorId} returned HTTP ${response.status}.`,
-    { connectorId, status: response.status, details },
-  );
+  throw new AnalyticsError("PROVIDER", `${connectorId} returned HTTP ${response.status}.`, {
+    connectorId,
+    status: response.status,
+    details,
+  });
 }
 
 export async function providerJson<T>(

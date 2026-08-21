@@ -1,13 +1,7 @@
 import { useMemo, useState } from "react";
 import type { SeriesPoint } from "@analytics-kit/core";
 
-export function Timeseries({
-  series,
-  metric,
-}: {
-  series: SeriesPoint[];
-  metric: string;
-}) {
+export function Timeseries({ series, metric }: { series: SeriesPoint[]; metric: string }) {
   const [hover, setHover] = useState<number | null>(null);
   const chart = useMemo(() => {
     const width = 560;
@@ -22,12 +16,15 @@ export function Timeseries({
       const y = pad.t + innerH - (value / max) * innerH;
       return { x, y, value, date: series[index]?.date ?? "" };
     });
-    const line = points.map((point, i) => `${i ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+    const line = points
+      .map((point, i) => `${i ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+      .join(" ");
     const last = points.at(-1);
     const first = points[0];
-    const area = first && last
-      ? `${line} L${last.x.toFixed(1)},${pad.t + innerH} L${first.x.toFixed(1)},${pad.t + innerH} Z`
-      : "";
+    const area =
+      first && last
+        ? `${line} L${last.x.toFixed(1)},${pad.t + innerH} L${first.x.toFixed(1)},${pad.t + innerH} Z`
+        : "";
     return { width, height, pad, points, line, area, max };
   }, [series, metric]);
 

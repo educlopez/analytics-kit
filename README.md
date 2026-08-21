@@ -1,6 +1,14 @@
 # Analytics Kit
 
+[![CI](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@analytics-kit/core.svg)](https://www.npmjs.com/package/@analytics-kit/core)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Provider-agnostic analytics for websites. You give users a **connector** for the analytics tool they already use, and **components** that render the data. Switching from Plausible to GA4 (or Vercel, Umami, PostHog) is a constructor change — the dashboard stays the same.
+
+```bash
+pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-plausible
+```
 
 ```tsx
 import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
@@ -25,17 +33,17 @@ This repo is a TypeScript monorepo designed so **new providers** and **new widge
 
 ## Packages
 
-| Package | What it is |
-|---|---|
-| `@analytics-kit/core` | Canonical query/result types, connector contract, capabilities, caching |
-| `@analytics-kit/react` | Provider, hooks, chart primitives, widget registry, dashboard |
-| `@analytics-kit/next` | Fetch / Next.js App Router handlers that keep API keys on the server |
-| `@analytics-kit/connector-plausible` | Plausible Stats API v2 |
-| `@analytics-kit/connector-vercel` | Vercel Web Analytics API |
-| `@analytics-kit/connector-ga4` | Google Analytics 4 Data API |
-| `@analytics-kit/connector-umami` | Umami stats / metrics API |
-| `@analytics-kit/connector-posthog` | PostHog HogQL |
-| `@analytics-kit/connector-mock` | Deterministic fake data + per-provider capability profiles |
+| Package                              | What it is                                                              |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| `@analytics-kit/core`                | Canonical query/result types, connector contract, capabilities, caching |
+| `@analytics-kit/react`               | Provider, hooks, chart primitives, widget registry, dashboard           |
+| `@analytics-kit/next`                | Fetch / Next.js App Router handlers that keep API keys on the server    |
+| `@analytics-kit/connector-plausible` | Plausible Stats API v2                                                  |
+| `@analytics-kit/connector-vercel`    | Vercel Web Analytics API                                                |
+| `@analytics-kit/connector-ga4`       | Google Analytics 4 Data API                                             |
+| `@analytics-kit/connector-umami`     | Umami stats / metrics API                                               |
+| `@analytics-kit/connector-posthog`   | PostHog HogQL                                                           |
+| `@analytics-kit/connector-mock`      | Deterministic fake data + per-provider capability profiles              |
 
 ## How it scales
 
@@ -141,3 +149,11 @@ pnpm dev
 ## Development
 
 pnpm workspace + TypeScript + Vitest + tsup (ESM and CJS). Node 20+.
+
+```bash
+pnpm check   # lint, format, test, typecheck, build, publint
+```
+
+CI runs that same gate on every pull request. Releases use [Changesets](https://github.com/changesets/changesets): merge to `main`, merge the Version Packages PR, and GitHub Actions publishes `@analytics-kit/*` to npm.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for first-time npm org setup (`NPM_TOKEN`) and how to add providers or widgets.

@@ -65,7 +65,8 @@ export const VERCEL_CAPABILITIES: ConnectorCapabilities = {
 export function mapVercelDimension(dimension: DimensionId): string {
   if (dimension === "eventName") return "eventName";
   const mapped = DIMENSION_MAP[dimension];
-  if (!mapped) throw new AnalyticsError("UNSUPPORTED", `Vercel does not map dimension "${dimension}".`);
+  if (!mapped)
+    throw new AnalyticsError("UNSUPPORTED", `Vercel does not map dimension "${dimension}".`);
   return mapped;
 }
 
@@ -143,7 +144,8 @@ function pickVisitMetrics(metrics: MetricId[], row: VisitTotals): Record<string,
   const values: Record<string, number> = {};
   for (const metric of metrics) {
     if (metric === "pageviews") values.pageviews = Number(row.pageviews ?? 0);
-    else if (metric === "visitors" || metric === "visits") values[metric] = Number(row.visitors ?? 0);
+    else if (metric === "visitors" || metric === "visits")
+      values[metric] = Number(row.visitors ?? 0);
   }
   return values;
 }
@@ -254,9 +256,7 @@ export function odataFilter(filters: AnalyticsFilter[], _events = false): string
   return filters
     .map((filter) => {
       const field =
-        filter.dimension === "eventName"
-          ? "eventName"
-          : mapVercelDimension(filter.dimension);
+        filter.dimension === "eventName" ? "eventName" : mapVercelDimension(filter.dimension);
       const values = Array.isArray(filter.value) ? filter.value : [filter.value];
       if (filter.op === "in") {
         return `${field} in (${values.map(quote).join(",")})`;

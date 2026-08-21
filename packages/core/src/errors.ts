@@ -1,10 +1,5 @@
 export type AnalyticsErrorCode =
-  | "UNSUPPORTED"
-  | "AUTH"
-  | "RATE_LIMIT"
-  | "NETWORK"
-  | "INVALID_QUERY"
-  | "PROVIDER";
+  "UNSUPPORTED" | "AUTH" | "RATE_LIMIT" | "NETWORK" | "INVALID_QUERY" | "PROVIDER";
 
 export class AnalyticsError extends Error {
   readonly code: AnalyticsErrorCode;

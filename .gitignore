@@ -10,3 +10,4 @@ coverage
 .vscode
 apps/demo/dist
 agent-tools
+*.tgz

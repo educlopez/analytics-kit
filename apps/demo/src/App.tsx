@@ -83,7 +83,11 @@ export function App() {
           <a href="https://github.com/educlopez/smoothui" target="_blank" rel="noreferrer">
             GitHub
           </a>
-          <button type="button" className="ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+          <button
+            type="button"
+            className="ghost"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
             {theme === "dark" ? "Light" : "Dark"}
           </button>
         </div>
@@ -97,15 +101,25 @@ export function App() {
             <em> for shadcn/ui</em>
           </h1>
           <p className="lede">
-            {COMPONENT_COUNT} drop-in components for your shadcn/ui project — one command, Motion-powered,
-            fully typed. This landing embeds Analytics Kit widgets on{" "}
+            {COMPONENT_COUNT} drop-in components for your shadcn/ui project — one command,
+            Motion-powered, fully typed. This landing embeds Analytics Kit widgets on{" "}
             <a href="https://smoothui.dev">smoothui.dev</a> traffic.
           </p>
           <div className="actions">
-            <a className="btn candy" href="https://smoothui.dev/docs/components" target="_blank" rel="noreferrer">
+            <a
+              className="btn candy"
+              href="https://smoothui.dev/docs/components"
+              target="_blank"
+              rel="noreferrer"
+            >
               Browse components
             </a>
-            <a className="btn outline" href="https://smoothui.dev/docs" target="_blank" rel="noreferrer">
+            <a
+              className="btn outline"
+              href="https://smoothui.dev/docs"
+              target="_blank"
+              rel="noreferrer"
+            >
               Read the docs
             </a>
           </div>
@@ -144,7 +158,9 @@ export function App() {
                 : "Vercel-shaped widgets using SmoothUI routes (homepage, docs, Siri Orb, Dynamic Island). Pass VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the real dashboard."}
             </p>
           </div>
-          <span className={`pill ${live ? "live" : ""}`}>{live ? "Live Vercel" : "SmoothUI sample · Vercel profile"}</span>
+          <span className={`pill ${live ? "live" : ""}`}>
+            {live ? "Live Vercel" : "SmoothUI sample · Vercel profile"}
+          </span>
         </div>
         <AnalyticsProvider connector={connector} theme={theme} range="7d">
           <Dashboard widgets={widgets} showRange columns={4} />
@@ -153,7 +169,8 @@ export function App() {
 
       <footer className="foot">
         <p>
-          Components from <a href="https://smoothui.dev">smoothui.dev</a> · Kit widgets stay provider-agnostic.
+          Components from <a href="https://smoothui.dev">smoothui.dev</a> · Kit widgets stay
+          provider-agnostic.
         </p>
       </footer>
     </div>
