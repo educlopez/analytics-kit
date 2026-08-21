@@ -19,7 +19,7 @@
     "format:check": "prettier --check .",
     "publint": "pnpm -r --filter=./packages/* exec publint",
     "attw": "pnpm -r --filter=./packages/* --filter=!@analytics-kit/react exec attw --pack . && pnpm --filter @analytics-kit/react exec attw --pack . --exclude-entrypoints styles.css",
-    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm typecheck && pnpm build && pnpm publint && pnpm attw",
+    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm typecheck && pnpm publint && pnpm attw",
     "dev": "pnpm --filter @analytics-kit/demo dev",
     "clean": "pnpm -r exec rm -rf dist",
     "changeset": "changeset",
