@@ -20,6 +20,11 @@
   --line: var(--stone-500);
   --text: var(--ink);
   --on-ink: #f9f8f5;
+  --chart-1: #1d779b;
+  --chart-2: #297c3b;
+  --chart-3: #c45c26;
+  --chart-4: #7c6a4a;
+  --chart-5: #5b4a8a;
   --title: "Newsreader", "Times New Roman", serif;
   --body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --mono: "DM Mono", ui-monospace, monospace;
@@ -41,6 +46,11 @@ html[data-theme="dark"] {
   --muted: #b8ad94;
   --on-ink: #f9f8f5;
   --shadow: 0 18px 50px rgb(0 0 0 / 0.4);
+  --chart-1: #6dc8e4;
+  --chart-2: #6cda76;
+  --chart-3: #e8a15a;
+  --chart-4: #c4b48a;
+  --chart-5: #b4a7ff;
 }
 
 * {
@@ -543,6 +553,50 @@ html[data-theme="dark"] .style-switch button.is-active {
   font-size: 12px;
 }
 
+.gallery-switches {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.gallery-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  min-width: 0;
+  box-shadow: var(--shadow);
+}
+
+.gallery-card-wide {
+  grid-column: 1 / -1;
+}
+
+.gallery-card header h3 {
+  margin: 0 0 4px;
+}
+
+.gallery-card header p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.gallery-card > code {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .stat-plate {
   margin-top: 48px;
   min-height: min(54vh, 540px);
@@ -746,7 +800,8 @@ html[data-theme="dark"] .style-switch button.is-active {
   }
 
   .feature-grid,
-  .steps {
+  .steps,
+  .gallery-grid {
     grid-template-columns: 1fr;
   }
 

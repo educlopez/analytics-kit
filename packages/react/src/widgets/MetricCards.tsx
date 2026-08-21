@@ -10,15 +10,17 @@ import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { Sparkline } from "../primitives/Charts.js";
 import { useQuery } from "../hooks.js";
 import { registerWidget } from "../registry.js";
+import type { MetricCardVariant } from "../charts/variants.js";
 
 export interface MetricCardProps {
   metric: MetricId;
   title?: string;
   range?: DateRangeInput;
   span?: number;
+  variant?: MetricCardVariant;
 }
 
-export function MetricCard({ metric, title, range, span }: MetricCardProps) {
+export function MetricCard({ metric, title, range, span, variant = "default" }: MetricCardProps) {
   const definition = getMetric(metric);
   const { data, status, missing, error } = useQuery({
     metrics: [metric],
@@ -38,10 +40,13 @@ export function MetricCard({ metric, title, range, span }: MetricCardProps) {
       error={error}
       span={span}
       trailing={
-        <Sparkline fill values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />
+        variant === "compact" ? null : (
+          <Sparkline fill values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />
+        )
       }
     >
       <MetricValueBlock
+        variant={variant}
         value={formatMetric(metric, value)}
         delta={delta == null ? null : { text: formatDelta(delta), positive: delta >= 0 }}
       />
@@ -52,14 +57,16 @@ export function MetricCard({ metric, title, range, span }: MetricCardProps) {
 function MetricValueBlock({
   value,
   delta,
+  variant,
 }: {
   value: string;
   delta: { text: string; positive: boolean } | null;
+  variant: MetricCardVariant;
 }) {
   return (
-    <div className="ak-metric">
+    <div className={variant === "hero" ? "ak-metric ak-metric-hero" : "ak-metric"}>
       <div className="ak-metric-value">{value}</div>
-      {delta ? (
+      {variant === "compact" && !delta ? null : delta ? (
         <span className={delta.positive ? "ak-delta-up" : "ak-delta-down"}>{delta.text}</span>
       ) : null}
     </div>

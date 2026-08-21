@@ -101,28 +101,24 @@ Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries` / `AreaC
 
 Layouts: `defaultDashboard` (Vercel-friendly) and `catalogDashboard` (every widget).
 
-## Style
-
-Every widget reads CSS variables from `<AnalyticsProvider style theme tokens>`. Swap the named look, or override tokens:
+Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [bklit](https://bklit.com/charts/area-chart), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
 
 ```tsx
-<AnalyticsProvider
-  connector={connector}
-  style="editorial" // editorial | ink | shadcn
-  theme="light"
-  tokens={{ accent: "#1d779b" }}
->
-  <Dashboard />
-</AnalyticsProvider>
+<AreaChart data={points} variant="gradient" />
+<LineChart data={points} variant="dashed" />
+<BarChart data={rows} variant="horizontal" />
+<PieChart data={rows} variant="donut" />
+<MetricCard metric="visitors" variant="hero" />
 ```
 
-| Style       | Use when                                        |
-| ----------- | ----------------------------------------------- |
-| `editorial` | Paper/ink product UI (this landing)             |
-| `ink`       | Cool navy dashboard chrome                      |
-| `shadcn`    | Sit next to shadcn/ui (`--chart-1`…`--chart-5`) |
-
-The visual language is distilled from [Tremor](https://tremor.so) (KPI, bar list, tracker, donut), [shadcn charts](https://ui.shadcn.com/charts) (area/bar + tokenized palette), and Plausible-style breakdowns — then bound to the canonical query model so a connector swap does not restyle the page.
+| Component    | Variants                                                 |
+| ------------ | -------------------------------------------------------- |
+| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark` |
+| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`           |
+| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`           |
+| `PieChart`   | `donut`, `pie`, `legend`                                 |
+| `MetricCard` | `default`, `spark`, `compact`, `hero`                    |
+| `RankedList` | `bar`, `compact`, `table`                                |
 
 ## shadcn registry
 
@@ -134,7 +130,7 @@ pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard
 
 GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
 
-Items: `editorial`, `ink`, `shadcn` (themes), `provider`, `metric-card`, `area-chart`, `bar-list`, `bar-chart`, `donut-chart`, `breakdown-table`, `tracker`, `dashboard`.
+Items: `chart`, `area-chart`, `line-chart`, `bar-chart`, `pie-chart`, `metric-card`, `dashboard`.
 
 Namespace:
 
