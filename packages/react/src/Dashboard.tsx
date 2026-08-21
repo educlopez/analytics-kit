@@ -3,6 +3,7 @@ import { getWidget } from "./registry.js";
 import { useAnalytics } from "./context.js";
 import "./widgets/MetricCards.js";
 import "./widgets/Charts.js";
+import "./widgets/Breakdowns.js";
 
 export interface DashboardItem {
   widget: string;
@@ -13,13 +14,40 @@ export interface DashboardItem {
 export const defaultDashboard: DashboardItem[] = [
   { widget: "visitors" },
   { widget: "pageviews" },
-  { widget: "bounce-rate" },
-  { widget: "realtime" },
-  { widget: "timeseries", span: 3, props: { metric: "visitors" } },
+  { widget: "visits" },
+  { widget: "events" },
+  { widget: "timeseries", span: 4, props: { metric: "visitors" } },
   { widget: "top-pages", span: 2 },
   { widget: "top-referrers" },
   { widget: "devices" },
-  { widget: "top-countries", span: 2 },
+  { widget: "top-browsers" },
+  { widget: "top-os" },
+  { widget: "top-countries" },
+  { widget: "top-sources" },
+  { widget: "tracker", span: 4 },
+];
+
+/** Every built-in widget. Use with a full-capability connector (mock profile `full`). */
+export const catalogDashboard: DashboardItem[] = [
+  { widget: "visitors" },
+  { widget: "pageviews" },
+  { widget: "visits" },
+  { widget: "realtime" },
+  { widget: "bounce-rate" },
+  { widget: "duration" },
+  { widget: "views-per-visit" },
+  { widget: "events" },
+  { widget: "timeseries", span: 4, props: { metric: "visitors" } },
+  { widget: "pages-table", span: 2 },
+  { widget: "top-referrers" },
+  { widget: "devices" },
+  { widget: "top-browsers" },
+  { widget: "top-os" },
+  { widget: "top-countries" },
+  { widget: "top-sources" },
+  { widget: "top-campaigns" },
+  { widget: "top-events", span: 2 },
+  { widget: "tracker", span: 4 },
 ];
 
 export function Dashboard({

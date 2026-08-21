@@ -8,6 +8,7 @@ export interface WidgetFrameProps {
   missing?: string[];
   error?: Error;
   span?: number;
+  className?: string;
   children?: ReactNode;
   trailing?: ReactNode;
 }
@@ -19,12 +20,13 @@ export function WidgetFrame({
   missing = [],
   error,
   span,
+  className,
   children,
   trailing,
 }: WidgetFrameProps) {
   return (
     <section
-      className="ak-widget"
+      className={["ak-widget", className].filter(Boolean).join(" ")}
       data-ak-status={status}
       style={span ? { gridColumn: `span ${span}` } : undefined}
     >

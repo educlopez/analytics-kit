@@ -1,0 +1,254 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "analytics-kit",
+  "homepage": "https://educlopez.github.io/analytics-kit/",
+  "items": [
+    {
+      "name": "editorial",
+      "type": "registry:theme",
+      "title": "Editorial",
+      "description": "Stone paper, serif headings, ink — the Analytics Kit landing look.",
+      "files": [
+        {
+          "path": "registry/default/styles/editorial.css",
+          "type": "registry:file",
+          "target": "styles/analytics-kit-editorial.css"
+        }
+      ],
+      "cssVars": {
+        "light": {
+          "ak-bg": "#f9f8f5",
+          "ak-surface": "#ffffff",
+          "ak-surface-2": "#f3f0e9",
+          "ak-border": "#e3ddcf",
+          "ak-text": "#1a1613",
+          "ak-muted": "#605852",
+          "ak-accent": "#1d779b",
+          "ak-chart-1": "#1d779b",
+          "ak-chart-2": "#297c3b",
+          "ak-chart-3": "#c45c26",
+          "ak-chart-4": "#7c6a4a",
+          "ak-chart-5": "#5b4a8a",
+          "ak-up": "#297c3b",
+          "ak-down": "#c23b3b",
+          "ak-radius": "18px"
+        },
+        "dark": {
+          "ak-bg": "#120c08",
+          "ak-surface": "#241e1a",
+          "ak-surface-2": "#342e2b",
+          "ak-border": "rgb(249 248 245 / 0.12)",
+          "ak-text": "#f9f8f5",
+          "ak-muted": "#cdc5b1",
+          "ak-accent": "#6dc8e4",
+          "ak-chart-1": "#6dc8e4",
+          "ak-chart-2": "#6cda76",
+          "ak-chart-3": "#e8a15a",
+          "ak-chart-4": "#c4b48a",
+          "ak-chart-5": "#b4a7ff",
+          "ak-up": "#6cda76",
+          "ak-down": "#f87274",
+          "ak-radius": "18px"
+        }
+      },
+      "docs": "Then wrap widgets in <AnalyticsProvider style=\"editorial\" theme=\"light\">. Or pass tokens={{ accent: \"#1d779b\" }} to override.",
+      "categories": ["style", "analytics"]
+    },
+    {
+      "name": "ink",
+      "type": "registry:theme",
+      "title": "Ink",
+      "description": "Cool navy dashboard chrome — the original Analytics Kit surfaces.",
+      "files": [
+        {
+          "path": "registry/default/styles/ink.css",
+          "type": "registry:file",
+          "target": "styles/analytics-kit-ink.css"
+        }
+      ],
+      "cssVars": {
+        "light": {
+          "ak-bg": "#f5f7fb",
+          "ak-surface": "#ffffff",
+          "ak-text": "#0f172a",
+          "ak-muted": "#64748b",
+          "ak-accent": "#2563eb",
+          "ak-chart-1": "#2563eb",
+          "ak-chart-2": "#0f9f6e",
+          "ak-chart-3": "#f59e0b",
+          "ak-chart-4": "#7c3aed",
+          "ak-chart-5": "#ef4444"
+        },
+        "dark": {
+          "ak-bg": "#0b0f14",
+          "ak-surface": "#141b24",
+          "ak-text": "#eef3f8",
+          "ak-muted": "#8b9bb0",
+          "ak-accent": "#6ea8ff",
+          "ak-chart-1": "#6ea8ff",
+          "ak-chart-2": "#7ee0c6",
+          "ak-chart-3": "#f5c16c",
+          "ak-chart-4": "#b4a7ff",
+          "ak-chart-5": "#f07178"
+        }
+      },
+      "docs": "Use <AnalyticsProvider style=\"ink\" theme=\"dark\">.",
+      "categories": ["style", "analytics"]
+    },
+    {
+      "name": "shadcn",
+      "type": "registry:theme",
+      "title": "shadcn",
+      "description": "Maps Analytics Kit tokens onto shadcn/ui --background, --card, --chart-1…5.",
+      "files": [
+        {
+          "path": "registry/default/styles/shadcn.css",
+          "type": "registry:file",
+          "target": "styles/analytics-kit-shadcn.css"
+        }
+      ],
+      "docs": "Use <AnalyticsProvider style=\"shadcn\"> inside a shadcn/ui app so widgets inherit your theme.",
+      "categories": ["style", "analytics"]
+    },
+    {
+      "name": "provider",
+      "type": "registry:block",
+      "title": "Analytics provider",
+      "description": "Style-aware AnalyticsProvider wrapper. Swap editorial, ink, or shadcn without rewriting widgets.",
+      "dependencies": ["@analytics-kit/react", "@analytics-kit/core"],
+      "registryDependencies": ["editorial"],
+      "files": [
+        {
+          "path": "registry/default/blocks/provider.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/provider.tsx"
+        }
+      ],
+      "docs": "pnpm add @analytics-kit/react @analytics-kit/core. Import styles: import \"@analytics-kit/react/styles.css\".",
+      "categories": ["analytics"]
+    },
+    {
+      "name": "metric-card",
+      "type": "registry:block",
+      "title": "Metric card",
+      "description": "KPI card with spark area and period delta. Tremor Metric + shadcn chart card.",
+      "dependencies": ["@analytics-kit/react"],
+      "registryDependencies": ["provider"],
+      "files": [
+        {
+          "path": "registry/default/blocks/metric-card.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/metric-card.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "area-chart",
+      "type": "registry:block",
+      "title": "Area chart",
+      "description": "Visitors over time. shadcn AreaChart / Tremor AreaChart.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/area-chart.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/area-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "bar-list",
+      "type": "registry:block",
+      "title": "Bar list",
+      "description": "Horizontal ranked bars for pages, referrers, countries. Tremor BarList.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/bar-list.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/bar-list.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "bar-chart",
+      "type": "registry:block",
+      "title": "Bar chart",
+      "description": "Vertical category bars. shadcn BarChart.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/bar-chart.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/bar-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "donut-chart",
+      "type": "registry:block",
+      "title": "Donut chart",
+      "description": "Share of a dimension with a center total. Tremor DonutChart.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/donut-chart.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/donut-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "breakdown-table",
+      "type": "registry:block",
+      "title": "Breakdown table",
+      "description": "Label, bar, value, and share % for any dimension.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/breakdown-table.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/breakdown-table.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "tracker",
+      "type": "registry:block",
+      "title": "Activity tracker",
+      "description": "Daily intensity cells. Tremor Tracker.",
+      "dependencies": ["@analytics-kit/react"],
+      "files": [
+        {
+          "path": "registry/default/blocks/tracker.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/tracker.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "dashboard",
+      "type": "registry:block",
+      "title": "Analytics dashboard",
+      "description": "The full widget catalog on a 4-column grid.",
+      "dependencies": ["@analytics-kit/react"],
+      "registryDependencies": ["provider", "editorial"],
+      "files": [
+        {
+          "path": "registry/default/blocks/dashboard.tsx",
+          "type": "registry:component",
+          "target": "@components/analytics/dashboard.tsx"
+        }
+      ],
+      "docs": "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-mock\nimport \"@analytics-kit/react/styles.css\";\nWrap with <AnalyticsProvider style=\"editorial\" theme=\"light\">.",
+      "categories": ["analytics", "dashboard"]
+    }
+  ]
+}

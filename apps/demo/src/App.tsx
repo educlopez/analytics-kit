@@ -1,15 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
+import { createMockConnector, createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
 import {
+  ANALYTICS_STYLE_META,
   AnalyticsProvider,
+  catalogDashboard,
   Dashboard,
+  defaultDashboard,
+  type AnalyticsStyleName,
   type AnalyticsTheme,
-  type DashboardItem,
 } from "@analytics-kit/react";
 import type { AnalyticsConnector } from "@analytics-kit/core";
 
 const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
+
+const REGISTRY =
+  "pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json";
 
 const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
@@ -121,6 +127,10 @@ const FAQS = [
     q: "Can I add my own provider or widget?",
     a: "Yes. defineConnector and defineWidget are the extension points. See examples/ in the repo.",
   },
+  {
+    q: "Can I change how the widgets look?",
+    a: 'Yes. Pass style="editorial" | "ink" | "shadcn" on AnalyticsProvider, and tokens={{ accent: "#111" }} to override CSS variables. Or install a recipe from the shadcn registry and edit the file.',
+  },
 ];
 
 function createDemoConnector(): { connector: AnalyticsConnector; live: boolean } {
@@ -145,32 +155,23 @@ function createDemoConnector(): { connector: AnalyticsConnector; live: boolean }
 export function App() {
   const [{ connector, live }] = useState(createDemoConnector);
   const [theme, setTheme] = useState<AnalyticsTheme>("light");
-  const [copied, setCopied] = useState<"install" | "snippet" | null>(null);
+  const [kitStyle, setKitStyle] = useState<AnalyticsStyleName>("editorial");
+  const [copied, setCopied] = useState<"install" | "snippet" | "registry" | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const catalogConnector = useMemo(
+    () => createMockConnector({ profile: "full", siteName: "Component catalog", seed: 11 }),
+    [],
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  const copy = async (value: string, which: "install" | "snippet") => {
+  const copy = async (value: string, which: "install" | "snippet" | "registry") => {
     await navigator.clipboard.writeText(value);
     setCopied(which);
     setTimeout(() => setCopied(null), 1600);
   };
-
-  const widgets = useMemo<DashboardItem[]>(
-    () => [
-      { widget: "visitors" },
-      { widget: "pageviews" },
-      { widget: "visits" },
-      { widget: "devices" },
-      { widget: "timeseries", span: 4, props: { metric: "visitors" } },
-      { widget: "top-pages", span: 2 },
-      { widget: "top-referrers" },
-      { widget: "top-countries" },
-    ],
-    [],
-  );
 
   return (
     <div className="shell">
@@ -181,6 +182,7 @@ export function App() {
         </a>
         <div className="nav-links">
           <a href="#dashboard">Demo</a>
+          <a href="#kit">Components</a>
           <a href="#how">How it works</a>
           <a href="https://github.com/educlopez/analytics-kit">GitHub</a>
           <button
@@ -283,10 +285,76 @@ export function App() {
           </span>
         </div>
         <div className="dashboard-frame">
-          <AnalyticsProvider connector={connector} theme={theme} range="7d">
-            <Dashboard widgets={widgets} showRange columns={4} />
+          <AnalyticsProvider connector={connector} theme={theme} style={kitStyle} range="7d">
+            <Dashboard widgets={defaultDashboard} showRange columns={4} />
           </AnalyticsProvider>
         </div>
+      </section>
+
+      <section className="analytics" id="kit">
+        <div className="analytics-head">
+          <div>
+            <p className="kicker">Catalog</p>
+            <h2>
+              Every widget,
+              <em> three looks.</em>
+            </h2>
+            <p className="lede compact">
+              Built after Tremor, shadcn charts, and Origin-style dashboards — then bound to one
+              query model. Change <code>style</code> on the provider; the widgets stay the same.
+            </p>
+          </div>
+          <div className="style-switch" role="group" aria-label="Component style">
+            {(Object.keys(ANALYTICS_STYLE_META) as AnalyticsStyleName[]).map((name) => (
+              <button
+                key={name}
+                type="button"
+                className={kitStyle === name ? "is-active" : ""}
+                onClick={() => setKitStyle(name)}
+              >
+                {ANALYTICS_STYLE_META[name].title}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="dashboard-frame">
+          <AnalyticsProvider
+            connector={catalogConnector}
+            theme={theme}
+            style={kitStyle}
+            range="30d"
+          >
+            <Dashboard widgets={catalogDashboard} showRange columns={4} />
+          </AnalyticsProvider>
+        </div>
+        <p className="lede compact kit-note">
+          {ANALYTICS_STYLE_META[kitStyle].description}{" "}
+          <code>{`<AnalyticsProvider style="${kitStyle}" theme="${theme}">`}</code>
+        </p>
+      </section>
+
+      <section className="snippet-block" id="registry">
+        <div className="analytics-head">
+          <div>
+            <p className="kicker">shadcn registry</p>
+            <h2>
+              Install a widget.
+              <em> Own the file.</em>
+            </h2>
+            <p className="lede compact">
+              Add the catalog from GitHub Pages, or <code>educlopez/analytics-kit/dashboard</code>{" "}
+              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+            </p>
+          </div>
+          <button type="button" className="ghost" onClick={() => void copy(REGISTRY, "registry")}>
+            {copied === "registry" ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <button type="button" className="install" onClick={() => void copy(REGISTRY, "registry")}>
+          <span>$</span>
+          <code>{REGISTRY}</code>
+          <em>{copied === "registry" ? "Copied" : "Copy"}</em>
+        </button>
       </section>
 
       <section className="stat-plate">

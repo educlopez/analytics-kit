@@ -17,8 +17,14 @@ import {
   type DateRangeInput,
   type RealtimeResult,
 } from "@analytics-kit/core";
+import {
+  tokensToCssVars,
+  type AnalyticsStyleName,
+  type AnalyticsStyleOverrides,
+  type AnalyticsTheme,
+} from "./style.js";
 
-export type AnalyticsTheme = "dark" | "light";
+export type { AnalyticsTheme };
 
 export interface AnalyticsContextValue {
   connector: AnalyticsConnector;
@@ -26,6 +32,7 @@ export interface AnalyticsContextValue {
   range: DateRangeInput;
   setRange: (range: DateRangeInput) => void;
   theme: AnalyticsTheme;
+  style: AnalyticsStyleName;
   query: (query: AnalyticsQuery) => Promise<AnalyticsResult>;
   realtime: () => Promise<RealtimeResult>;
 }
@@ -36,6 +43,10 @@ export interface AnalyticsProviderProps {
   connector: AnalyticsConnector;
   range?: DateRangeInput;
   theme?: AnalyticsTheme;
+  /** Named look for every widget. `editorial` | `ink` | `shadcn`. */
+  style?: AnalyticsStyleName;
+  /** Partial token overrides on top of the named style. */
+  tokens?: AnalyticsStyleOverrides;
   cacheTtlMs?: number;
   children: ReactNode;
 }
@@ -44,6 +55,8 @@ export function AnalyticsProvider({
   connector: rawConnector,
   range: rangeProp = "7d",
   theme = "dark",
+  style = "ink",
+  tokens,
   cacheTtlMs = 30_000,
   children,
 }: AnalyticsProviderProps) {
@@ -82,15 +95,18 @@ export function AnalyticsProvider({
       range,
       setRange,
       theme,
+      style,
       query,
       realtime,
     }),
-    [connector, capabilities, range, theme, query, realtime],
+    [connector, capabilities, range, theme, style, query, realtime],
   );
+
+  const tokenStyle = useMemo(() => (tokens ? tokensToCssVars(tokens) : undefined), [tokens]);
 
   return (
     <AnalyticsContext.Provider value={value}>
-      <div className="ak-root" data-ak-theme={theme}>
+      <div className="ak-root" data-ak-theme={theme} data-ak-style={style} style={tokenStyle}>
         {children}
       </div>
     </AnalyticsContext.Provider>

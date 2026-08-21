@@ -38,7 +38,7 @@ export function MetricCard({ metric, title, range, span }: MetricCardProps) {
       error={error}
       span={span}
       trailing={
-        <Sparkline values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />
+        <Sparkline fill values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />
       }
     >
       <MetricValueBlock
@@ -82,6 +82,14 @@ export function DurationCard(props: Omit<MetricCardProps, "metric">) {
   return <MetricCard metric="avgDuration" title="Avg. duration" {...props} />;
 }
 
+export function ViewsPerVisitCard(props: Omit<MetricCardProps, "metric">) {
+  return <MetricCard metric="viewsPerVisit" title="Views / visit" {...props} />;
+}
+
+export function EventsCard(props: Omit<MetricCardProps, "metric">) {
+  return <MetricCard metric="events" {...props} />;
+}
+
 registerWidget({
   id: "visitors",
   title: "Visitors",
@@ -111,4 +119,16 @@ registerWidget({
   title: "Avg. duration",
   required: { metrics: ["avgDuration"] },
   component: DurationCard,
+});
+registerWidget({
+  id: "views-per-visit",
+  title: "Views / visit",
+  required: { metrics: ["viewsPerVisit"] },
+  component: ViewsPerVisitCard,
+});
+registerWidget({
+  id: "events",
+  title: "Events",
+  required: { metrics: ["events"] },
+  component: EventsCard,
 });
