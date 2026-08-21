@@ -216,6 +216,29 @@ h2 {
   color: var(--brand);
 }
 
+.providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+}
+
+.providers li {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.providers li.is-active {
+  color: var(--text);
+  border-color: color-mix(in oklch, var(--brand) 55%, var(--line));
+  background: color-mix(in oklch, var(--brand) 12%, transparent);
+}
+
 .facts {
   gap: 22px;
   padding: 0;
@@ -272,9 +295,30 @@ h2 {
   }
 }
 
-.analytics {
+.analytics,
+.snippet-block {
   display: grid;
   gap: 18px;
+}
+
+.analytics {
+  scroll-margin-top: 24px;
+}
+
+.snippet-block {
+  margin-top: 56px;
+}
+
+.snippet {
+  margin: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 18px 20px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
 }
 
 .analytics-head {
