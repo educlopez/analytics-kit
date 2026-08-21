@@ -43,4 +43,14 @@ describe("createMockConnector", () => {
     expect(result.breakdown.some((row) => row.key === "/docs/components/siri-orb")).toBe(true);
     expect(result.breakdown[0]?.key).toBe("/");
   });
+
+  it("breaks down campaigns on the full profile", async () => {
+    const connector = createMockConnector({ profile: "full" });
+    const result = await connector.query({
+      range: "7d",
+      metrics: ["visitors"],
+      dimensions: ["campaign"],
+    });
+    expect(result.breakdown.some((row) => row.key === "launch")).toBe(true);
+  });
 });

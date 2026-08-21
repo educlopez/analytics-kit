@@ -9,5 +9,6 @@ coverage
 .idea
 .vscode
 apps/demo/dist
+apps/demo/public/r
 agent-tools
 *.tgz

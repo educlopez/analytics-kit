@@ -12,16 +12,17 @@ Requires Node 20+ (22 recommended, see `.nvmrc`) and pnpm 10.
 
 ## Scripts
 
-| Command          | What it does                                |
-| ---------------- | ------------------------------------------- |
-| `pnpm test`      | Vitest                                      |
-| `pnpm typecheck` | `tsc --noEmit` in every package             |
-| `pnpm lint`      | ESLint                                      |
-| `pnpm format`    | Prettier                                    |
-| `pnpm build`     | ESM + CJS + d.ts via tsup                   |
-| `pnpm publint`   | Validate publishable `package.json` exports |
-| `pnpm check`     | All of the above (same as CI)               |
-| `pnpm changeset` | Describe a user-facing change               |
+| Command               | What it does                                |
+| --------------------- | ------------------------------------------- |
+| `pnpm test`           | Vitest                                      |
+| `pnpm typecheck`      | `tsc --noEmit` in every package             |
+| `pnpm lint`           | ESLint                                      |
+| `pnpm format`         | Prettier                                    |
+| `pnpm build`          | ESM + CJS + d.ts via tsup                   |
+| `pnpm publint`        | Validate publishable `package.json` exports |
+| `pnpm check`          | All of the above (same as CI)               |
+| `pnpm changeset`      | Describe a user-facing change               |
+| `pnpm registry:build` | Write shadcn JSON to `apps/demo/public/r`   |
 
 ## Versioning and publish
 
@@ -47,3 +48,5 @@ Copy [`examples/custom-connector.ts`](examples/custom-connector.ts) into `packag
 ## Adding a widget
 
 See [`examples/custom-widget.tsx`](examples/custom-widget.tsx). Register with `defineWidget` so `<Dashboard />` can render it by id.
+
+To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files for GitHub Pages (`/r/{name}.json`).

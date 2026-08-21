@@ -25,6 +25,8 @@ export interface MockDataset {
   browsers?: string[];
   os?: string[];
   events?: string[];
+  campaigns?: string[];
+  mediums?: string[];
 }
 
 export interface MockConnectorOptions {
@@ -45,6 +47,8 @@ const DEFAULT_DATASET: Required<MockDataset> = {
   browsers: ["Chrome", "Safari", "Firefox", "Edge"],
   os: ["macOS", "Windows", "iOS", "Android", "Linux"],
   events: ["signup", "cta_click", "purchase"],
+  campaigns: ["launch", "docs", "spring", "brand"],
+  mediums: ["organic", "social", "email", "referral"],
 };
 
 /** Real routes and sources from smoothui.dev — used when live Vercel credentials are not available. */
@@ -69,6 +73,8 @@ export const SMOOTHUI_DATASET: Required<MockDataset> = {
   browsers: ["Chrome", "Safari", "Firefox", "Edge"],
   os: ["macOS", "Windows", "iOS", "Android", "Linux"],
   events: ["install_copy", "component_preview", "registry_install", "docs_search"],
+  campaigns: ["launch", "docs", "smoothui-kit", "brand"],
+  mediums: ["organic", "social", "email", "referral"],
 };
 
 export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> = {
@@ -87,6 +93,7 @@ export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> =
       avgDuration: false,
       viewsPerVisit: false,
     },
+    dimensions: { host: false },
     realtime: false,
     previousPeriod: true,
   }),
@@ -222,7 +229,11 @@ function breakdownFor(
                 ? dataset.os
                 : dimension === "eventName"
                   ? dataset.events
-                  : dataset.paths;
+                  : dimension === "campaign"
+                    ? dataset.campaigns
+                    : dimension === "medium"
+                      ? dataset.mediums
+                      : dataset.paths;
 
   const weights = keys.map((_, i) => Math.max(0.12, 1.2 - i * 0.08) + rng() * 0.18);
   const weightSum = weights.reduce((a, b) => a + b, 0);

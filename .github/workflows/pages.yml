@@ -27,6 +27,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm registry:build
       - run: pnpm --filter @analytics-kit/demo build
         env:
           VITE_BASE: /analytics-kit/

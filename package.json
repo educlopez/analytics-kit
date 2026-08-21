@@ -22,6 +22,7 @@
     "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm typecheck && pnpm publint && pnpm attw",
     "dev": "pnpm --filter @analytics-kit/demo dev",
     "clean": "pnpm -r exec rm -rf dist",
+    "registry:build": "node scripts/build-registry.mjs",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish"

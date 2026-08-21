@@ -6,11 +6,17 @@
   --ak-text: #eef3f8;
   --ak-muted: #8b9bb0;
   --ak-accent: #6ea8ff;
+  --ak-chart-1: #6ea8ff;
+  --ak-chart-2: #7ee0c6;
+  --ak-chart-3: #f5c16c;
+  --ak-chart-4: #b4a7ff;
+  --ak-chart-5: #f07178;
   --ak-up: #3dd68c;
   --ak-down: #ff6b7a;
   --ak-radius: 18px;
   --ak-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
   --ak-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ak-heading-font: var(--ak-font);
   color: var(--ak-text);
   font-family: var(--ak-font);
 }
@@ -23,7 +29,90 @@
   --ak-text: #0f172a;
   --ak-muted: #64748b;
   --ak-accent: #2563eb;
+  --ak-chart-1: #2563eb;
+  --ak-chart-2: #0f9f6e;
+  --ak-chart-3: #f59e0b;
+  --ak-chart-4: #7c3aed;
+  --ak-chart-5: #ef4444;
+  --ak-up: #16a34a;
+  --ak-down: #ef4444;
   --ak-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.ak-root[data-ak-style="editorial"][data-ak-theme="light"] {
+  --ak-bg: #f9f8f5;
+  --ak-surface: #ffffff;
+  --ak-surface-2: #f3f0e9;
+  --ak-border: #e3ddcf;
+  --ak-text: #1a1613;
+  --ak-muted: #605852;
+  --ak-accent: #1d779b;
+  --ak-chart-1: #1d779b;
+  --ak-chart-2: #297c3b;
+  --ak-chart-3: #c45c26;
+  --ak-chart-4: #7c6a4a;
+  --ak-chart-5: #5b4a8a;
+  --ak-up: #297c3b;
+  --ak-down: #c23b3b;
+  --ak-shadow: 0 18px 50px rgb(18 12 8 / 0.08);
+  --ak-heading-font: Newsreader, "Times New Roman", ui-serif, Georgia, serif;
+}
+
+.ak-root[data-ak-style="editorial"][data-ak-theme="dark"] {
+  --ak-bg: #120c08;
+  --ak-surface: #241e1a;
+  --ak-surface-2: #342e2b;
+  --ak-border: rgb(249 248 245 / 0.12);
+  --ak-text: #f9f8f5;
+  --ak-muted: #cdc5b1;
+  --ak-accent: #6dc8e4;
+  --ak-chart-1: #6dc8e4;
+  --ak-chart-2: #6cda76;
+  --ak-chart-3: #e8a15a;
+  --ak-chart-4: #c4b48a;
+  --ak-chart-5: #b4a7ff;
+  --ak-up: #6cda76;
+  --ak-down: #f87274;
+  --ak-shadow: 0 18px 50px rgb(0 0 0 / 0.4);
+  --ak-heading-font: Newsreader, "Times New Roman", ui-serif, Georgia, serif;
+}
+
+.ak-root[data-ak-style="shadcn"][data-ak-theme="light"] {
+  --ak-bg: #fafafa;
+  --ak-surface: #ffffff;
+  --ak-surface-2: #f4f4f5;
+  --ak-border: #e4e4e7;
+  --ak-text: #09090b;
+  --ak-muted: #71717a;
+  --ak-accent: #18181b;
+  --ak-chart-1: oklch(0.646 0.222 41.116);
+  --ak-chart-2: oklch(0.6 0.118 184.704);
+  --ak-chart-3: oklch(0.398 0.07 227.392);
+  --ak-chart-4: oklch(0.828 0.189 84.429);
+  --ak-chart-5: oklch(0.769 0.188 70.08);
+  --ak-up: #16a34a;
+  --ak-down: #dc2626;
+  --ak-radius: 0.75rem;
+  --ak-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+.ak-root[data-ak-style="shadcn"][data-ak-theme="dark"] {
+  --ak-bg: #09090b;
+  --ak-surface: #18181b;
+  --ak-surface-2: #27272a;
+  --ak-border: #3f3f46;
+  --ak-text: #fafafa;
+  --ak-muted: #a1a1aa;
+  --ak-accent: #e4e4e7;
+  --ak-chart-1: oklch(0.488 0.243 264.376);
+  --ak-chart-2: oklch(0.696 0.17 162.48);
+  --ak-chart-3: oklch(0.769 0.188 70.08);
+  --ak-chart-4: oklch(0.627 0.265 303.9);
+  --ak-chart-5: oklch(0.645 0.246 16.439);
+  --ak-up: #4ade80;
+  --ak-down: #f87171;
+  --ak-radius: 0.75rem;
+  --ak-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
 }
 
 .ak-dashboard {
@@ -51,6 +140,8 @@
   margin: 0;
   font-size: 22px;
   letter-spacing: -0.03em;
+  font-family: var(--ak-heading-font);
+  font-weight: 500;
 }
 
 .ak-range {
@@ -211,7 +302,12 @@
 
 .ak-rank-fill {
   height: 100%;
-  background: var(--ak-accent);
+  background: var(--ak-chart-1);
+}
+
+.ak-chart-grid {
+  stroke: var(--ak-border);
+  stroke-dasharray: 3 6;
 }
 
 .ak-donut {
@@ -219,6 +315,32 @@
   grid-template-columns: 120px 1fr;
   gap: 12px;
   align-items: center;
+}
+
+.ak-donut-ring {
+  position: relative;
+}
+
+.ak-donut-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.ak-donut-center strong {
+  font-size: 16px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ak-donut-center span {
+  font-size: 10px;
+  color: var(--ak-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .ak-legend i {
@@ -231,6 +353,46 @@
 
 .ak-legend li {
   align-items: center;
+}
+
+.ak-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ak-table th {
+  text-align: left;
+  font-weight: 500;
+  padding: 7px 8px 7px 0;
+  max-width: 18ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-table td {
+  padding: 7px 0 7px 8px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ak-table-bar {
+  width: 42%;
+  text-align: left;
+}
+
+.ak-tracker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ak-tracker-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--ak-chart-1);
 }
 
 .ak-unsupported {

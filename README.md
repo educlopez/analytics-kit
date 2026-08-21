@@ -95,9 +95,60 @@ See [`examples/custom-widget.tsx`](examples/custom-widget.tsx). Then reference i
 <Dashboard widgets={[{ widget: "signups" }, { widget: "top-pages", span: 2 }]} />
 ```
 
-Built-in widgets: `visitors`, `pageviews`, `visits`, `bounce-rate`, `duration`, `timeseries`, `top-pages`, `top-referrers`, `top-countries`, `devices`, `realtime`.
+Built-in widgets: `visitors`, `pageviews`, `visits`, `events`, `bounce-rate`, `duration`, `views-per-visit`, `realtime`, `timeseries`, `top-pages`, `pages-table`, `top-referrers`, `top-countries`, `devices`, `top-browsers`, `top-os`, `top-sources`, `top-campaigns`, `top-events`, `tracker`.
 
-Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries`, `RankedList`, `Donut`, `Sparkline`, `MetricValue`.
+Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries` / `AreaChart`, `RankedList` / `BarList`, `CategoryBars` / `BarChart`, `Donut`, `Sparkline`, `BreakdownTable`, `Tracker`, `MetricValue`.
+
+Layouts: `defaultDashboard` (Vercel-friendly) and `catalogDashboard` (every widget).
+
+## Style
+
+Every widget reads CSS variables from `<AnalyticsProvider style theme tokens>`. Swap the named look, or override tokens:
+
+```tsx
+<AnalyticsProvider
+  connector={connector}
+  style="editorial" // editorial | ink | shadcn
+  theme="light"
+  tokens={{ accent: "#1d779b" }}
+>
+  <Dashboard />
+</AnalyticsProvider>
+```
+
+| Style       | Use when                                        |
+| ----------- | ----------------------------------------------- |
+| `editorial` | Paper/ink product UI (this landing)             |
+| `ink`       | Cool navy dashboard chrome                      |
+| `shadcn`    | Sit next to shadcn/ui (`--chart-1`…`--chart-5`) |
+
+The visual language is distilled from [Tremor](https://tremor.so) (KPI, bar list, tracker, donut), [shadcn charts](https://ui.shadcn.com/charts) (area/bar + tokenized palette), and Plausible-style breakdowns — then bound to the canonical query model so a connector swap does not restyle the page.
+
+## shadcn registry
+
+Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@analytics-kit/react` for data:
+
+```bash
+pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json
+```
+
+GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
+
+Items: `editorial`, `ink`, `shadcn` (themes), `provider`, `metric-card`, `area-chart`, `bar-list`, `bar-chart`, `donut-chart`, `breakdown-table`, `tracker`, `dashboard`.
+
+Namespace:
+
+```json
+{
+  "registries": {
+    "@analytics-kit": "https://educlopez.github.io/analytics-kit/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @analytics-kit/dashboard
+```
 
 ## Server vs browser
 
