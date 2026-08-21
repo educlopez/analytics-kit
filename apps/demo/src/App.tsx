@@ -27,6 +27,27 @@ export function Stats() {
   );
 }`;
 
+const PHOTOS = {
+  hero: {
+    src: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1800&q=70",
+    srcSet:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=65 800w, https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1800&q=70 1800w",
+    alt: "Sunlit studio workspace",
+  },
+  split: {
+    src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1400&q=70",
+    srcSet:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=65 800w, https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1400&q=70 1400w",
+    alt: "Analytics charts on a laptop",
+  },
+  close: {
+    src: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1800&q=70",
+    srcSet:
+      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=800&q=65 800w, https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1800&q=70 1800w",
+    alt: "Golden hour over a field",
+  },
+};
+
 const TICKER = [
   "12.4k visitors this week",
   "Posted /docs/components/siri-orb",
@@ -142,7 +163,7 @@ export function App() {
       <nav className="nav">
         <a className="brand" href="#top">
           <span className="mark" aria-hidden="true" />
-          Analytics Kit
+          <span className="wordmark">Analytics Kit</span>
         </a>
         <div className="nav-links">
           <a href="#dashboard">Demo</a>
@@ -163,35 +184,47 @@ export function App() {
 
       <header className="hero" id="top">
         <div className="hero-stage">
-          <p className="kicker">Analytics, without the vendor lock-in</p>
-          <h1>
-            One dashboard.
-            <em> Any analytics tool.</em>
-          </h1>
-          <p className="lede">
-            One query model. Five connectors. Widgets that render Vercel today and Plausible
-            tomorrow — without rewriting the page.
-          </p>
-          <div className="ticker" aria-hidden="true">
-            <div className="ticker-track">
-              {[...TICKER, ...TICKER].map((item, i) => (
-                <span key={`${item}-${i}`}>{item}</span>
-              ))}
+          <img
+            className="cover-photo"
+            src={PHOTOS.hero.src}
+            srcSet={PHOTOS.hero.srcSet}
+            sizes="100vw"
+            alt={PHOTOS.hero.alt}
+            width={1800}
+            height={1200}
+          />
+          <div className="cover-scrim" />
+          <div className="hero-copy">
+            <p className="kicker on-photo">Analytics, without the vendor lock-in</p>
+            <h1>
+              One dashboard.
+              <em> Any analytics tool.</em>
+            </h1>
+            <p className="lede on-photo">
+              One query model. Five connectors. Widgets that render Vercel today and Plausible
+              tomorrow — without rewriting the page.
+            </p>
+            <div className="ticker" aria-hidden="true">
+              <div className="ticker-track">
+                {[...TICKER, ...TICKER].map((item, i) => (
+                  <span key={`${item}-${i}`}>{item}</span>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="actions">
-            <a className="btn btn-ink" href="#dashboard">
-              See it on Vercel data
-            </a>
-            <a className="btn btn-paper" href="https://www.npmjs.com/org/analytics-kit">
-              npm @analytics-kit
-            </a>
+            <div className="actions">
+              <a className="btn btn-paper" href="#dashboard">
+                See it on Vercel data
+              </a>
+              <a className="btn btn-ghost-photo" href="https://www.npmjs.com/org/analytics-kit">
+                npm @analytics-kit
+              </a>
+            </div>
           </div>
         </div>
       </header>
 
-      <section className="band">
-        <div className="band-copy">
+      <section className="split">
+        <div className="split-copy">
           <p className="kicker">The kit</p>
           <h2>
             The dashboard
@@ -202,6 +235,20 @@ export function App() {
             dimensions. The dashboard never learns a vendor’s dialect.
           </p>
         </div>
+        <figure className="split-photo">
+          <img
+            src={PHOTOS.split.src}
+            srcSet={PHOTOS.split.srcSet}
+            sizes="(max-width: 860px) 100vw, 50vw"
+            alt={PHOTOS.split.alt}
+            width={1400}
+            height={900}
+            loading="lazy"
+          />
+        </figure>
+      </section>
+
+      <section className="band">
         <ul className="feature-grid">
           {FEATURES.map((feature) => (
             <li key={feature.title} className="paper-card">
@@ -304,7 +351,7 @@ export function App() {
             return (
               <div key={item.q} className={`faq-item ${open ? "is-open" : ""}`}>
                 <button type="button" onClick={() => setOpenFaq(open ? null : index)}>
-                  {item.q}
+                  <span>{item.q}</span>
                   <span aria-hidden="true">{open ? "–" : "+"}</span>
                 </button>
                 {open ? <p>{item.a}</p> : null}
@@ -315,13 +362,26 @@ export function App() {
       </section>
 
       <section className="close">
-        <h2>
-          Ship the dashboard.
-          <em> Keep the provider.</em>
-        </h2>
-        <a className="btn btn-paper" href="https://github.com/educlopez/analytics-kit">
-          Get started on GitHub
-        </a>
+        <img
+          className="cover-photo"
+          src={PHOTOS.close.src}
+          srcSet={PHOTOS.close.srcSet}
+          sizes="100vw"
+          alt={PHOTOS.close.alt}
+          width={1800}
+          height={1200}
+          loading="lazy"
+        />
+        <div className="cover-scrim" />
+        <div className="close-copy">
+          <h2>
+            Ship the dashboard.
+            <em> Keep the provider.</em>
+          </h2>
+          <a className="btn btn-paper" href="https://github.com/educlopez/analytics-kit">
+            Get started on GitHub
+          </a>
+        </div>
       </section>
 
       <footer className="foot">
@@ -329,6 +389,8 @@ export function App() {
           <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
           <span> · sample from </span>
           <a href="https://smoothui.dev">smoothui.dev</a>
+          <span> · photos </span>
+          <a href="https://unsplash.com">Unsplash</a>
           <span> · MIT</span>
         </p>
       </footer>
