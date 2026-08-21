@@ -1,118 +1,42 @@
 .ak-root {
-  --ak-bg: #0b0f14;
-  --ak-surface: #141b24;
-  --ak-surface-2: #1b2430;
-  --ak-border: rgba(255, 255, 255, 0.08);
-  --ak-text: #eef3f8;
-  --ak-muted: #8b9bb0;
-  --ak-accent: #6ea8ff;
-  --ak-chart-1: #6ea8ff;
-  --ak-chart-2: #7ee0c6;
-  --ak-chart-3: #f5c16c;
-  --ak-chart-4: #b4a7ff;
-  --ak-chart-5: #f07178;
+  --ak-bg: var(--background, #0b0f14);
+  --ak-surface: var(--card, #141b24);
+  --ak-surface-2: var(--muted, #1b2430);
+  --ak-border: var(--border, rgba(255, 255, 255, 0.08));
+  --ak-text: var(--foreground, #eef3f8);
+  --ak-muted: var(--muted-foreground, #8b9bb0);
+  --ak-accent: var(--primary, #6ea8ff);
+  --ak-chart-1: var(--chart-1, var(--ak-accent));
+  --ak-chart-2: var(--chart-2, #7ee0c6);
+  --ak-chart-3: var(--chart-3, #f5c16c);
+  --ak-chart-4: var(--chart-4, #b4a7ff);
+  --ak-chart-5: var(--chart-5, #f07178);
   --ak-up: #3dd68c;
   --ak-down: #ff6b7a;
-  --ak-radius: 18px;
+  --ak-radius: var(--radius, 18px);
   --ak-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-  --ak-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --ak-heading-font: var(--ak-font);
+  --ak-font: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  --ak-heading-font: var(--font-heading, var(--ak-font));
   color: var(--ak-text);
   font-family: var(--ak-font);
 }
 
 .ak-root[data-ak-theme="light"] {
-  --ak-bg: #f5f7fb;
-  --ak-surface: #ffffff;
-  --ak-surface-2: #eef2f7;
-  --ak-border: rgba(15, 23, 42, 0.1);
-  --ak-text: #0f172a;
-  --ak-muted: #64748b;
-  --ak-accent: #2563eb;
-  --ak-chart-1: #2563eb;
-  --ak-chart-2: #0f9f6e;
-  --ak-chart-3: #f59e0b;
-  --ak-chart-4: #7c3aed;
-  --ak-chart-5: #ef4444;
+  --ak-bg: var(--background, #f5f7fb);
+  --ak-surface: var(--card, #ffffff);
+  --ak-surface-2: var(--muted, #eef2f7);
+  --ak-border: var(--border, rgba(15, 23, 42, 0.1));
+  --ak-text: var(--foreground, #0f172a);
+  --ak-muted: var(--muted-foreground, #64748b);
+  --ak-accent: var(--primary, #2563eb);
+  --ak-chart-1: var(--chart-1, #2563eb);
+  --ak-chart-2: var(--chart-2, #0f9f6e);
+  --ak-chart-3: var(--chart-3, #f59e0b);
+  --ak-chart-4: var(--chart-4, #7c3aed);
+  --ak-chart-5: var(--chart-5, #ef4444);
   --ak-up: #16a34a;
   --ak-down: #ef4444;
   --ak-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-}
-
-.ak-root[data-ak-style="editorial"][data-ak-theme="light"] {
-  --ak-bg: #f9f8f5;
-  --ak-surface: #ffffff;
-  --ak-surface-2: #f3f0e9;
-  --ak-border: #e3ddcf;
-  --ak-text: #1a1613;
-  --ak-muted: #605852;
-  --ak-accent: #1d779b;
-  --ak-chart-1: #1d779b;
-  --ak-chart-2: #297c3b;
-  --ak-chart-3: #c45c26;
-  --ak-chart-4: #7c6a4a;
-  --ak-chart-5: #5b4a8a;
-  --ak-up: #297c3b;
-  --ak-down: #c23b3b;
-  --ak-shadow: 0 18px 50px rgb(18 12 8 / 0.08);
-  --ak-heading-font: Newsreader, "Times New Roman", ui-serif, Georgia, serif;
-}
-
-.ak-root[data-ak-style="editorial"][data-ak-theme="dark"] {
-  --ak-bg: #120c08;
-  --ak-surface: #241e1a;
-  --ak-surface-2: #342e2b;
-  --ak-border: rgb(249 248 245 / 0.12);
-  --ak-text: #f9f8f5;
-  --ak-muted: #cdc5b1;
-  --ak-accent: #6dc8e4;
-  --ak-chart-1: #6dc8e4;
-  --ak-chart-2: #6cda76;
-  --ak-chart-3: #e8a15a;
-  --ak-chart-4: #c4b48a;
-  --ak-chart-5: #b4a7ff;
-  --ak-up: #6cda76;
-  --ak-down: #f87274;
-  --ak-shadow: 0 18px 50px rgb(0 0 0 / 0.4);
-  --ak-heading-font: Newsreader, "Times New Roman", ui-serif, Georgia, serif;
-}
-
-.ak-root[data-ak-style="shadcn"][data-ak-theme="light"] {
-  --ak-bg: #fafafa;
-  --ak-surface: #ffffff;
-  --ak-surface-2: #f4f4f5;
-  --ak-border: #e4e4e7;
-  --ak-text: #09090b;
-  --ak-muted: #71717a;
-  --ak-accent: #18181b;
-  --ak-chart-1: oklch(0.646 0.222 41.116);
-  --ak-chart-2: oklch(0.6 0.118 184.704);
-  --ak-chart-3: oklch(0.398 0.07 227.392);
-  --ak-chart-4: oklch(0.828 0.189 84.429);
-  --ak-chart-5: oklch(0.769 0.188 70.08);
-  --ak-up: #16a34a;
-  --ak-down: #dc2626;
-  --ak-radius: 0.75rem;
-  --ak-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
-}
-
-.ak-root[data-ak-style="shadcn"][data-ak-theme="dark"] {
-  --ak-bg: #09090b;
-  --ak-surface: #18181b;
-  --ak-surface-2: #27272a;
-  --ak-border: #3f3f46;
-  --ak-text: #fafafa;
-  --ak-muted: #a1a1aa;
-  --ak-accent: #e4e4e7;
-  --ak-chart-1: oklch(0.488 0.243 264.376);
-  --ak-chart-2: oklch(0.696 0.17 162.48);
-  --ak-chart-3: oklch(0.769 0.188 70.08);
-  --ak-chart-4: oklch(0.627 0.265 303.9);
-  --ak-chart-5: oklch(0.645 0.246 16.439);
-  --ak-up: #4ade80;
-  --ak-down: #f87171;
-  --ak-radius: 0.75rem;
-  --ak-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
 }
 
 .ak-dashboard {
@@ -216,6 +140,10 @@
   font-weight: 650;
   letter-spacing: -0.04em;
   line-height: 1;
+}
+
+.ak-metric-hero .ak-metric-value {
+  font-size: clamp(40px, 8vw, 64px);
 }
 
 .ak-metric {
@@ -388,11 +316,26 @@
   gap: 4px;
 }
 
-.ak-tracker-cell {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  background: var(--ak-chart-1);
+.ak-rechart {
+  width: 100%;
+  height: 220px;
+}
+
+.ak-rechart .recharts-cartesian-axis-tick-value {
+  fill: var(--ak-muted);
+  font-size: 11px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .ak-unsupported {

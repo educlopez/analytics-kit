@@ -14,8 +14,10 @@
     "@analytics-kit/connector-vercel": "workspace:*",
     "@analytics-kit/core": "workspace:*",
     "@analytics-kit/react": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",

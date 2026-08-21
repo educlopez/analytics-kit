@@ -5,7 +5,7 @@ import { BreakdownTable, CategoryBars, Donut, RankedList, Tracker } from "../pri
 import { useQuery } from "../hooks.js";
 import { registerWidget } from "../registry.js";
 
-type Variant = "list" | "bars" | "donut" | "table";
+type Variant = "list" | "bars" | "donut" | "table" | "compact";
 
 export function BreakdownWidget({
   dimension,
@@ -38,7 +38,8 @@ export function BreakdownWidget({
       {variant === "bars" ? <CategoryBars rows={rows} metric={metric} /> : null}
       {variant === "donut" ? <Donut rows={rows} metric={metric} /> : null}
       {variant === "table" ? <BreakdownTable rows={rows} metric={metric} /> : null}
-      {variant === "list" ? <RankedList rows={rows} metric={metric} /> : null}
+      {variant === "list" ? <RankedList rows={rows} metric={metric} variant="bar" /> : null}
+      {variant === "compact" ? <RankedList rows={rows} metric={metric} variant="compact" /> : null}
     </WidgetFrame>
   );
 }

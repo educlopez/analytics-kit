@@ -7,29 +7,24 @@ pnpm add @analytics-kit/react
 ```
 
 ```tsx
-import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
+import { AnalyticsProvider, Dashboard, AreaChart } from "@analytics-kit/react";
 import "@analytics-kit/react/styles.css";
 
-<AnalyticsProvider connector={connector} style="editorial" theme="light">
+<AnalyticsProvider connector={connector} theme="light">
   <Dashboard />
+  <AreaChart data={points} variant="gradient" />
 </AnalyticsProvider>;
 ```
 
-## Style
+Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs step vs dots). Colors come from `--chart-1`…`--chart-5` on the host page.
 
-`style` swaps the look of every widget without rewriting them:
-
-| `style`     | What it is                                 |
-| ----------- | ------------------------------------------ |
-| `editorial` | Stone paper, serif headings (the landing)  |
-| `ink`       | Cool navy surfaces (original dashboard)    |
-| `shadcn`    | Zinc + `chart-1…5`, sits next to shadcn/ui |
-
-Override any token:
-
-```tsx
-<AnalyticsProvider style="editorial" tokens={{ accent: "#111111", chart1: "#111111" }}>
-```
+| Component    | Variants                                                 |
+| ------------ | -------------------------------------------------------- |
+| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark` |
+| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`           |
+| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`           |
+| `PieChart`   | `donut`, `pie`, `legend`                                 |
+| `MetricCard` | `default`, `spark`, `compact`, `hero`                    |
 
 ## Widgets
 
@@ -39,12 +34,8 @@ Override any token:
 
 ## shadcn registry
 
-Copy a recipe into your app, keep querying through the npm runtime:
-
 ```bash
-pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json
+pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/area-chart.json
 ```
 
-Or from GitHub: `educlopez/analytics-kit/dashboard`.
-
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for connectors and publishing.
+Part of [Analytics Kit](https://github.com/educlopez/analytics-kit).

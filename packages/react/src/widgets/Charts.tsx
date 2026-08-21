@@ -4,17 +4,20 @@ import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { Donut, RankedList, Timeseries } from "../primitives/Charts.js";
 import { useQuery, useRealtime } from "../hooks.js";
 import { registerWidget } from "../registry.js";
+import type { AreaChartVariant } from "../charts/area-chart.js";
 
 export function TimeseriesChart({
   metric = "visitors",
   title,
   range,
   span = 3,
+  variant = "gradient",
 }: {
   metric?: MetricId;
   title?: string;
   range?: DateRangeInput;
   span?: number;
+  variant?: AreaChartVariant;
 }) {
   const { data, status, missing, error } = useQuery({
     metrics: [metric],
@@ -29,7 +32,7 @@ export function TimeseriesChart({
       error={error}
       span={span}
     >
-      <Timeseries series={data?.series ?? []} metric={metric} />
+      <Timeseries series={data?.series ?? []} metric={metric} variant={variant} />
     </WidgetFrame>
   );
 }

@@ -1,16 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { createMockConnector, createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
+import { useEffect, useState } from "react";
+import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
 import {
-  ANALYTICS_STYLE_META,
   AnalyticsProvider,
-  catalogDashboard,
   Dashboard,
   defaultDashboard,
-  type AnalyticsStyleName,
   type AnalyticsTheme,
 } from "@analytics-kit/react";
 import type { AnalyticsConnector } from "@analytics-kit/core";
+import { ChartGallery } from "./ChartGallery";
 
 const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
 
@@ -128,8 +126,8 @@ const FAQS = [
     a: "Yes. defineConnector and defineWidget are the extension points. See examples/ in the repo.",
   },
   {
-    q: "Can I change how the widgets look?",
-    a: 'Yes. Pass style="editorial" | "ink" | "shadcn" on AnalyticsProvider, and tokens={{ accent: "#111" }} to override CSS variables. Or install a recipe from the shadcn registry and edit the file.',
+    q: "How do I change how a chart looks?",
+    a: "Pass variant on the chart — gradient, step, dots, horizontal, donut, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
   },
 ];
 
@@ -155,13 +153,8 @@ function createDemoConnector(): { connector: AnalyticsConnector; live: boolean }
 export function App() {
   const [{ connector, live }] = useState(createDemoConnector);
   const [theme, setTheme] = useState<AnalyticsTheme>("light");
-  const [kitStyle, setKitStyle] = useState<AnalyticsStyleName>("editorial");
   const [copied, setCopied] = useState<"install" | "snippet" | "registry" | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const catalogConnector = useMemo(
-    () => createMockConnector({ profile: "full", siteName: "Component catalog", seed: 11 }),
-    [],
-  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -285,7 +278,7 @@ export function App() {
           </span>
         </div>
         <div className="dashboard-frame">
-          <AnalyticsProvider connector={connector} theme={theme} style={kitStyle} range="7d">
+          <AnalyticsProvider connector={connector} theme={theme} range="7d">
             <Dashboard widgets={defaultDashboard} showRange columns={4} />
           </AnalyticsProvider>
         </div>
@@ -294,43 +287,19 @@ export function App() {
       <section className="analytics" id="kit">
         <div className="analytics-head">
           <div>
-            <p className="kicker">Catalog</p>
+            <p className="kicker">Charts</p>
             <h2>
-              Every widget,
-              <em> three looks.</em>
+              Same data.
+              <em> Different shapes.</em>
             </h2>
             <p className="lede compact">
-              Built after Tremor, shadcn charts, and Origin-style dashboards — then bound to one
-              query model. Change <code>style</code> on the provider; the widgets stay the same.
+              Area, line, bar, and pie — each with visual variants, like ReUI, shadcnblocks, bklit,
+              and Intent UI. Colors inherit from your CSS variables; pick a <code>variant</code> for
+              the drawing.
             </p>
           </div>
-          <div className="style-switch" role="group" aria-label="Component style">
-            {(Object.keys(ANALYTICS_STYLE_META) as AnalyticsStyleName[]).map((name) => (
-              <button
-                key={name}
-                type="button"
-                className={kitStyle === name ? "is-active" : ""}
-                onClick={() => setKitStyle(name)}
-              >
-                {ANALYTICS_STYLE_META[name].title}
-              </button>
-            ))}
-          </div>
         </div>
-        <div className="dashboard-frame">
-          <AnalyticsProvider
-            connector={catalogConnector}
-            theme={theme}
-            style={kitStyle}
-            range="30d"
-          >
-            <Dashboard widgets={catalogDashboard} showRange columns={4} />
-          </AnalyticsProvider>
-        </div>
-        <p className="lede compact kit-note">
-          {ANALYTICS_STYLE_META[kitStyle].description}{" "}
-          <code>{`<AnalyticsProvider style="${kitStyle}" theme="${theme}">`}</code>
-        </p>
+        <ChartGallery theme={theme} />
       </section>
 
       <section className="snippet-block" id="registry">
