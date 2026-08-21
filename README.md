@@ -129,14 +129,14 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
+The demo (`apps/demo`) is a **SmoothUI landing** (`smoothui.dev`) with Analytics Kit widgets on top. It uses real SmoothUI routes and live GitHub stars. Vercel Web Analytics is used when `VITE_VERCEL_TOKEN` and `VITE_VERCEL_PROJECT_ID` are set; otherwise it falls back to a Vercel-profile mock shaped like SmoothUI traffic.
+
 ```bash
 pnpm install
 pnpm test
 pnpm build
 pnpm dev
 ```
-
-The demo (`apps/demo`) runs the dashboard against `@analytics-kit/connector-mock`. The provider switcher only changes the **capability profile**, so you can see how widgets degrade on Vercel vs Plausible without API keys.
 
 ## Development
 

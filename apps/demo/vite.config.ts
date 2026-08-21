@@ -25,6 +25,10 @@ export default defineConfig({
         find: "@analytics-kit/connector-mock",
         replacement: path.resolve(root, "../../packages/connector-mock/src/index.ts"),
       },
+      {
+        find: "@analytics-kit/connector-vercel",
+        replacement: path.resolve(root, "../../packages/connector-vercel/src/index.ts"),
+      },
     ],
   },
 });
