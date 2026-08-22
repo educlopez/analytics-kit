@@ -1,0 +1,120 @@
+# Analytics Kit
+
+Provider-agnostic analytics widgets for React. One query model, five connectors, the same dashboard.
+
+Site: https://analytics-kit-demo.vercel.app
+Repo: https://github.com/educlopez/analytics-kit
+Docs: https://analytics-kit-demo.vercel.app/docs
+Components: https://analytics-kit-demo.vercel.app/components
+
+## Install
+
+```bash
+pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel
+```
+
+Also: `@analytics-kit/connector-plausible`, `connector-ga4`, `connector-umami`, `connector-posthog`, `connector-mock`. Import `@analytics-kit/react/styles.css` once.
+
+Keep vendor tokens on the server. The browser talks to your `/api/analytics` via `createHttpConnector`.
+
+## Provider
+
+```tsx
+import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
+import { createVercelConnector } from "@analytics-kit/connector-vercel";
+import "@analytics-kit/react/styles.css";
+
+const connector = createVercelConnector({
+  token: process.env.VERCEL_TOKEN!,
+  projectId: process.env.VERCEL_PROJECT_ID!,
+});
+
+export function Stats() {
+  return (
+    <AnalyticsProvider connector={connector} theme="light" range="7d">
+      <Dashboard />
+    </AnalyticsProvider>
+  );
+}
+```
+
+Server route: `createRouteHandlers({ connector })` from `@analytics-kit/next`.
+
+## Query model
+
+Widgets never send vendor field names. They send a canonical `AnalyticsQuery`:
+
+```ts
+await connector.query({
+  range: "7d",
+  metrics: ["visitors", "pageviews"],
+  dimensions: ["path"],
+  granularity: "day",
+  limit: 8,
+  includePrevious: true,
+});
+```
+
+Result: `totals`, `series`, `breakdown`, optional `previous.totals`. Hooks: `useQuery`, `useRealtime`, `useCapabilities`. If a connector cannot answer a metric, the widget renders an unsupported state.
+
+## Charts
+
+`variant` is the drawing, not a color theme. Colors inherit `--chart-1`…`--chart-5` from the host.
+
+- AreaChart — gradient, linear, natural, step, dots, spark, dither, glow, hatched, bars, solid
+- LineChart — monotone, linear, step, dashed, dots, dither, glow, ping, rainbow, values
+- BarChart — vertical, horizontal, rounded, hatched, dither, glow, gradient, duotone
+- PieChart — donut, pie, legend, dither, rounded, radial, glow
+- FunnelChart — tape, steps, vertical
+- RadarChart — stroke, fill, glow, dither
+- ComposedChart — combo, highlight, overlay
+- GaugeChart — arc, ring, tick
+- ScatterChart — dots, bubble, glow
+- SankeyChart — flow, gradient, dither (nodes + links)
+- CandlestickChart — ohlc, hollow, wick
+- ChoroplethChart — tiles, heat, dither (region tiles, not a geoJSON map)
+- LiveLineChart — stream, glow, dashed
+- RingChart — stack, nested, track
+- HeatmapChart — calendar, matrix, dither
+- SunburstChart — nest, burst
+- ProfitLossChart — fill, stroke, bars
+- MetricCard — default, spark, compact, hero
+- RankedList — bar, compact, table
+
+Shared chart props: `data`, `dataKey`, `labelKey`, `variant`, `config`, `className`.
+
+## Widgets
+
+`Dashboard` lays out registered widgets. `defaultDashboard` is the Vercel-friendly subset. `catalogDashboard` is every built-in.
+
+Ids: visitors, pageviews, visits, events, bounce-rate, duration, views-per-visit, realtime, timeseries, top-pages, top-referrers, top-countries, devices, top-browsers, top-os, top-sources, top-campaigns, top-events, pages-table, tracker.
+
+## Colors
+
+No kit theme pack. Set host CSS variables:
+
+```css
+:root {
+  --chart-1: #1d779b;
+  --chart-2: #297c3b;
+  --chart-3: #c45c26;
+  --chart-4: #7c6a4a;
+  --chart-5: #5b4a8a;
+  --card: #fff;
+  --foreground: #1a1613;
+  --primary: #1d779b;
+  --border: #e3ddcf;
+}
+```
+
+## shadcn registry
+
+```bash
+pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/dashboard.json
+```
+
+Every catalog chart plus `metric-card` and `dashboard`. GitHub: `educlopez/analytics-kit/dashboard`.
+
+## Extend
+
+`defineConnector` and `defineWidget` are the extension points. See `examples/custom-connector.ts` and `examples/custom-widget.tsx`.

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CodeBlock } from "../site/CodeBlock";
 import { PropsTable } from "../site/PropsTable";
 import { useCopy } from "../site/useCopy";
 import { useRegistryCommand } from "../site/useRegistryCommand";
@@ -67,6 +68,20 @@ const connector = createVercelConnector({
 
 export const { GET, POST } = createRouteHandlers({ connector });`;
 
+const COLORS = `:root {
+  --chart-1: #1d779b;
+  --chart-2: #297c3b;
+  --chart-3: #c45c26;
+  --chart-4: #7c6a4a;
+  --chart-5: #5b4a8a;
+  --card: #fff;
+  --foreground: #1a1613;
+  --primary: #1d779b;
+  --border: #e3ddcf;
+  --muted: #f3f0e9;
+  --muted-foreground: #605852;
+}`;
+
 export function DocsPage() {
   const { copied, copy } = useCopy();
   const registry = useRegistryCommand("dashboard");
@@ -122,9 +137,7 @@ export function DocsPage() {
               One provider around the tree. Widgets and hooks read the connector, range, and theme
               from context. <code>theme</code> is light or dark — not a color palette.
             </p>
-            <pre className="snippet">
-              <code>{PROVIDER}</code>
-            </pre>
+            <CodeBlock code={PROVIDER} lang="tsx" title="provider.tsx" />
             <PropsTable
               rows={[
                 {
@@ -209,9 +222,7 @@ export function DocsPage() {
               Widgets never send vendor field names. They send a canonical{" "}
               <code>AnalyticsQuery</code>. The connector maps it.
             </p>
-            <pre className="snippet">
-              <code>{QUERY}</code>
-            </pre>
+            <CodeBlock code={QUERY} lang="ts" title="query.ts" />
             <PropsTable
               rows={[
                 {
@@ -269,9 +280,7 @@ export function DocsPage() {
               and Amicro — funnel through sunburst — still as a <code>variant</code>, not a palette.
               Colors come from CSS variables on the host page.
             </p>
-            <pre className="snippet">
-              <code>{CHART}</code>
-            </pre>
+            <CodeBlock code={CHART} lang="tsx" title="chart.tsx" />
             <PropsTable
               rows={[
                 {
@@ -442,21 +451,7 @@ export function DocsPage() {
               There is no kit “theme pack.” Set the same variables you would on a shadcn page. The
               kit reads them through <code>--ak-chart-*</code> fallbacks.
             </p>
-            <pre className="snippet">
-              <code>{`:root {
-  --chart-1: #1d779b;
-  --chart-2: #297c3b;
-  --chart-3: #c45c26;
-  --chart-4: #7c6a4a;
-  --chart-5: #5b4a8a;
-  --card: #fff;
-  --foreground: #1a1613;
-  --primary: #1d779b;
-  --border: #e3ddcf;
-  --muted: #f3f0e9;
-  --muted-foreground: #605852;
-}`}</code>
-            </pre>
+            <CodeBlock code={COLORS} lang="css" title="tokens.css" />
             <p className="lede compact">
               Per-series override: pass <code>config</code> on Area, Line, and Bar.{" "}
               <code>config.value.color</code> can be any CSS color, including{" "}
@@ -471,9 +466,7 @@ export function DocsPage() {
               Do not put vendor tokens in the browser bundle. <code>@analytics-kit/next</code>{" "}
               proxies the connector. The client uses <code>createHttpConnector</code>.
             </p>
-            <pre className="snippet">
-              <code>{HANDLER}</code>
-            </pre>
+            <CodeBlock code={HANDLER} lang="ts" title="route.ts" />
             <p className="lede compact">
               Browser: <code>createHttpConnector({`{ endpoint: "/api/analytics" }`})</code>. This
               site does that in <code>app/api/analytics/route.ts</code>. Also{" "}

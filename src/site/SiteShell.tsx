@@ -18,6 +18,20 @@ export function useSite() {
   return ctx;
 }
 
+function readTheme(): AnalyticsTheme {
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function applyTheme(theme: AnalyticsTheme) {
+  document.documentElement.dataset.theme = theme;
+  try {
+    localStorage.setItem("ak-theme", theme);
+  } catch {
+    /* private mode */
+  }
+}
+
 function NavItem({
   href,
   className,
@@ -41,14 +55,22 @@ function NavItem({
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<AnalyticsTheme>("light");
+  const [theme, setThemeState] = useState<AnalyticsTheme>("light");
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
+    setThemeState(readTheme());
+  }, []);
+
+  function setTheme(next: AnalyticsTheme) {
+    setThemeState(next);
+    applyTheme(next);
+  }
 
   return (
     <SiteContext.Provider value={{ theme, setTheme }}>
+      <a className="skip" href="#content">
+        Skip to content
+      </a>
       <div className="shell">
         <nav className="nav">
           <Link className="brand" href="/">
@@ -76,12 +98,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </Link>
           </div>
         </nav>
-        {children}
+        <main id="content">{children}</main>
         <footer className="foot">
           <p>
             <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
             <span> · sample from </span>
             <a href="https://smoothui.dev">smoothui.dev</a>
+            <span> · </span>
+            <a href="/llms.txt">llms.txt</a>
             <span> · photos </span>
             <a href="https://unsplash.com">Unsplash</a>
             <span> · MIT</span>

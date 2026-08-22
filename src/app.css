@@ -9,9 +9,9 @@
   --stone-700: #cdc5b1;
   --ink: #1a1613;
   --ink-deep: #070503;
-  --ink-soft: #564b43;
-  --muted: #605852;
-  --blue: #1d779b;
+  --ink-soft: #4a4039;
+  --muted: #4f4843;
+  --blue: #155e7c;
   --blue-bright: #42b5dc;
   --green: #297c3b;
   --paper: #fff;
@@ -42,10 +42,12 @@ html[data-theme="dark"] {
   --text: #f9f8f5;
   --ink: #f9f8f5;
   --ink-deep: #070503;
-  --ink-soft: #cdc5b1;
-  --muted: #b8ad94;
+  --ink-soft: #d4cbb8;
+  --muted: #c9bfa8;
   --on-ink: #f9f8f5;
   --shadow: 0 18px 50px rgb(0 0 0 / 0.4);
+  --blue: #6dc8e4;
+  --green: #6cda76;
   --chart-1: #6dc8e4;
   --chart-2: #6cda76;
   --chart-3: #e8a15a;
@@ -74,6 +76,35 @@ body {
   font-family: var(--body);
   background: var(--bg);
   color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 40;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--ink-deep);
+  color: var(--on-ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transform: translateY(-140%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+html[data-theme="dark"] .skip {
+  background: #f9f8f5;
+  color: #070503;
 }
 
 a {
@@ -214,9 +245,9 @@ html[data-theme="dark"] .btn-ink {
 }
 
 .btn-ghost-photo {
-  background: rgb(255 255 255 / 0.12);
+  background: rgb(7 5 3 / 0.42);
   color: #f9f8f5;
-  border: 1px solid rgb(255 255 255 / 0.28);
+  border: 1px solid rgb(249 248 245 / 0.42);
 }
 
 .hero {
@@ -255,16 +286,22 @@ html[data-theme="dark"] .btn-ink {
   z-index: -1;
   background: linear-gradient(
     180deg,
-    rgb(7 5 3 / 0.06) 0%,
-    rgb(7 5 3 / 0.14) 42%,
-    rgb(7 5 3 / 0.58) 100%
+    rgb(7 5 3 / 0.18) 0%,
+    rgb(7 5 3 / 0.28) 42%,
+    rgb(7 5 3 / 0.68) 100%
   );
+}
+
+.cover-fallback {
+  background:
+    radial-gradient(120% 80% at 20% 80%, rgb(29 119 155 / 0.35), transparent 52%),
+    linear-gradient(180deg, #3a2c22 0%, #120c08 100%);
 }
 
 .hero-stage .cover-scrim {
   background:
-    linear-gradient(180deg, rgb(7 5 3 / 0.04) 0%, rgb(7 5 3 / 0.16) 48%, rgb(7 5 3 / 0.62) 100%),
-    linear-gradient(90deg, rgb(7 5 3 / 0.28), transparent 52%);
+    linear-gradient(180deg, rgb(7 5 3 / 0.22) 0%, rgb(7 5 3 / 0.32) 46%, rgb(7 5 3 / 0.74) 100%),
+    linear-gradient(90deg, rgb(7 5 3 / 0.42), transparent 58%);
 }
 
 .hero-copy {
@@ -283,7 +320,8 @@ html[data-theme="dark"] .btn-ink {
 
 .kicker.on-photo,
 .lede.on-photo {
-  color: rgb(249 248 245 / 0.86);
+  color: #f9f8f5;
+  text-shadow: 0 1px 14px rgb(7 5 3 / 0.55);
 }
 
 h1,
@@ -429,8 +467,8 @@ h3 {
 
 .vista-scrim {
   background:
-    linear-gradient(180deg, rgb(7 5 3 / 0.02) 0%, rgb(7 5 3 / 0.12) 48%, rgb(7 5 3 / 0.62) 100%),
-    linear-gradient(90deg, rgb(7 5 3 / 0.32), transparent 58%);
+    linear-gradient(180deg, rgb(7 5 3 / 0.16) 0%, rgb(7 5 3 / 0.28) 48%, rgb(7 5 3 / 0.7) 100%),
+    linear-gradient(90deg, rgb(7 5 3 / 0.42), transparent 58%);
 }
 
 .vista-copy {
@@ -789,6 +827,7 @@ html[data-theme="dark"] .style-switch button.is-active {
 
 .stat-copy {
   position: relative;
+  text-shadow: 0 2px 18px rgb(7 5 3 / 0.5);
 }
 
 .stat-figure {
@@ -836,6 +875,68 @@ html[data-theme="dark"] .style-switch button.is-active {
 .snippet code {
   display: block;
   min-width: max-content;
+}
+
+.code-frame {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #070503;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.code-frame-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px 8px 16px;
+  border-bottom: 1px solid rgb(249 248 245 / 0.1);
+  color: #c9bfa8;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.code-frame-bar button {
+  appearance: none;
+  border: 1px solid rgb(249 248 245 / 0.16);
+  background: rgb(249 248 245 / 0.06);
+  color: #f3f0e9;
+  border-radius: 999px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.code-frame-bar button:hover {
+  background: rgb(249 248 245 / 0.12);
+}
+
+.code-frame-body,
+.code-frame .snippet {
+  border: 0;
+  border-radius: 0;
+}
+
+.code-frame-body pre {
+  margin: 0;
+  overflow-x: auto;
+  padding: 16px 18px 18px;
+  background: #070503 !important;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.65;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-frame-body code {
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .install {
@@ -925,7 +1026,7 @@ html[data-theme="dark"] .style-switch button.is-active {
 }
 
 .close-scrim {
-  background: linear-gradient(180deg, rgb(7 5 3 / 0.08) 0%, rgb(7 5 3 / 0.46) 100%);
+  background: linear-gradient(180deg, rgb(7 5 3 / 0.24) 0%, rgb(7 5 3 / 0.62) 100%);
 }
 
 .close-copy {
