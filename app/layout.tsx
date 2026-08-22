@@ -36,11 +36,27 @@ export const metadata: Metadata = {
   },
   description:
     "Provider-agnostic analytics widgets. Connect Vercel, Plausible, GA4, Umami, or PostHog and keep the same dashboard.",
+  alternates: {
+    types: {
+      "text/plain": "/llms.txt",
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${newsreader.variable} ${dmSans.variable} ${dmMono.variable}`}>
+    <html
+      lang="en"
+      className={`${newsreader.variable} ${dmSans.variable} ${dmMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("ak-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         <SiteShell>{children}</SiteShell>
       </body>

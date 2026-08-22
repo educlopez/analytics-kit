@@ -1,0 +1,579 @@
+import type { PropRow } from "../site/PropsTable";
+
+const CHART_SHARED: PropRow[] = [
+  {
+    name: "data",
+    type: "ChartDatum[]",
+    notes: "Rows to draw. Each object is a point or category.",
+  },
+  {
+    name: "dataKey",
+    type: "string",
+    default: '"value"',
+    notes: "Numeric field on each row.",
+  },
+  {
+    name: "config",
+    type: "ChartConfig",
+    notes: "Map of dataKey → { label?, color? }. Colors fall back to --chart-1.",
+  },
+  {
+    name: "className",
+    type: "string",
+    notes: "Chart container. Default height is 220px; spark looks better around 88px.",
+  },
+];
+
+export const PROP_DOCS: Record<string, PropRow[]> = {
+  "area-chart": [
+    ...CHART_SHARED,
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field. Usually an ISO date.",
+    },
+    {
+      name: "variant",
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid"',
+      default: '"gradient"',
+      notes:
+        "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
+    },
+  ],
+  "line-chart": [
+    ...CHART_SHARED,
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field. Usually an ISO date.",
+    },
+    {
+      name: "variant",
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values"',
+      default: '"monotone"',
+      notes:
+        "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
+    },
+  ],
+  "bar-chart": [
+    ...CHART_SHARED,
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Category field on each row.",
+    },
+    {
+      name: "variant",
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone"',
+      default: '"vertical"',
+      notes:
+        "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
+    },
+  ],
+  "pie-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Category rows. One slice per row.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field used for slice size.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Slice name. Also used for the legend.",
+    },
+    {
+      name: "variant",
+      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow"',
+      default: '"donut"',
+      notes: "Ring vs full pie, rounded gaps, radial bars, or a bloom on the slices.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "funnel-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Stages in order. The first value is 100%.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field on each stage.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Stage name.",
+    },
+    {
+      name: "variant",
+      type: '"tape" | "steps" | "vertical"',
+      default: '"tape"',
+      notes: "Tapering ribbon, discrete blocks, or stacked drop-off bars.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "radar-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "One row per axis.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field plotted on each axis.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Axis name.",
+    },
+    {
+      name: "variant",
+      type: '"stroke" | "fill" | "glow" | "dither"',
+      default: '"fill"',
+      notes: "Outline only, translucent fill, bloom, or a stipple fill.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Map of dataKey → { label?, color? }.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "composed-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Shared category rows. Needs both barKey and lineKey.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "barKey",
+      type: "string",
+      default: '"bar"',
+      notes: "Numeric field for the bars (or the dashed overlay line).",
+    },
+    {
+      name: "lineKey",
+      type: "string",
+      default: '"line"',
+      notes: "Numeric field for the line or highlight area.",
+    },
+    {
+      name: "variant",
+      type: '"combo" | "highlight" | "overlay"',
+      default: '"combo"',
+      notes: "Bars + line, muted bars + glow, or dashed line over a glowing area.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Colors and labels for barKey and lineKey.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "scatter-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Points with numeric x and y. Optional z for bubble size.",
+    },
+    {
+      name: "xKey",
+      type: "string",
+      default: '"x"',
+      notes: "Horizontal numeric field.",
+    },
+    {
+      name: "yKey",
+      type: "string",
+      default: '"y"',
+      notes: "Vertical numeric field.",
+    },
+    {
+      name: "zKey",
+      type: "string",
+      default: '"z"',
+      notes: "Used only by the bubble variant.",
+    },
+    {
+      name: "variant",
+      type: '"dots" | "bubble" | "glow"',
+      default: '"dots"',
+      notes: "Equal dots, sized bubbles, or a bloom on each point.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Color and label for yKey.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "sankey-chart": [
+    {
+      name: "nodes",
+      type: "SankeyNode[]",
+      notes: "{ name }[]. Ignored when data is passed.",
+    },
+    {
+      name: "links",
+      type: "SankeyLink[]",
+      notes: "{ source, target, value }[] using node indexes.",
+    },
+    {
+      name: "data",
+      type: "{ nodes, links }",
+      notes: "Alternate payload. Wins over nodes and links.",
+    },
+    {
+      name: "variant",
+      type: '"flow" | "gradient" | "dither"',
+      default: '"flow"',
+      notes: "Link curvature and opacity. The drawing, not a palette.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "candlestick-chart": [
+    {
+      name: "data",
+      type: "CandleDatum[]",
+      notes: "{ date, open, high, low, close }[] in order.",
+    },
+    {
+      name: "variant",
+      type: '"ohlc" | "hollow" | "wick"',
+      default: '"ohlc"',
+      notes: "Solid bodies, hollow up-days, or a thin wick.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "choropleth-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Regions. Pass code for a two-letter tile label.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field used for intensity.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Region name. code falls back to the first two letters.",
+    },
+    {
+      name: "variant",
+      type: '"tiles" | "heat" | "dither"',
+      default: '"tiles"',
+      notes: "Labeled tiles, a tighter heat field, or a wash. Not a geoJSON map.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "live-line-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Full series. The chart windows the last N points and steps forward.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "windowSize",
+      type: "number",
+      default: "14",
+      notes: "How many points stay on screen.",
+    },
+    {
+      name: "intervalMs",
+      type: "number",
+      default: "700",
+      notes: "Advance interval. No-op when data.length ≤ windowSize.",
+    },
+    {
+      name: "variant",
+      type: '"stream" | "glow" | "dashed"',
+      default: '"stream"',
+      notes: "Ping on the last point, a bloom, or a dashed pulse.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "ring-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Up to five categories. One ring each when nested.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Legend name.",
+    },
+    {
+      name: "variant",
+      type: '"stack" | "nested" | "track"',
+      default: '"stack"',
+      notes: "Shared ring, concentric rings, or a thick track.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "heatmap-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "One cell per row. Dates read well as a week grid.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field used for intensity.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "Cell title.",
+    },
+    {
+      name: "variant",
+      type: '"calendar" | "matrix" | "dither"',
+      default: '"calendar"',
+      notes: "Seven-column week, a 10-column matrix, or a wash.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "sunburst-chart": [
+    {
+      name: "data",
+      type: "SunburstNode[]",
+      notes: "{ label, value, children? }[]. Two rings: parents then children.",
+    },
+    {
+      name: "variant",
+      type: '"nest" | "burst"',
+      default: '"nest"',
+      notes: "Tight rings or a more open burst.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "profit-loss-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Signed values. Positive is up, negative is down.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Signed numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "variant",
+      type: '"fill" | "stroke" | "bars"',
+      default: '"fill"',
+      notes: "Split area, a single stroke, or opposing bars.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Colors for up and down. Defaults to --ak-up / --ak-down.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "gauge-chart": [
+    {
+      name: "value",
+      type: "number",
+      notes: "Current reading.",
+    },
+    {
+      name: "max",
+      type: "number",
+      default: "100",
+      notes: "Full-scale value. 100 prints as a percent.",
+    },
+    {
+      name: "label",
+      type: "string",
+      notes: "Caption under the number.",
+    },
+    {
+      name: "variant",
+      type: '"arc" | "ring" | "tick"',
+      default: '"arc"',
+      notes: "Semicircle, full ring, or tick marks with a needle.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "metric-card": [
+    {
+      name: "metric",
+      type: "MetricId",
+      notes: "Canonical metric queried through the provider.",
+    },
+    {
+      name: "title",
+      type: "string",
+      notes: "Header label. Defaults to the metric catalog name.",
+    },
+    {
+      name: "variant",
+      type: '"default" | "spark" | "compact" | "hero"',
+      default: '"default"',
+      notes: "Size and whether a sparkline trails the number.",
+    },
+    {
+      name: "range",
+      type: "DateRangeInput",
+      notes: "Overrides the provider range for this card only.",
+    },
+    {
+      name: "span",
+      type: "number",
+      notes: "Dashboard grid column span.",
+    },
+  ],
+  "ranked-list": [
+    {
+      name: "rows",
+      type: "BreakdownRow[]",
+      notes: "Dimension rows from a query. Each row has key, label, values.",
+    },
+    {
+      name: "metric",
+      type: "string",
+      notes: "Which values[metric] to rank and format.",
+    },
+    {
+      name: "variant",
+      type: '"bar" | "compact" | "table"',
+      default: '"bar"',
+      notes: "Bars, a tight list, or a share table.",
+    },
+  ],
+  dashboard: [
+    {
+      name: "widgets",
+      type: "DashboardItem[]",
+      default: "defaultDashboard",
+      notes: "{ widget, span?, props? }[]. Use catalogDashboard to preview every built-in.",
+    },
+    {
+      name: "columns",
+      type: "number",
+      default: "4",
+      notes: "CSS grid column count.",
+    },
+    {
+      name: "showRange",
+      type: "boolean",
+      default: "true",
+      notes: "Toolbar with 24h / 7d / 30d / 90d / 12mo presets.",
+    },
+  ],
+};

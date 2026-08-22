@@ -101,24 +101,36 @@ Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries` / `AreaC
 
 Layouts: `defaultDashboard` (Vercel-friendly) and `catalogDashboard` (every widget).
 
-Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [bklit](https://bklit.com/charts/area-chart), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
+Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [Bklit](https://bklit.com/), [Ditherkit](https://ditherkit.com/), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Funnel through sunburst sit next to the textured drawings from [EvilCharts](https://evilcharts.com). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
 
 ```tsx
 <AreaChart data={points} variant="gradient" />
-<LineChart data={points} variant="dashed" />
-<BarChart data={rows} variant="horizontal" />
-<PieChart data={rows} variant="donut" />
-<MetricCard metric="visitors" variant="hero" />
+<FunnelChart data={stages} variant="tape" />
+<SankeyChart nodes={nodes} links={links} variant="flow" />
+<HeatmapChart data={points} variant="calendar" />
 ```
 
-| Component    | Variants                                                                   |
-| ------------ | -------------------------------------------------------------------------- |
-| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow` |
-| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`           |
-| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`                   |
-| `PieChart`   | `donut`, `pie`, `legend`, `dither`                                         |
-| `MetricCard` | `default`, `spark`, `compact`, `hero`                                      |
-| `RankedList` | `bar`, `compact`, `table`                                                  |
+| Component          | Variants                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `AreaChart`        | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow`, `hatched`, `bars`, `solid` |
+| `LineChart`        | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`, `ping`, `rainbow`, `values`          |
+| `BarChart`         | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`, `glow`, `gradient`, `duotone`                |
+| `PieChart`         | `donut`, `pie`, `legend`, `dither`, `rounded`, `radial`, `glow`                                        |
+| `FunnelChart`      | `tape`, `steps`, `vertical`                                                                            |
+| `RadarChart`       | `stroke`, `fill`, `glow`, `dither`                                                                     |
+| `ComposedChart`    | `combo`, `highlight`, `overlay`                                                                        |
+| `GaugeChart`       | `arc`, `ring`, `tick`                                                                                  |
+| `ScatterChart`     | `dots`, `bubble`, `glow`                                                                               |
+| `SankeyChart`      | `flow`, `gradient`, `dither`                                                                           |
+| `CandlestickChart` | `ohlc`, `hollow`, `wick`                                                                               |
+| `ChoroplethChart`  | `tiles`, `heat`, `dither`                                                                              |
+| `LiveLineChart`    | `stream`, `glow`, `dashed`                                                                             |
+| `RingChart`        | `stack`, `nested`, `track`                                                                             |
+| `HeatmapChart`     | `calendar`, `matrix`, `dither`                                                                         |
+| `SunburstChart`    | `nest`, `burst`                                                                                        |
+| `ProfitLossChart`  | `fill`, `stroke`, `bars`                                                                               |
+| `MetricCard`       | `default`, `spark`, `compact`, `hero`                                                                  |
+| `RankedList`       | `bar`, `compact`, `table`                                                                              |
 
 ## shadcn registry
 
@@ -130,7 +142,7 @@ pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/dashboard.jso
 
 GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
 
-Items: `chart`, `area-chart`, `line-chart`, `bar-chart`, `pie-chart`, `metric-card`, `dashboard`.
+Items: every catalog chart plus `metric-card` and `dashboard`.
 
 The site serves `/r/{name}.json`. `NEXT_PUBLIC_SITE_URL` should be `https://analytics-kit-demo.vercel.app` in Vercel so built registry items keep that origin.
 

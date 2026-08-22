@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 function unsplash(id: string, width: number) {
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=72`;
 }
@@ -17,6 +21,12 @@ export function CoverImg({
   eager?: boolean;
   position?: string;
 }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return <div className={`${className} cover-fallback`} role="img" aria-label={alt} />;
+  }
+
   return (
     <img
       className={className}
@@ -28,7 +38,9 @@ export function CoverImg({
       height={1000}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : undefined}
+      referrerPolicy="no-referrer"
       style={position ? { objectPosition: position } : undefined}
+      onError={() => setFailed(true)}
     />
   );
 }

@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { CartesianGrid, Line, LineChart as RechartsLine, Tooltip, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
-import { GlowFilter } from "./patterns.js";
+import { GlowFilter, PingDot, RainbowGradient, ValueDot } from "./patterns.js";
 import { LINE_CHART_VARIANTS, type ChartDatum, type LineChartVariant } from "./variants.js";
 
 const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
@@ -12,6 +12,9 @@ const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   dots: "monotone",
   dither: "monotone",
   glow: "monotone",
+  ping: "monotone",
+  rainbow: "monotone",
+  values: "monotone",
 };
 
 export function LineChart({
@@ -33,16 +36,21 @@ export function LineChart({
     [dataKey]: { label: dataKey, color: "var(--ak-chart-1, var(--chart-1, #2563eb))" },
   };
   const color = chartConfig[dataKey]?.color ?? "var(--ak-chart-1)";
-  const glowId = `ak-line-glow-${useId().replace(/:/g, "")}`;
+  const uid = useId().replace(/:/g, "");
+  const glowId = `ak-line-glow-${uid}`;
+  const rainbowId = `ak-line-rainbow-${uid}`;
+  const last = data.length - 1;
+  const stroke = variant === "rainbow" ? `url(#${rainbowId})` : color;
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
       <RechartsLine data={data}>
-        {variant === "glow" ? (
+        {variant === "glow" || variant === "rainbow" ? (
           <defs>
-            <GlowFilter id={glowId} />
+            {variant === "glow" ? <GlowFilter id={glowId} /> : null}
+            {variant === "rainbow" ? <RainbowGradient id={rainbowId} /> : null}
           </defs>
         ) : null}
         <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
@@ -83,14 +91,42 @@ export function LineChart({
         <Line
           type={CURVE[variant]}
           dataKey={dataKey}
-          stroke={color}
-          strokeWidth={variant === "glow" ? 2.5 : 2}
+          stroke={stroke}
+          strokeWidth={variant === "glow" || variant === "rainbow" ? 2.5 : 2}
           strokeDasharray={
             variant === "dashed" ? "6 4" : variant === "dither" ? "0.1 5" : undefined
           }
           strokeLinecap={variant === "dither" ? "round" : undefined}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
-          dot={variant === "dots" ? { r: 3, fill: color, strokeWidth: 0 } : false}
+          dot={
+            variant === "dots"
+              ? { r: 3, fill: color, strokeWidth: 0 }
+              : variant === "ping"
+                ? ({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) => (
+                    <PingDot cx={cx} cy={cy} color={color} last={index === last} />
+                  )
+                : variant === "values"
+                  ? ({
+                      cx,
+                      cy,
+                      value,
+                      index,
+                    }: {
+                      cx?: number;
+                      cy?: number;
+                      value?: number;
+                      index?: number;
+                    }) => (
+                      <ValueDot
+                        cx={cx}
+                        cy={cy}
+                        value={value}
+                        color={color}
+                        show={index === last || (index ?? 0) % 5 === 0}
+                      />
+                    )
+                  : false
+          }
           activeDot={{ r: 4 }}
         />
       </RechartsLine>

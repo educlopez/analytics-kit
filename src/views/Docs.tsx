@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CodeBlock } from "../site/CodeBlock";
 import { PropsTable } from "../site/PropsTable";
 import { useCopy } from "../site/useCopy";
 import { useRegistryCommand } from "../site/useRegistryCommand";
@@ -67,6 +68,20 @@ const connector = createVercelConnector({
 
 export const { GET, POST } = createRouteHandlers({ connector });`;
 
+const COLORS = `:root {
+  --chart-1: #1d779b;
+  --chart-2: #297c3b;
+  --chart-3: #c45c26;
+  --chart-4: #7c6a4a;
+  --chart-5: #5b4a8a;
+  --card: #fff;
+  --foreground: #1a1613;
+  --primary: #1d779b;
+  --border: #e3ddcf;
+  --muted: #f3f0e9;
+  --muted-foreground: #605852;
+}`;
+
 export function DocsPage() {
   const { copied, copy } = useCopy();
   const registry = useRegistryCommand("dashboard");
@@ -122,9 +137,7 @@ export function DocsPage() {
               One provider around the tree. Widgets and hooks read the connector, range, and theme
               from context. <code>theme</code> is light or dark — not a color palette.
             </p>
-            <pre className="snippet">
-              <code>{PROVIDER}</code>
-            </pre>
+            <CodeBlock code={PROVIDER} lang="tsx" title="provider.tsx" />
             <PropsTable
               rows={[
                 {
@@ -209,9 +222,7 @@ export function DocsPage() {
               Widgets never send vendor field names. They send a canonical{" "}
               <code>AnalyticsQuery</code>. The connector maps it.
             </p>
-            <pre className="snippet">
-              <code>{QUERY}</code>
-            </pre>
+            <CodeBlock code={QUERY} lang="ts" title="query.ts" />
             <PropsTable
               rows={[
                 {
@@ -265,38 +276,114 @@ export function DocsPage() {
             <p className="kicker">05</p>
             <h2>Charts</h2>
             <p className="lede compact">
-              Tailwind + Recharts, in the same spirit as ReUI, shadcn blocks, bklit, and Intent UI.{" "}
-              <code>variant</code> is how the series is drawn. Colors come from CSS variables on the
-              host page.
+              Tailwind + Recharts. Drawings sit next to ReUI, shadcn, Bklit, Ditherkit, EvilCharts,
+              and Amicro — funnel through sunburst — still as a <code>variant</code>, not a palette.
+              Colors come from CSS variables on the host page.
             </p>
-            <pre className="snippet">
-              <code>{CHART}</code>
-            </pre>
+            <CodeBlock code={CHART} lang="tsx" title="chart.tsx" />
             <PropsTable
               rows={[
                 {
                   name: "AreaChart",
-                  type: "gradient | linear | natural | step | dots | spark | dither | glow",
+                  type: "gradient | linear | natural | step | dots | spark | dither | glow | hatched | bars | solid",
                   default: "gradient",
-                  notes: "Filled trend. dither is a stipple fill; glow blooms the stroke.",
+                  notes: "Filled trend. hatched and bars are SVG textures; glow blooms the stroke.",
                 },
                 {
                   name: "LineChart",
-                  type: "monotone | linear | step | dashed | dots | dither | glow",
+                  type: "monotone | linear | step | dashed | dots | dither | glow | ping | rainbow | values",
                   default: "monotone",
-                  notes: "Stroke only.",
+                  notes: "Stroke only. ping pulses the last point; rainbow uses --chart-1…5.",
                 },
                 {
                   name: "BarChart",
-                  type: "vertical | horizontal | rounded | hatched | dither",
+                  type: "vertical | horizontal | rounded | hatched | dither | glow | gradient | duotone",
                   default: "vertical",
-                  notes: "Breakdown bars.",
+                  notes: "Breakdown bars. duotone is a hard two-band fill.",
                 },
                 {
                   name: "PieChart",
-                  type: "donut | pie | legend | dither",
+                  type: "donut | pie | legend | dither | rounded | radial | glow",
                   default: "donut",
-                  notes: "Share of a dimension.",
+                  notes: "Share of a dimension. radial is a RadialBar.",
+                },
+                {
+                  name: "FunnelChart",
+                  type: "tape | steps | vertical",
+                  default: "tape",
+                  notes: "Conversion stages with drop-off.",
+                },
+                {
+                  name: "RadarChart",
+                  type: "stroke | fill | glow | dither",
+                  default: "fill",
+                  notes: "Multi-axis comparison.",
+                },
+                {
+                  name: "ComposedChart",
+                  type: "combo | highlight | overlay",
+                  default: "combo",
+                  notes: "Two series on one axis.",
+                },
+                {
+                  name: "GaugeChart",
+                  type: "arc | ring | tick",
+                  default: "arc",
+                  notes: "Single-value dial.",
+                },
+                {
+                  name: "ScatterChart",
+                  type: "dots | bubble | glow",
+                  default: "dots",
+                  notes: "Correlation. bubble sizes by z.",
+                },
+                {
+                  name: "SankeyChart",
+                  type: "flow | gradient | dither",
+                  default: "flow",
+                  notes: "Flow between stages. nodes + links.",
+                },
+                {
+                  name: "CandlestickChart",
+                  type: "ohlc | hollow | wick",
+                  default: "ohlc",
+                  notes: "Open, high, low, close.",
+                },
+                {
+                  name: "ChoroplethChart",
+                  type: "tiles | heat | dither",
+                  default: "tiles",
+                  notes: "Region tiles by intensity. Not a geoJSON map.",
+                },
+                {
+                  name: "LiveLineChart",
+                  type: "stream | glow | dashed",
+                  default: "stream",
+                  notes: "Sliding window over a series.",
+                },
+                {
+                  name: "RingChart",
+                  type: "stack | nested | track",
+                  default: "stack",
+                  notes: "Concentric KPI rings.",
+                },
+                {
+                  name: "HeatmapChart",
+                  type: "calendar | matrix | dither",
+                  default: "calendar",
+                  notes: "A grid of intensity cells.",
+                },
+                {
+                  name: "SunburstChart",
+                  type: "nest | burst",
+                  default: "nest",
+                  notes: "Hierarchy as two rings.",
+                },
+                {
+                  name: "ProfitLossChart",
+                  type: "fill | stroke | bars",
+                  default: "fill",
+                  notes: "Signed series above and below zero.",
                 },
                 {
                   name: "MetricCard",
@@ -364,21 +451,7 @@ export function DocsPage() {
               There is no kit “theme pack.” Set the same variables you would on a shadcn page. The
               kit reads them through <code>--ak-chart-*</code> fallbacks.
             </p>
-            <pre className="snippet">
-              <code>{`:root {
-  --chart-1: #1d779b;
-  --chart-2: #297c3b;
-  --chart-3: #c45c26;
-  --chart-4: #7c6a4a;
-  --chart-5: #5b4a8a;
-  --card: #fff;
-  --foreground: #1a1613;
-  --primary: #1d779b;
-  --border: #e3ddcf;
-  --muted: #f3f0e9;
-  --muted-foreground: #605852;
-}`}</code>
-            </pre>
+            <CodeBlock code={COLORS} lang="css" title="tokens.css" />
             <p className="lede compact">
               Per-series override: pass <code>config</code> on Area, Line, and Bar.{" "}
               <code>config.value.color</code> can be any CSS color, including{" "}
@@ -393,9 +466,7 @@ export function DocsPage() {
               Do not put vendor tokens in the browser bundle. <code>@analytics-kit/next</code>{" "}
               proxies the connector. The client uses <code>createHttpConnector</code>.
             </p>
-            <pre className="snippet">
-              <code>{HANDLER}</code>
-            </pre>
+            <CodeBlock code={HANDLER} lang="ts" title="route.ts" />
             <p className="lede compact">
               Browser: <code>createHttpConnector({`{ endpoint: "/api/analytics" }`})</code>. This
               site does that in <code>app/api/analytics/route.ts</code>. Also{" "}
@@ -420,10 +491,8 @@ export function DocsPage() {
               <em>{copied === "registry" ? "Copied" : "Copy"}</em>
             </button>
             <p className="lede compact">
-              Items: <code>chart</code>, <code>area-chart</code>, <code>line-chart</code>,{" "}
-              <code>bar-chart</code>, <code>pie-chart</code>, <code>metric-card</code>,{" "}
-              <code>dashboard</code>. Also <code>educlopez/analytics-kit/dashboard</code> from the
-              GitHub registry.
+              Items: every catalog chart plus <code>metric-card</code> and <code>dashboard</code>.
+              Also <code>educlopez/analytics-kit/dashboard</code> from the GitHub registry.
             </p>
           </section>
 

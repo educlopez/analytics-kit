@@ -24,6 +24,11 @@
           "path": "packages/react/src/charts/variants.ts",
           "type": "registry:lib",
           "target": "@lib/chart-variants.ts"
+        },
+        {
+          "path": "packages/react/src/charts/patterns.tsx",
+          "type": "registry:ui",
+          "target": "@ui/patterns.tsx"
         }
       ],
       "docs": "Map --chart-1…--chart-5 in your CSS. Charts do not ship a color theme.",
@@ -33,7 +38,7 @@
       "name": "area-chart",
       "type": "registry:ui",
       "title": "Area chart",
-      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow.",
+      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow, hatched, bars, solid.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -49,7 +54,7 @@
       "name": "line-chart",
       "type": "registry:ui",
       "title": "Line chart",
-      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow.",
+      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow, ping, rainbow, values.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -65,7 +70,7 @@
       "name": "bar-chart",
       "type": "registry:ui",
       "title": "Bar chart",
-      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither.",
+      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither, glow, gradient, duotone.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -81,7 +86,7 @@
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
-      "description": "Share of a whole. Variants: donut, pie, legend, dither.",
+      "description": "Share of a whole. Variants: donut, pie, legend, dither, rounded, radial, glow.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -89,6 +94,207 @@
           "path": "packages/react/src/charts/pie-chart.tsx",
           "type": "registry:ui",
           "target": "@ui/pie-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "funnel-chart",
+      "type": "registry:ui",
+      "title": "Funnel chart",
+      "description": "Conversion stages. Variants: tape, steps, vertical.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/funnel-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/funnel-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "radar-chart",
+      "type": "registry:ui",
+      "title": "Radar chart",
+      "description": "Multi-axis comparison. Variants: stroke, fill, glow, dither.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/radar-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/radar-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "composed-chart",
+      "type": "registry:ui",
+      "title": "Composed chart",
+      "description": "Two series on one axis. Variants: combo, highlight, overlay.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/composed-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/composed-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "gauge-chart",
+      "type": "registry:ui",
+      "title": "Gauge",
+      "description": "Single-value dial. Variants: arc, ring, tick.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/gauge-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/gauge-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "scatter-chart",
+      "type": "registry:ui",
+      "title": "Scatter chart",
+      "description": "Correlation. Variants: dots, bubble, glow.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/scatter-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/scatter-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "sankey-chart",
+      "type": "registry:ui",
+      "title": "Sankey chart",
+      "description": "Flow between stages. Variants: flow, gradient, dither.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/sankey-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/sankey-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "candlestick-chart",
+      "type": "registry:ui",
+      "title": "Candlestick chart",
+      "description": "Open, high, low, close. Variants: ohlc, hollow, wick.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/candlestick-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/candlestick-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "choropleth-chart",
+      "type": "registry:ui",
+      "title": "Choropleth",
+      "description": "Region tiles by intensity. Variants: tiles, heat, dither.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/choropleth-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/choropleth-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "live-line-chart",
+      "type": "registry:ui",
+      "title": "Live line",
+      "description": "Sliding window. Variants: stream, glow, dashed.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/live-line-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/live-line-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "ring-chart",
+      "type": "registry:ui",
+      "title": "Ring chart",
+      "description": "Concentric KPI rings. Variants: stack, nested, track.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/ring-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/ring-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "heatmap-chart",
+      "type": "registry:ui",
+      "title": "Heatmap",
+      "description": "Calendar of intensity. Variants: calendar, matrix, dither.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/heatmap-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/heatmap-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "sunburst-chart",
+      "type": "registry:ui",
+      "title": "Sunburst",
+      "description": "Hierarchy as rings. Variants: nest, burst.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/sunburst-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/sunburst-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "profit-loss-chart",
+      "type": "registry:ui",
+      "title": "Profit / loss",
+      "description": "Above and below zero. Variants: fill, stroke, bars.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/profit-loss-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/profit-loss-chart.tsx"
         }
       ],
       "categories": ["analytics", "charts"]

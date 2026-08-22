@@ -18,9 +18,9 @@ export function ComponentsIndex() {
           <em> Install one.</em>
         </h1>
         <p className="lede compact">
-          {CATALOG.length} pieces — area, line, bar, pie, metrics, lists, dashboard. Each page has a
-          live demo, every visual <code>variant</code>, and the shadcn install command. Colors come
-          from <code>--chart-1</code>…<code>--chart-5</code>.
+          {CATALOG.length} pieces — area through sunburst, metrics, lists, dashboard. Each page has
+          a live Preview, Customize knobs, a Code tab, and the full props table. Colors come from{" "}
+          <code>--chart-1</code>…<code>--chart-5</code>.
         </p>
       </header>
 

@@ -5,6 +5,7 @@ import { createHttpConnector } from "@analytics-kit/core";
 import { AnalyticsProvider, Dashboard, defaultDashboard } from "@analytics-kit/react";
 import Link from "next/link";
 import { ChartTeaser } from "../ChartTeaser";
+import { CodeBlock } from "../site/CodeBlock";
 import { CoverImg } from "../site/CoverImg";
 import { useSite } from "../site/SiteShell";
 import { useCopy } from "../site/useCopy";
@@ -87,7 +88,7 @@ const FAQS = [
   },
   {
     q: "How do I change how a chart looks?",
-    a: "Pass variant on the chart — gradient, step, dots, horizontal, donut, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
+    a: "Pass variant on the chart — gradient, tape, overlay, arc, ping, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
   },
 ];
 
@@ -293,13 +294,8 @@ export function HomePage() {
               Keep tokens on the server in production. Swap the import for Plausible or GA4.
             </p>
           </div>
-          <button type="button" className="ghost" onClick={() => void copy(SNIPPET, "snippet")}>
-            {copied === "snippet" ? "Copied" : "Copy snippet"}
-          </button>
         </div>
-        <pre className="snippet">
-          <code>{SNIPPET}</code>
-        </pre>
+        <CodeBlock code={SNIPPET} lang="tsx" title="stats.tsx" copyId="snippet" />
         <button type="button" className="install" onClick={() => void copy(INSTALL, "install")}>
           <span>$</span>
           <code>{INSTALL}</code>
@@ -333,9 +329,9 @@ export function HomePage() {
 
       <section className="close">
         <CoverImg
-          id="photo-1468327768560-75b60c6f10d5"
-          alt="A field of orange poppies"
-          position="center 60%"
+          id="photo-1462275646964-a0e3386b89fa"
+          alt="Wildflowers across a hillside"
+          position="center 55%"
         />
         <div className="cover-scrim close-scrim" />
         <div className="close-copy">
