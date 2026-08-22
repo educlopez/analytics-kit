@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
-import { createMockConnector } from "@analytics-kit/connector-mock";
+import { useCallback, useMemo } from "react";
+import { createMockConnector, mockQuery } from "@analytics-kit/connector-mock";
+import type { AnalyticsQuery } from "@analytics-kit/core";
 import {
   AnalyticsProvider,
   AreaChart,
@@ -242,6 +243,11 @@ export function LivePreview({
     () => createMockConnector({ profile: "full", siteName: "Catalog", seed: 11 }),
     [],
   );
+  const previewQuery = useCallback(
+    (query: AnalyticsQuery) =>
+      mockQuery({ ...query, range: query.range ?? "30d" }, { profile: "full", seed: 11 }),
+    [],
+  );
   const resolved: PreviewKnobs = {
     variant: knobs?.variant ?? variant ?? "",
     metric: knobs?.metric ?? (slug === "gauge-chart" ? "bounceRate" : "visitors"),
@@ -251,7 +257,7 @@ export function LivePreview({
   };
 
   return (
-    <AnalyticsProvider connector={connector} theme={theme} range="30d">
+    <AnalyticsProvider connector={connector} theme={theme} range="30d" previewQuery={previewQuery}>
       <PreviewInner slug={slug} knobs={resolved} preview={preview} />
     </AnalyticsProvider>
   );

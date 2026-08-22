@@ -28,6 +28,7 @@ export interface AnalyticsContextValue {
   theme: AnalyticsTheme;
   query: (query: AnalyticsQuery) => Promise<AnalyticsResult>;
   realtime: () => Promise<RealtimeResult>;
+  previewQuery?: (query: AnalyticsQuery) => AnalyticsResult | undefined;
 }
 
 const AnalyticsContext = createContext<AnalyticsContextValue | null>(null);
@@ -37,6 +38,8 @@ export interface AnalyticsProviderProps {
   range?: DateRangeInput;
   theme?: AnalyticsTheme;
   cacheTtlMs?: number;
+  /** Synchronous result for first paint / prerender. Catalog and teasers use this. */
+  previewQuery?: (query: AnalyticsQuery) => AnalyticsResult | undefined;
   children: ReactNode;
 }
 
@@ -45,6 +48,7 @@ export function AnalyticsProvider({
   range: rangeProp = "7d",
   theme = "dark",
   cacheTtlMs = 30_000,
+  previewQuery,
   children,
 }: AnalyticsProviderProps) {
   const connector = useMemo(
@@ -84,8 +88,9 @@ export function AnalyticsProvider({
       theme,
       query,
       realtime,
+      previewQuery,
     }),
-    [connector, capabilities, range, theme, query, realtime],
+    [connector, capabilities, range, theme, query, realtime, previewQuery],
   );
 
   return (
