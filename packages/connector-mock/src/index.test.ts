@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { createAnalyticsKitMockConnector, createMockConnector } from "./index.js";
+import { createAnalyticsKitMockConnector, createMockConnector, mockQuery } from "./index.js";
 
 describe("createMockConnector", () => {
+  it("exposes a synchronous preview query", () => {
+    const result = mockQuery(
+      { range: "30d", metrics: ["visitors"], granularity: "day" },
+      { seed: 11, profile: "full" },
+    );
+    expect(result.series.length).toBe(30);
+    expect(result.totals.visitors).toBeGreaterThan(0);
+  });
+
   it("returns deterministic totals for the same seed and range", async () => {
     const a = createMockConnector({ seed: 7 });
     const b = createMockConnector({ seed: 7 });

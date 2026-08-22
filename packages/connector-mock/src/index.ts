@@ -4,10 +4,12 @@ import {
   enumerateDays,
   fullCapabilities,
   mergeCapabilities,
+  normalizeQuery,
   previousRange,
   queryNeeds,
   toIsoDate,
   type AnalyticsConnector,
+  type AnalyticsQuery,
   type AnalyticsResult,
   type BreakdownRow,
   type ConnectorCapabilities,
@@ -106,6 +108,26 @@ export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> =
   }),
 };
 
+export function mockQuery(
+  query: AnalyticsQuery,
+  options: MockConnectorOptions = {},
+): AnalyticsResult {
+  const seed = options.seed ?? 42;
+  const scale = options.scale ?? 1;
+  const dataset = { ...DEFAULT_DATASET, ...options.dataset };
+  const capabilities = options.capabilities ?? PROVIDER_PROFILES[options.profile ?? "full"];
+  const normalized = normalizeQuery(query);
+  const result = buildResult(normalized, seed, capabilities, dataset, scale);
+  return {
+    ...result,
+    meta: {
+      ...result.meta,
+      connectorId: options.profile ? `mock:${options.profile}` : "mock",
+      granularity: normalized.granularity,
+    },
+  };
+}
+
 export function createMockConnector(options: MockConnectorOptions = {}): AnalyticsConnector {
   const seed = options.seed ?? 42;
   const scale = options.scale ?? 1;
@@ -117,7 +139,7 @@ export function createMockConnector(options: MockConnectorOptions = {}): Analyti
     name: options.siteName ?? `Mock (${options.profile ?? "full"})`,
     capabilities,
     async query(query) {
-      return buildResult(query, seed, capabilities, dataset, scale);
+      return mockQuery(query, options);
     },
     async realtime() {
       const rng = mulberry32(seed + 99);

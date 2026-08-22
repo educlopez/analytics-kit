@@ -23,11 +23,8 @@ export interface UseQueryResult {
 export function useQuery(
   partial: Omit<AnalyticsQuery, "range"> & { range?: DateRangeInput },
 ): UseQueryResult {
-  const { query, range, capabilities, connector } = useAnalytics();
+  const { query, range, capabilities, connector, previewQuery } = useAnalytics();
   const [tick, setTick] = useState(0);
-  const [data, setData] = useState<AnalyticsResult>();
-  const [status, setStatus] = useState<QueryStatus>("idle");
-  const [error, setError] = useState<AnalyticsError | Error>();
   const serialized = JSON.stringify(partial);
 
   const merged: AnalyticsQuery = useMemo(() => {
@@ -43,11 +40,24 @@ export function useQuery(
       }),
     [capabilities, merged],
   );
+  const seeded = missing.length ? undefined : previewQuery?.(merged);
+  const [data, setData] = useState<AnalyticsResult | undefined>(seeded);
+  const [status, setStatus] = useState<QueryStatus>(
+    missing.length ? "unsupported" : seeded ? "success" : "idle",
+  );
+  const [error, setError] = useState<AnalyticsError | Error>();
 
   useEffect(() => {
     if (missing.length) {
       setStatus("unsupported");
       setData(undefined);
+      return;
+    }
+    const next = previewQuery?.(merged);
+    if (next) {
+      setData(next);
+      setStatus("success");
+      setError(undefined);
       return;
     }
     let cancelled = false;
@@ -61,18 +71,18 @@ export function useQuery(
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        const next = isAnalyticsError(err)
+        const nextError = isAnalyticsError(err)
           ? err
           : err instanceof Error
             ? err
             : new Error(String(err));
-        setError(next);
+        setError(nextError);
         setStatus(isAnalyticsError(err) && err.code === "UNSUPPORTED" ? "unsupported" : "error");
       });
     return () => {
       cancelled = true;
     };
-  }, [query, tick, missing, merged, connector.id]);
+  }, [query, tick, missing, merged, connector.id, previewQuery]);
 
   return {
     data,

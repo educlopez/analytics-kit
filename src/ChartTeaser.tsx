@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
-import { createMockConnector } from "@analytics-kit/connector-mock";
+import { useCallback, useMemo } from "react";
+import { createMockConnector, mockQuery } from "@analytics-kit/connector-mock";
+import type { AnalyticsQuery } from "@analytics-kit/core";
 import {
   AnalyticsProvider,
   AreaChart,
@@ -56,10 +57,20 @@ export function ChartTeaser({ theme }: { theme: AnalyticsTheme }) {
     () => createMockConnector({ profile: "full", siteName: "Chart teaser", seed: 11 }),
     [],
   );
+  const previewQuery = useCallback(
+    (query: AnalyticsQuery) =>
+      mockQuery({ ...query, range: query.range ?? "30d" }, { profile: "full", seed: 11 }),
+    [],
+  );
 
   return (
     <div>
-      <AnalyticsProvider connector={connector} theme={theme} range="30d">
+      <AnalyticsProvider
+        connector={connector}
+        theme={theme}
+        range="30d"
+        previewQuery={previewQuery}
+      >
         <TeaserCharts />
       </AnalyticsProvider>
       <div className="teaser-actions">

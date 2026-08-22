@@ -31,6 +31,7 @@
   --shadow: 0 18px 50px rgb(18 12 8 / 0.08);
   --radius: 22px;
   --page-pad: 20px;
+  --nav-offset: calc(3.25rem + env(safe-area-inset-top, 0px));
 }
 
 html[data-theme="dark"] {
@@ -117,6 +118,23 @@ img {
   display: block;
 }
 
+html.nav-open,
+html.nav-open body {
+  overflow: hidden;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .shell {
   overflow-x: clip;
   min-width: 0;
@@ -129,11 +147,78 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 10px;
-  padding: 12px var(--page-pad);
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  padding: max(12px, env(safe-area-inset-top, 0px))
+    max(var(--page-pad), env(safe-area-inset-right, 0px)) 12px
+    max(var(--page-pad), env(safe-area-inset-left, 0px));
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+}
+
+.nav-toggle {
+  display: none;
+  appearance: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -8px -6px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nav-toggle-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 12px;
+}
+
+.nav-toggle-icon i {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  border-radius: 99px;
+  background: currentColor;
+  transition:
+    transform 160ms ease,
+    top 160ms ease,
+    opacity 160ms ease;
+}
+
+.nav-toggle-icon i:nth-child(1) {
+  top: 0;
+}
+
+.nav-toggle-icon i:nth-child(2) {
+  top: 5px;
+}
+
+.nav-toggle-icon i:nth-child(3) {
+  top: 10px;
+}
+
+.nav.is-open .nav-toggle-icon i:nth-child(1) {
+  top: 5px;
+  transform: rotate(45deg);
+}
+
+.nav.is-open .nav-toggle-icon i:nth-child(2) {
+  opacity: 0;
+}
+
+.nav.is-open .nav-toggle-icon i:nth-child(3) {
+  top: 5px;
+  transform: rotate(-45deg);
 }
 
 .nav-links {
@@ -1041,7 +1126,7 @@ html[data-theme="dark"] .style-switch button.is-active {
 }
 
 .foot {
-  padding: 28px 0 48px;
+  padding: 28px 0 max(48px, calc(28px + env(safe-area-inset-bottom, 0px)));
   color: var(--muted);
   font-size: 13px;
 }
@@ -1098,6 +1183,10 @@ html[data-theme="dark"] .style-switch button.is-active {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.catalog-jump {
+  display: none;
 }
 
 .catalog-head {
@@ -1461,8 +1550,51 @@ html[data-theme="dark"] .variant-switch button.is-active {
     --page-pad: 14px;
   }
 
-  .nav-links a:not(.btn):not(.nav-keep) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav-links {
     display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    max-height: calc(100dvh - var(--nav-offset) - 12px);
+    overflow-y: auto;
+    padding: 4px 0 12px;
+    overscroll-behavior: contain;
+  }
+
+  .nav.is-open .nav-links {
+    display: flex;
+  }
+
+  .nav-links a:not(.btn),
+  .nav-links .nav-theme {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 4px;
+    font-size: 16px;
+    white-space: normal;
+  }
+
+  .nav-links .nav-theme {
+    width: 100%;
+    justify-content: flex-start;
+    border: 0;
+    border-radius: 0;
+    padding-left: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .nav-links .btn-ink {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: center;
   }
 
   .docs-layout {
@@ -1471,32 +1603,67 @@ html[data-theme="dark"] .variant-switch button.is-active {
   }
 
   .docs-toc {
-    position: static;
+    position: sticky;
+    top: var(--nav-offset);
+    z-index: 12;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    padding-bottom: 8px;
+    flex-wrap: nowrap;
+    gap: 8px 16px;
+    margin: 0 calc(var(--page-pad) * -1);
+    padding: 10px var(--page-pad) 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .docs-toc::-webkit-scrollbar {
+    display: none;
+  }
+
+  .docs-toc a {
+    flex: none;
+    white-space: nowrap;
   }
 
   .catalog {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 0;
   }
 
   .catalog-nav {
-    position: static;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    padding: 16px 0 0;
-  }
-
-  .catalog-group {
-    display: contents;
-  }
-
-  .catalog-group p {
     display: none;
+  }
+
+  .catalog-jump {
+    display: block;
+    position: sticky;
+    top: var(--nav-offset);
+    z-index: 12;
+    margin: 0 calc(var(--page-pad) * -1);
+    padding: 10px var(--page-pad) 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .catalog-jump select {
+    width: 100%;
+    min-height: 44px;
+    appearance: none;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 36px 10px 14px;
+    background:
+      linear-gradient(45deg, transparent 50%, var(--muted) 50%) right 16px center / 5px 5px
+        no-repeat,
+      linear-gradient(135deg, var(--muted) 50%, transparent 50%) right 11px center / 5px 5px
+        no-repeat,
+      var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
   }
 
   .catalog-grid {
@@ -1514,6 +1681,7 @@ html[data-theme="dark"] .variant-switch button.is-active {
 
   .detail-tabs button {
     padding: 10px 12px;
+    min-height: 44px;
   }
 
   .page-head {
@@ -1569,10 +1737,6 @@ html[data-theme="dark"] .variant-switch button.is-active {
 }
 
 @media (max-width: 420px) {
-  .wordmark {
-    max-width: 11ch;
-  }
-
   .nav .btn-ink {
     padding: 8px 12px;
     font-size: 13px;
@@ -1582,5 +1746,9 @@ html[data-theme="dark"] .variant-switch button.is-active {
 @media (prefers-reduced-motion: reduce) {
   .ticker-track {
     animation: none;
+  }
+
+  .nav-toggle-icon i {
+    transition: none;
   }
 }
