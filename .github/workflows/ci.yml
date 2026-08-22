@@ -27,7 +27,7 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: pnpm registry:build
-      - run: pnpm --filter @analytics-kit/demo build
+      - run: pnpm exec next build
       - run: pnpm typecheck
       - run: pnpm publint
       - run: pnpm attw

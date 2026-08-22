@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",
     "noEmit": true,
@@ -9,5 +9,5 @@
     "lib": ["DOM", "DOM.Iterable", "ES2022"]
   },
   "include": ["app", "src", "next-env.d.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "packages", "apps"]
 }

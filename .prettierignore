@@ -2,7 +2,7 @@ dist
 coverage
 node_modules
 pnpm-lock.yaml
-apps/demo/dist
-apps/demo/.next
+.next
+public/r
 agent-tools
 *.tsbuildinfo

@@ -186,11 +186,11 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
-The product site is a Next.js app in `apps/demo` — landing, `/docs`, and `/components`. Deploy it on Vercel (Root Directory: `apps/demo`). The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
+The product site is the Next.js app at the repo root — landing, `/docs`, and `/components`. Import the GitHub repo in Vercel (leave Root Directory empty). The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
 
 1. Import `educlopez/analytics-kit` in Vercel.
-2. Framework: **Next.js**. Root Directory: **`apps/demo`**.
-3. Install / build commands come from `apps/demo/vercel.json` (workspace install, package build, registry, then `next build`).
+2. Framework: **Next.js**. Root Directory: **empty** (repository root).
+3. Install / build commands come from `vercel.json` (workspace install, package build, registry, then `next build`).
 4. Env (optional, for the live SmoothUI dashboard):
    - `ANALYTICS_VERCEL_TOKEN`
    - `ANALYTICS_VERCEL_PROJECT_ID`

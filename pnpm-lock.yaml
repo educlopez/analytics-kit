@@ -7,6 +7,34 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@analytics-kit/connector-mock':
+        specifier: workspace:*
+        version: link:packages/connector-mock
+      '@analytics-kit/connector-vercel':
+        specifier: workspace:*
+        version: link:packages/connector-vercel
+      '@analytics-kit/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@analytics-kit/next':
+        specifier: workspace:*
+        version: link:packages/next
+      '@analytics-kit/react':
+        specifier: workspace:*
+        version: link:packages/react
+      next:
+        specifier: ^16.3.2
+        version: 16.3.2(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react:
+        specifier: ^19.1.0
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.8(react@19.2.8)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.2
@@ -20,9 +48,18 @@ importers:
       '@eslint/js':
         specifier: ^9.33.0
         version: 9.39.5
+      '@tailwindcss/postcss':
+        specifier: ^4.3.3
+        version: 4.3.3
       '@types/node':
         specifier: ^24.3.0
         version: 24.13.3
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.1.6
+        version: 19.2.4(@types/react@19.2.18)
       eslint:
         specifier: ^9.33.0
         version: 9.39.5(jiti@2.7.0)
@@ -56,49 +93,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)
-
-  apps/demo:
-    dependencies:
-      '@analytics-kit/connector-mock':
-        specifier: workspace:*
-        version: link:../../packages/connector-mock
-      '@analytics-kit/connector-vercel':
-        specifier: workspace:*
-        version: link:../../packages/connector-vercel
-      '@analytics-kit/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@analytics-kit/next':
-        specifier: workspace:*
-        version: link:../../packages/next
-      '@analytics-kit/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      next:
-        specifier: ^16.3.2
-        version: 16.3.2(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      react:
-        specifier: ^19.1.0
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.8(react@19.2.8)
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4.3.3
-        version: 4.3.3
-      '@types/react':
-        specifier: ^19.1.8
-        version: 19.2.18
-      '@types/react-dom':
-        specifier: ^19.1.6
-        version: 19.2.4(@types/react@19.2.18)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
 
   packages/connector-ga4:
     dependencies:

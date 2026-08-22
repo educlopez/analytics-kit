@@ -10,9 +10,8 @@ export default tseslint.config(
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
-      "apps/demo/dist/**",
-      "apps/demo/.next/**",
-      "apps/demo/public/r/**",
+      ".next/**",
+      "public/r/**",
       "coverage/**",
       "agent-tools/**",
       "pnpm-lock.yaml",
