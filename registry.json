@@ -33,7 +33,7 @@
       "name": "area-chart",
       "type": "registry:ui",
       "title": "Area chart",
-      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark.",
+      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -49,7 +49,7 @@
       "name": "line-chart",
       "type": "registry:ui",
       "title": "Line chart",
-      "description": "Time series line. Variants: monotone, linear, step, dashed, dots.",
+      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -65,7 +65,7 @@
       "name": "bar-chart",
       "type": "registry:ui",
       "title": "Bar chart",
-      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched.",
+      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -81,7 +81,7 @@
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
-      "description": "Share of a whole. Variants: donut, pie, legend.",
+      "description": "Share of a whole. Variants: donut, pie, legend, dither.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [

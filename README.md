@@ -111,14 +111,14 @@ Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.
 <MetricCard metric="visitors" variant="hero" />
 ```
 
-| Component    | Variants                                                 |
-| ------------ | -------------------------------------------------------- |
-| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark` |
-| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`           |
-| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`           |
-| `PieChart`   | `donut`, `pie`, `legend`                                 |
-| `MetricCard` | `default`, `spark`, `compact`, `hero`                    |
-| `RankedList` | `bar`, `compact`, `table`                                |
+| Component    | Variants                                                                   |
+| ------------ | -------------------------------------------------------------------------- |
+| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow` |
+| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`           |
+| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`                   |
+| `PieChart`   | `donut`, `pie`, `legend`, `dither`                                         |
+| `MetricCard` | `default`, `spark`, `compact`, `hero`                                      |
+| `RankedList` | `bar`, `compact`, `table`                                                  |
 
 ## shadcn registry
 
@@ -190,6 +190,7 @@ Live site: **https://analytics-kit-demo.vercel.app**
 
 - Docs — https://analytics-kit-demo.vercel.app/docs
 - Components — https://analytics-kit-demo.vercel.app/components
+- Area chart — https://analytics-kit-demo.vercel.app/components/area-chart
 
 The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
 

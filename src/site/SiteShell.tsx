@@ -28,8 +28,11 @@ function NavItem({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const path = href.split("#")[0] || "/";
-  const active = path === "/" ? pathname === "/" : pathname === path;
+  const pathOnly = href.split("#")[0] || "/";
+  const active =
+    pathOnly === "/"
+      ? pathname === "/"
+      : pathname === pathOnly || pathname.startsWith(`${pathOnly}/`);
   return (
     <Link href={href} className={[className, active ? "is-active" : ""].filter(Boolean).join(" ")}>
       {children}

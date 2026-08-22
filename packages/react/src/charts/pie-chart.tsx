@@ -1,5 +1,7 @@
+import { useId } from "react";
 import { Cell, Pie, PieChart as RechartsPie, Tooltip } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import { DitherDots } from "./patterns.js";
 import { PIE_CHART_VARIANTS, type ChartDatum, type PieChartVariant } from "./variants.js";
 
 const PALETTE = [
@@ -23,6 +25,7 @@ export function PieChart({
   variant?: PieChartVariant;
   className?: string;
 }) {
+  const uid = useId().replace(/:/g, "");
   const config: ChartConfig = Object.fromEntries(
     data.map((row, index) => [
       String(row[labelKey]),
@@ -40,6 +43,17 @@ export function PieChart({
     >
       <ChartContainer className={className} config={config}>
         <RechartsPie>
+          {variant === "dither" ? (
+            <defs>
+              {data.map((row, index) => (
+                <DitherDots
+                  key={String(row[labelKey])}
+                  id={`${uid}-slice-${index}`}
+                  color={PALETTE[index % PALETTE.length]}
+                />
+              ))}
+            </defs>
+          ) : null}
           <Pie
             data={data}
             dataKey={dataKey}
@@ -50,7 +64,14 @@ export function PieChart({
             strokeWidth={2}
           >
             {data.map((row, index) => (
-              <Cell key={String(row[labelKey])} fill={PALETTE[index % PALETTE.length]} />
+              <Cell
+                key={String(row[labelKey])}
+                fill={
+                  variant === "dither"
+                    ? `url(#${uid}-slice-${index})`
+                    : PALETTE[index % PALETTE.length]
+                }
+              />
             ))}
           </Pie>
           <Tooltip
@@ -65,7 +86,7 @@ export function PieChart({
           />
         </RechartsPie>
       </ChartContainer>
-      {variant === "legend" || variant === "donut" ? (
+      {variant === "legend" || variant === "donut" || variant === "dither" ? (
         <ul className="ak-legend">
           {data.map((row, index) => (
             <li key={String(row[labelKey])}>
@@ -76,7 +97,7 @@ export function PieChart({
           ))}
         </ul>
       ) : null}
-      {variant === "donut" ? (
+      {variant === "donut" || variant === "dither" ? (
         <p className="sr-only">Total {Math.round(total).toLocaleString()}</p>
       ) : null}
     </div>

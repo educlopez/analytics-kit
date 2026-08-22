@@ -276,25 +276,25 @@ export function DocsPage() {
               rows={[
                 {
                   name: "AreaChart",
-                  type: "gradient | linear | natural | step | dots | spark",
+                  type: "gradient | linear | natural | step | dots | spark | dither | glow",
                   default: "gradient",
-                  notes: "Filled trend. spark is a compact sparkline height.",
+                  notes: "Filled trend. dither is a stipple fill; glow blooms the stroke.",
                 },
                 {
                   name: "LineChart",
-                  type: "monotone | linear | step | dashed | dots",
+                  type: "monotone | linear | step | dashed | dots | dither | glow",
                   default: "monotone",
                   notes: "Stroke only.",
                 },
                 {
                   name: "BarChart",
-                  type: "vertical | horizontal | rounded | hatched",
+                  type: "vertical | horizontal | rounded | hatched | dither",
                   default: "vertical",
                   notes: "Breakdown bars.",
                 },
                 {
                   name: "PieChart",
-                  type: "donut | pie | legend",
+                  type: "donut | pie | legend | dither",
                   default: "donut",
                   notes: "Share of a dimension.",
                 },

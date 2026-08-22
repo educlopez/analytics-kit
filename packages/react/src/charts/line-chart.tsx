@@ -1,5 +1,7 @@
+import { useId } from "react";
 import { CartesianGrid, Line, LineChart as RechartsLine, Tooltip, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import { GlowFilter } from "./patterns.js";
 import { LINE_CHART_VARIANTS, type ChartDatum, type LineChartVariant } from "./variants.js";
 
 const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
@@ -8,6 +10,8 @@ const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   step: "step",
   dashed: "monotone",
   dots: "monotone",
+  dither: "monotone",
+  glow: "monotone",
 };
 
 export function LineChart({
@@ -29,12 +33,18 @@ export function LineChart({
     [dataKey]: { label: dataKey, color: "var(--ak-chart-1, var(--chart-1, #2563eb))" },
   };
   const color = chartConfig[dataKey]?.color ?? "var(--ak-chart-1)";
+  const glowId = `ak-line-glow-${useId().replace(/:/g, "")}`;
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
       <RechartsLine data={data}>
+        {variant === "glow" ? (
+          <defs>
+            <GlowFilter id={glowId} />
+          </defs>
+        ) : null}
         <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
         <XAxis
           dataKey={labelKey}
@@ -56,12 +66,30 @@ export function LineChart({
             ) : null
           }
         />
+        {variant === "glow" ? (
+          <Line
+            type={CURVE[variant]}
+            dataKey={dataKey}
+            stroke={color}
+            strokeWidth={10}
+            strokeOpacity={0.22}
+            dot={false}
+            activeDot={false}
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+          />
+        ) : null}
         <Line
           type={CURVE[variant]}
           dataKey={dataKey}
           stroke={color}
-          strokeWidth={2}
-          strokeDasharray={variant === "dashed" ? "6 4" : undefined}
+          strokeWidth={variant === "glow" ? 2.5 : 2}
+          strokeDasharray={
+            variant === "dashed" ? "6 4" : variant === "dither" ? "0.1 5" : undefined
+          }
+          strokeLinecap={variant === "dither" ? "round" : undefined}
+          filter={variant === "glow" ? `url(#${glowId})` : undefined}
           dot={variant === "dots" ? { r: 3, fill: color, strokeWidth: 0 } : false}
           activeDot={{ r: 4 }}
         />
