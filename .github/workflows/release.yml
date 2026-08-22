@@ -35,3 +35,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # changeset publish shells out to npm publish, which reads this and
+          # signs each tarball using the job's id-token: write permission.
+          NPM_CONFIG_PROVENANCE: true
