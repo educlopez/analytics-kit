@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { CATALOG_GROUPS, catalogInGroup } from "./items";
+import { CATALOG, CATALOG_GROUPS, catalogInGroup } from "./items";
 
 export function CatalogShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const jumpValue = CATALOG.some((item) => pathname === `/components/${item.slug}`)
+    ? pathname
+    : "/components";
 
   return (
     <div className="catalog">
@@ -35,7 +39,24 @@ export function CatalogShell({ children }: { children: ReactNode }) {
           </div>
         ))}
       </aside>
-      <div className="catalog-main">{children}</div>
+      <div className="catalog-main">
+        <label className="catalog-jump">
+          <span className="sr-only">Jump to component</span>
+          <select value={jumpValue} onChange={(event) => router.push(event.target.value)}>
+            <option value="/components">All components</option>
+            {CATALOG_GROUPS.map((group) => (
+              <optgroup key={group.id} label={group.label}>
+                {catalogInGroup(group.id).map((item) => (
+                  <option key={item.slug} value={`/components/${item.slug}`}>
+                    {item.title}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+        {children}
+      </div>
     </div>
   );
 }
