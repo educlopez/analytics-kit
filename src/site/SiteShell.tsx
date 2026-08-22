@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useId, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import type { AnalyticsTheme } from "@analytics-kit/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -60,6 +68,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const menuId = useId();
   const [theme, setThemeState] = useState<AnalyticsTheme>("light");
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setThemeState(readTheme());
@@ -72,7 +81,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      // The links are display:none once closed, so focus would fall to <body>.
+      toggleRef.current?.focus();
     };
     const onDesktop = (event: MediaQueryListEvent) => {
       if (event.matches) setOpen(false);
@@ -105,6 +117,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <span className="wordmark">Analytics Kit</span>
           </Link>
           <button
+            ref={toggleRef}
             type="button"
             className="nav-toggle"
             aria-expanded={open}
@@ -139,8 +152,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <footer className="foot">
           <p>
             <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
-            <span> · sample from </span>
-            <a href="https://smoothui.dev">smoothui.dev</a>
             <span> · </span>
             <a href="/llms.txt">llms.txt</a>
             <span> · photos </span>

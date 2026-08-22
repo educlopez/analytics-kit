@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMockConnector, createSmoothuiMockConnector, mockQuery } from "./index.js";
+import { createAnalyticsKitMockConnector, createMockConnector, mockQuery } from "./index.js";
 
 describe("createMockConnector", () => {
   it("exposes a synchronous preview query", () => {
@@ -41,15 +41,15 @@ describe("createMockConnector", () => {
     expect(live?.currentPages?.length).toBeGreaterThan(0);
   });
 
-  it("uses SmoothUI routes for the landing dataset", async () => {
-    const connector = createSmoothuiMockConnector();
-    expect(connector.name).toBe("smoothui.dev");
+  it("uses this site's routes for the landing dataset", async () => {
+    const connector = createAnalyticsKitMockConnector();
+    expect(connector.name).toBe("analytics-kit-demo.vercel.app");
     const result = await connector.query({
       range: "7d",
       metrics: ["pageviews"],
       dimensions: ["path"],
     });
-    expect(result.breakdown.some((row) => row.key === "/docs/components/siri-orb")).toBe(true);
+    expect(result.breakdown.some((row) => row.key === "/components/area-chart")).toBe(true);
     expect(result.breakdown[0]?.key).toBe("/");
   });
 

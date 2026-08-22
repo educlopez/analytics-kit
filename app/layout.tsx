@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { DM_Mono, DM_Sans, Newsreader } from "next/font/google";
 import { SiteShell } from "../src/site/SiteShell";
 import "../src/tailwind.css";
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <SiteShell>{children}</SiteShell>
+        <Analytics />
       </body>
     </html>
   );

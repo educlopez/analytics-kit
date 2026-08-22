@@ -12,3 +12,8 @@ coverage
 public/r
 agent-tools
 *.tgz
+.vercel
+
+# env files — keep .env.example tracked
+.env
+.env*.local
