@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ComponentsPage } from "../../src/pages/Components";
+import { ComponentsPage } from "../../src/views/Components";
 
 export const metadata: Metadata = {
   title: "Components",

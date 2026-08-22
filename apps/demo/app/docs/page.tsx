@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DocsPage } from "../../src/pages/Docs";
+import { DocsPage } from "../../src/views/Docs";
 
 export const metadata: Metadata = {
   title: "Docs",
