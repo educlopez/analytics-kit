@@ -11,6 +11,7 @@ export default tseslint.config(
       "**/dist/**",
       "**/node_modules/**",
       "apps/demo/dist/**",
+      "apps/demo/.next/**",
       "apps/demo/public/r/**",
       "coverage/**",
       "agent-tools/**",

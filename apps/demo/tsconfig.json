@@ -1,9 +1,20 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "noEmit": true,
-    "types": ["vite/client"]
+    "allowJs": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "paths": {
+      "@analytics-kit/react": ["../../packages/react/src/index.ts"],
+      "@analytics-kit/core": ["../../packages/core/src/index.ts"],
+      "@analytics-kit/next": ["../../packages/next/src/index.ts"],
+      "@analytics-kit/connector-mock": ["../../packages/connector-mock/src/index.ts"],
+      "@analytics-kit/connector-vercel": ["../../packages/connector-vercel/src/index.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["app", "src", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

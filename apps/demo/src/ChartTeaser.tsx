@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import { createMockConnector } from "@analytics-kit/connector-mock";
 import {
@@ -7,7 +9,7 @@ import {
   useQuery,
   type AnalyticsTheme,
 } from "@analytics-kit/react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function TeaserCharts() {
   const series = useQuery({ metrics: ["visitors"], granularity: "day" });
@@ -61,10 +63,10 @@ export function ChartTeaser({ theme }: { theme: AnalyticsTheme }) {
         <TeaserCharts />
       </AnalyticsProvider>
       <div className="teaser-actions">
-        <Link className="btn btn-ink" to="/components">
+        <Link className="btn btn-ink" href="/components">
           All components &amp; config
         </Link>
-        <Link className="ghost" to="/docs">
+        <Link className="ghost" href="/docs">
           Read the docs
         </Link>
       </div>

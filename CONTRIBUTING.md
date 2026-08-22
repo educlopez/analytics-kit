@@ -4,9 +4,12 @@
 
 ```bash
 pnpm install
+pnpm build
 pnpm check
 pnpm dev
 ```
+
+`pnpm dev` starts the Next.js site in `apps/demo`.
 
 Requires Node 20+ (22 recommended, see `.nvmrc`) and pnpm 10.
 
@@ -49,4 +52,4 @@ Copy [`examples/custom-connector.ts`](examples/custom-connector.ts) into `packag
 
 See [`examples/custom-widget.tsx`](examples/custom-widget.tsx). Register with `defineWidget` so `<Dashboard />` can render it by id.
 
-To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files for GitHub Pages (`/r/{name}.json`).
+To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files into `apps/demo/public/r` (served by the Next.js site).

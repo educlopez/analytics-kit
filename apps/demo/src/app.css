@@ -25,9 +25,9 @@
   --chart-3: #c45c26;
   --chart-4: #7c6a4a;
   --chart-5: #5b4a8a;
-  --title: "Newsreader", "Times New Roman", serif;
-  --body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --mono: "DM Mono", ui-monospace, monospace;
+  --title: var(--font-title), "Newsreader", "Times New Roman", serif;
+  --body: var(--font-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--font-mono), "DM Mono", ui-monospace, monospace;
   --shadow: 0 18px 50px rgb(18 12 8 / 0.08);
   --radius: 22px;
   --page-pad: 20px;

@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react";
-import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { createHttpConnector } from "@analytics-kit/core";
 import { AnalyticsProvider, Dashboard, defaultDashboard } from "@analytics-kit/react";
-import type { AnalyticsConnector } from "@analytics-kit/core";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { ChartTeaser } from "../ChartTeaser";
 import { CoverImg } from "../site/CoverImg";
 import { useSite } from "../site/SiteShell";
 import { useCopy } from "../site/useCopy";
+import { useRegistryCommand } from "../site/useRegistryCommand";
 
-const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
-
-const REGISTRY =
-  "pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json";
+const INSTALL =
+  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
 
 const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
+import { createHttpConnector } from "@analytics-kit/core";
 
-const connector = createVercelConnector({
-  token: process.env.VERCEL_TOKEN!,
-  projectId: process.env.VERCEL_PROJECT_ID!,
-});
+const connector = createHttpConnector({ endpoint: "/api/analytics" });
 
 export function Stats() {
   return (
@@ -95,33 +91,19 @@ const FAQS = [
   },
 ];
 
-function createDemoConnector(): { connector: AnalyticsConnector; live: boolean } {
-  const token = import.meta.env.VITE_VERCEL_TOKEN;
-  const projectId = import.meta.env.VITE_VERCEL_PROJECT_ID;
-  if (token && projectId) {
-    return {
-      live: true,
-      connector: createVercelConnector({
-        token,
-        projectId,
-        teamId: import.meta.env.VITE_VERCEL_TEAM_ID,
-      }),
-    };
-  }
-  return {
-    live: false,
-    connector: createSmoothuiMockConnector({ profile: "vercel" }),
-  };
-}
-
 export function HomePage() {
   const { theme } = useSite();
-  const [{ connector, live }] = useState(createDemoConnector);
+  const connector = useMemo(() => createHttpConnector({ endpoint: "/api/analytics" }), []);
   const { copied, copy } = useCopy();
+  const registry = useRegistryCommand("dashboard");
+  const [live, setLive] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    document.title = "Analytics Kit — One dashboard. Any analytics tool.";
+    void fetch("/api/analytics")
+      .then((response) => response.json() as Promise<{ id?: string }>)
+      .then((info) => setLive(info.id === "vercel"))
+      .catch(() => setLive(false));
   }, []);
 
   return (
@@ -205,7 +187,7 @@ export function HomePage() {
             <p className="lede compact">
               {live
                 ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel capability profile with SmoothUI routes. Add VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the real project."}
+                : "Vercel capability profile with SmoothUI routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load the real project."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>
@@ -230,9 +212,9 @@ export function HomePage() {
             <p className="lede compact">
               A small taste of the kit. Every chart has visual <code>variant</code>s — the drawing,
               not a color theme. Colors inherit from your CSS.{" "}
-              <Link to="/components">See every component and its config</Link>
+              <Link href="/components">See every component and its config</Link>
               {" · "}
-              <Link to="/docs">Read the docs</Link>.
+              <Link href="/docs">Read the docs</Link>.
             </p>
           </div>
         </div>
@@ -248,17 +230,18 @@ export function HomePage() {
               <em> Own the file.</em>
             </h2>
             <p className="lede compact">
-              Add the catalog from GitHub Pages, or <code>educlopez/analytics-kit/dashboard</code>{" "}
-              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+              Add the catalog from this site’s <code>/r</code> folder, or{" "}
+              <code>educlopez/analytics-kit/dashboard</code> from the repo. Runtime still comes from
+              npm so connectors and queries stay canonical.
             </p>
           </div>
-          <button type="button" className="ghost" onClick={() => void copy(REGISTRY, "registry")}>
+          <button type="button" className="ghost" onClick={() => void copy(registry, "registry")}>
             {copied === "registry" ? "Copied" : "Copy"}
           </button>
         </div>
-        <button type="button" className="install" onClick={() => void copy(REGISTRY, "registry")}>
+        <button type="button" className="install" onClick={() => void copy(registry, "registry")}>
           <span>$</span>
-          <code>{REGISTRY}</code>
+          <code>{registry}</code>
           <em>{copied === "registry" ? "Copied" : "Copy"}</em>
         </button>
       </section>

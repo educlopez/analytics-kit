@@ -12,7 +12,7 @@
     "build": "pnpm -r --filter=./packages/* run build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "pnpm -r --filter=./packages/* run typecheck",
+    "typecheck": "pnpm -r --filter=./packages/* run typecheck && pnpm --filter @analytics-kit/demo typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -32,7 +32,7 @@
       "esbuild"
     ]
   },
-  "homepage": "https://educlopez.github.io/analytics-kit/",
+  "homepage": "https://github.com/educlopez/analytics-kit",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/educlopez/analytics-kit.git"

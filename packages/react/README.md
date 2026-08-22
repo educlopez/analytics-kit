@@ -35,7 +35,7 @@ Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs step 
 ## shadcn registry
 
 ```bash
-pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/area-chart.json
+pnpm dlx shadcn@latest add https://<your-domain>/r/area-chart.json
 ```
 
 Part of [Analytics Kit](https://github.com/educlopez/analytics-kit).

@@ -8,6 +8,7 @@ import { createRouteHandlers } from "@analytics-kit/next";
  * Server route — keep provider secrets here.
  *
  * app/api/analytics/route.ts
+ * Live example: apps/demo/app/api/analytics/route.ts
  */
 const connector =
   process.env.ANALYTICS_PROVIDER === "vercel"

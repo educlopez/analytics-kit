@@ -1,4 +1,6 @@
-import { useEffect, useMemo, type ReactNode } from "react";
+"use client";
+
+import { useMemo, type ReactNode } from "react";
 import { createMockConnector } from "@analytics-kit/connector-mock";
 import {
   AREA_CHART_VARIANTS,
@@ -21,7 +23,7 @@ import {
   useQuery,
   type AnalyticsTheme,
 } from "@analytics-kit/react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { PropsTable, type PropRow } from "../site/PropsTable";
 import { useSite } from "../site/SiteShell";
 
@@ -538,10 +540,6 @@ function LiveCatalog({ theme }: { theme: AnalyticsTheme }) {
 export function ComponentsPage() {
   const { theme } = useSite();
 
-  useEffect(() => {
-    document.title = "Components — Analytics Kit";
-  }, []);
-
   return (
     <>
       <header className="page-head">
@@ -553,7 +551,7 @@ export function ComponentsPage() {
         <p className="lede compact">
           Visual <code>variant</code>s change the drawing. Colors inherit from{" "}
           <code>--chart-1</code>…<code>--chart-5</code> on this page. Setup and the query model live
-          in the <Link to="/docs">docs</Link>.
+          in the <Link href="/docs">docs</Link>.
         </p>
       </header>
 

@@ -1,7 +1,9 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { PropsTable } from "../site/PropsTable";
 import { useCopy } from "../site/useCopy";
+import { useRegistryCommand } from "../site/useRegistryCommand";
 
 const TOC = [
   { href: "#install", label: "Install" },
@@ -16,7 +18,8 @@ const TOC = [
   { href: "#extend", label: "Extend" },
 ] as const;
 
-const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
+const INSTALL =
+  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
 
 const PROVIDER = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
@@ -64,15 +67,9 @@ const connector = createVercelConnector({
 
 export const { GET, POST } = createRouteHandlers({ connector });`;
 
-const REGISTRY =
-  "pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json";
-
 export function DocsPage() {
   const { copied, copy } = useCopy();
-
-  useEffect(() => {
-    document.title = "Docs — Analytics Kit";
-  }, []);
+  const registry = useRegistryCommand("dashboard");
 
   return (
     <>
@@ -84,7 +81,7 @@ export function DocsPage() {
         </h1>
         <p className="lede compact">
           Connectors, the query model, chart variants, and how colors follow the host site. For
-          every drawing and its props, see <Link to="/components">Components</Link>.
+          every drawing and its props, see <Link href="/components">Components</Link>.
         </p>
       </header>
 
@@ -318,7 +315,7 @@ export function DocsPage() {
             <p className="lede compact">
               Shared chart props: <code>data</code>, <code>dataKey</code>, <code>labelKey</code>,{" "}
               <code>variant</code>, <code>config</code>, <code>className</code>. Full tables live on{" "}
-              <Link to="/components">the components page</Link>.
+              <Link href="/components">the components page</Link>.
             </p>
           </section>
 
@@ -400,8 +397,9 @@ export function DocsPage() {
               <code>{HANDLER}</code>
             </pre>
             <p className="lede compact">
-              Browser: <code>createHttpConnector({`{ endpoint: "/api/analytics" }`})</code>. See{" "}
-              <code>examples/next-app-route.ts</code> in the repo.
+              Browser: <code>createHttpConnector({`{ endpoint: "/api/analytics" }`})</code>. This
+              site does that in <code>app/api/analytics/route.ts</code>. Also{" "}
+              <code>examples/next-app-route.ts</code>.
             </p>
           </section>
 
@@ -415,10 +413,10 @@ export function DocsPage() {
             <button
               type="button"
               className="install"
-              onClick={() => void copy(REGISTRY, "registry")}
+              onClick={() => void copy(registry, "registry")}
             >
               <span>$</span>
-              <code>{REGISTRY}</code>
+              <code>{registry}</code>
               <em>{copied === "registry" ? "Copied" : "Copy"}</em>
             </button>
             <p className="lede compact">
@@ -439,7 +437,7 @@ export function DocsPage() {
               <code>examples/custom-widget.tsx</code>.
             </p>
             <p className="lede compact">
-              Next: <Link to="/components">every component, every variant, every prop</Link>.
+              Next: <Link href="/components">every component, every variant, every prop</Link>.
             </p>
           </section>
         </div>
