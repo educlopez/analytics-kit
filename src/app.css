@@ -1068,6 +1068,32 @@ html[data-theme="dark"] .style-switch button.is-active {
   color: var(--muted);
 }
 
+.detail-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-tabs button {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 12px 16px;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.detail-tabs button.is-active {
+  color: var(--text);
+  border-bottom-color: var(--ink);
+}
+
 .demo-canvas {
   background:
     radial-gradient(
@@ -1082,6 +1108,23 @@ html[data-theme="dark"] .style-switch button.is-active {
   padding: 20px 16px 12px;
   min-height: 280px;
   min-width: 0;
+}
+
+.demo-canvas-hero {
+  margin-top: 18px;
+  min-height: 420px;
+  padding: 28px 24px 20px;
+  display: grid;
+  align-content: center;
+}
+
+.demo-chart-frame {
+  width: 100%;
+  min-height: 72px;
+}
+
+.demo-chart-frame .ak-rechart {
+  height: 100% !important;
 }
 
 .demo-canvas-mini {
@@ -1101,6 +1144,168 @@ html[data-theme="dark"] .style-switch button.is-active {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--muted);
+}
+
+.customize {
+  margin-top: 8px;
+  padding: 22px 0 4px;
+}
+
+.customize-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.customize-head h2,
+.props-section h2,
+.deps-section h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: var(--body);
+  color: var(--muted);
+}
+
+.customize-reset {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.preview-controls {
+  display: grid;
+  gap: 18px;
+}
+
+.preview-control-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preview-control-head code {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.preview-slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--blue);
+}
+
+.preview-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preview-switch input {
+  width: 36px;
+  height: 20px;
+  accent-color: var(--blue);
+}
+
+.preview-enum .variant-switch {
+  margin: 0;
+}
+
+.code-panel {
+  display: grid;
+  gap: 22px;
+  padding: 22px 0 8px;
+}
+
+.code-block-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.code-block-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.code-block-head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.code-block-head button {
+  appearance: none;
+  flex: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.code-block .snippet {
+  padding: 16px 18px;
+}
+
+.deps-section {
+  padding-top: 4px;
+}
+
+.dep-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dep-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dep-list code {
+  font-family: var(--mono);
+  color: var(--text);
+}
+
+.props-section {
+  padding-top: 32px;
 }
 
 .install-stack {
@@ -1199,6 +1404,15 @@ html[data-theme="dark"] .variant-switch button.is-active {
 
   .variant-grid {
     grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-hero {
+    min-height: 320px;
+    padding: 18px 14px 14px;
+  }
+
+  .detail-tabs button {
+    padding: 10px 12px;
   }
 
   .page-head {

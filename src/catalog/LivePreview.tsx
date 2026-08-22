@@ -22,62 +22,59 @@ import {
   type MetricCardVariant,
   type PieChartVariant,
 } from "@analytics-kit/react";
+import type { PreviewKnobs } from "./knobs";
 
 function PreviewInner({
   slug,
-  variant,
+  knobs,
   preview,
 }: {
   slug: string;
-  variant: string;
+  knobs: PreviewKnobs;
   preview?: boolean;
 }) {
-  const seriesQuery = useQuery({ metrics: ["visitors"], granularity: "day" });
+  const seriesQuery = useQuery({ metrics: [knobs.metric], granularity: "day" });
   const browsers = useQuery({
-    metrics: ["visitors"],
+    metrics: [knobs.metric],
     dimensions: ["browser"],
     limit: 6,
   });
   const series = (seriesQuery.data?.series ?? []).map((point) => ({
     date: point.date,
-    value: point.values.visitors ?? 0,
+    value: point.values[knobs.metric] ?? 0,
   }));
   const breakdown = (browsers.data?.breakdown ?? []).map((row) => ({
     label: row.label ?? row.key,
-    value: row.values.visitors ?? 0,
+    value: row.values[knobs.metric] ?? 0,
   }));
   const rows = browsers.data?.breakdown ?? [];
 
   if (slug === "area-chart") {
-    return (
-      <AreaChart
-        data={series}
-        variant={variant as AreaChartVariant}
-        className={variant === "spark" ? "h-[88px]" : undefined}
-      />
-    );
+    return <AreaChart data={series} variant={knobs.variant as AreaChartVariant} />;
   }
   if (slug === "line-chart") {
-    return <LineChart data={series} variant={variant as LineChartVariant} />;
+    return <LineChart data={series} variant={knobs.variant as LineChartVariant} />;
   }
   if (slug === "bar-chart") {
-    return <BarChart data={breakdown} variant={variant as BarChartVariant} />;
+    return <BarChart data={breakdown} variant={knobs.variant as BarChartVariant} />;
   }
   if (slug === "pie-chart") {
-    return <PieChart data={breakdown} variant={variant as PieChartVariant} />;
+    return <PieChart data={breakdown} variant={knobs.variant as PieChartVariant} />;
   }
   if (slug === "metric-card") {
-    return <MetricCard metric="visitors" variant={variant as MetricCardVariant} />;
+    return <MetricCard metric={knobs.metric} variant={knobs.variant as MetricCardVariant} />;
   }
   if (slug === "ranked-list") {
-    return <RankedList rows={rows} metric="visitors" variant={variant as BarListVariant} />;
+    return (
+      <RankedList rows={rows} metric={knobs.metric} variant={knobs.variant as BarListVariant} />
+    );
   }
   if (slug === "dashboard") {
     return (
       <Dashboard
         widgets={preview ? defaultDashboard : catalogDashboard}
-        showRange={!preview}
-        columns={4}
+        showRange={preview ? false : knobs.showRange}
+        columns={preview ? 4 : knobs.columns}
       />
     );
   }
@@ -89,20 +86,29 @@ export function LivePreview({
   variant,
   theme,
   preview,
+  knobs,
 }: {
   slug: string;
-  variant: string;
+  variant?: string;
   theme: AnalyticsTheme;
   preview?: boolean;
+  knobs?: Partial<PreviewKnobs>;
 }) {
   const connector = useMemo(
     () => createMockConnector({ profile: "full", siteName: "Catalog", seed: 11 }),
     [],
   );
+  const resolved: PreviewKnobs = {
+    variant: knobs?.variant ?? variant ?? "",
+    metric: knobs?.metric ?? "visitors",
+    height: knobs?.height ?? 220,
+    columns: knobs?.columns ?? 4,
+    showRange: knobs?.showRange ?? true,
+  };
 
   return (
     <AnalyticsProvider connector={connector} theme={theme} range="30d">
-      <PreviewInner slug={slug} variant={variant} preview={preview} />
+      <PreviewInner slug={slug} knobs={resolved} preview={preview} />
     </AnalyticsProvider>
   );
 }
