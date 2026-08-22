@@ -209,15 +209,20 @@ The product site is the Next.js app at the repo root. The browser talks to `/api
 1. Import `educlopez/analytics-kit` in Vercel.
 2. Framework: **Next.js**. Root Directory: **empty** (repository root).
 3. Install / build commands come from `vercel.json` (workspace install, package build, registry, then `next build`).
-4. Env (optional, for the live SmoothUI dashboard):
-   - `ANALYTICS_VERCEL_TOKEN`
+4. Enable **Web Analytics** on the project (Vercel dashboard → Analytics → Enable). Without it the
+   query API returns `404 Web Analytics not found`.
+5. Env (optional, for the live dashboard):
+   - `ANALYTICS_VERCEL_TOKEN` — account token scoped to the team that owns the project
    - `ANALYTICS_VERCEL_PROJECT_ID`
    - `ANALYTICS_VERCEL_TEAM_ID`
    - `NEXT_PUBLIC_SITE_URL=https://analytics-kit-demo.vercel.app`
 
-Do not use Vercel’s auto-injected `VERCEL_PROJECT_ID` as the analytics source — that is this site, not SmoothUI.
+The dashboard reports this site's own traffic, collected by `@vercel/analytics` in `app/layout.tsx`.
+Set `ANALYTICS_VERCEL_PROJECT_ID` explicitly — the connector does not read Vercel's auto-injected
+`VERCEL_PROJECT_ID`.
 
-Without those analytics env vars, the dashboard uses the Vercel-profile mock shaped like [smoothui.dev](https://smoothui.dev) traffic.
+Without those analytics env vars, the dashboard uses the Vercel-profile mock shaped like this site's
+own routes.
 
 ```bash
 pnpm install

@@ -1,4 +1,4 @@
-import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
+import { createAnalyticsKitMockConnector } from "@analytics-kit/connector-mock";
 import { createVercelConnector } from "@analytics-kit/connector-vercel";
 import { createRouteHandlers } from "@analytics-kit/next";
 
@@ -15,6 +15,6 @@ const connector =
         projectId,
         teamId: process.env.ANALYTICS_VERCEL_TEAM_ID,
       })
-    : createSmoothuiMockConnector({ profile: "vercel" });
+    : createAnalyticsKitMockConnector({ profile: "vercel" });
 
 export const { GET, POST, OPTIONS } = createRouteHandlers({ connector });

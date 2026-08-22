@@ -29,10 +29,10 @@ export function Stats() {
 
 const TICKER = [
   "12.4k visitors this week",
-  "Posted /docs/components/siri-orb",
+  "Posted /components/area-chart",
   "github.com is the top referrer",
   "Desktop 62% · Mobile 31%",
-  "smoothui.dev · Vercel Analytics",
+  "analytics-kit-demo.vercel.app · Vercel Analytics",
   "Swapped Plausible → Vercel",
 ];
 
@@ -182,13 +182,13 @@ export function HomePage() {
           <div>
             <p className="kicker">Live example</p>
             <h2>
-              smoothui.dev,
+              This site,
               <em> through Vercel.</em>
             </h2>
             <p className="lede compact">
               {live
-                ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel capability profile with SmoothUI routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load the real project."}
+                ? "Live Vercel Web Analytics for this site."
+                : "Vercel capability profile with this site's routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load real data."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>

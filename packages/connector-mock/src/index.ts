@@ -51,29 +51,36 @@ const DEFAULT_DATASET: Required<MockDataset> = {
   mediums: ["organic", "social", "email", "referral"],
 };
 
-/** Real routes and sources from smoothui.dev — used when live Vercel credentials are not available. */
-export const SMOOTHUI_DATASET: Required<MockDataset> = {
+/** Real routes and sources from this site — used when live Vercel credentials are not available. */
+export const ANALYTICS_KIT_DATASET: Required<MockDataset> = {
   paths: [
     "/",
     "/docs",
-    "/docs/components",
-    "/docs/components/siri-orb",
-    "/docs/components/dynamic-island",
-    "/docs/components/animated-tabs",
-    "/docs/components/scrollable-card-stack",
-    "/docs/components/expandable-cards",
-    "/docs/blocks",
-    "/docs/guides/ai-integration",
-    "/docs/guides/changelog",
-    "/sponsors",
+    "/components",
+    "/components/area-chart",
+    "/components/line-chart",
+    "/components/bar-chart",
+    "/components/metric-card",
+    "/components/heatmap-chart",
+    "/components/live-line-chart",
+    "/components/sankey-chart",
+    "/llms.txt",
   ],
-  referrers: ["github.com", "google", "x.com", "direct", "shadcn.com", "youtube.com", "reddit.com"],
+  referrers: [
+    "github.com",
+    "google",
+    "x.com",
+    "direct",
+    "shadcn.com",
+    "news.ycombinator.com",
+    "reddit.com",
+  ],
   countries: ["US", "DE", "GB", "IN", "BR", "ES", "FR", "NL"],
   devices: ["Desktop", "Mobile", "Tablet"],
   browsers: ["Chrome", "Safari", "Firefox", "Edge"],
   os: ["macOS", "Windows", "iOS", "Android", "Linux"],
   events: ["install_copy", "component_preview", "registry_install", "docs_search"],
-  campaigns: ["launch", "docs", "smoothui-kit", "brand"],
+  campaigns: ["launch", "docs", "analytics-kit", "brand"],
   mediums: ["organic", "social", "email", "referral"],
 };
 
@@ -125,7 +132,7 @@ export function createMockConnector(options: MockConnectorOptions = {}): Analyti
   });
 }
 
-export function createSmoothuiMockConnector(
+export function createAnalyticsKitMockConnector(
   options: Omit<MockConnectorOptions, "dataset" | "siteName"> = {},
 ): AnalyticsConnector {
   return createMockConnector({
@@ -133,8 +140,8 @@ export function createSmoothuiMockConnector(
     profile: "vercel",
     scale: 2.4,
     ...options,
-    siteName: "smoothui.dev",
-    dataset: SMOOTHUI_DATASET,
+    siteName: "analytics-kit-demo.vercel.app",
+    dataset: ANALYTICS_KIT_DATASET,
   });
 }
 
