@@ -28,12 +28,12 @@ export function Stats() {
 }`;
 
 const TICKER = [
-  "12.4k visitors this week",
-  "Posted /docs/components/siri-orb",
+  "This site’s own Vercel Analytics",
+  "Posted /components/area-chart",
   "github.com is the top referrer",
   "Desktop 62% · Mobile 31%",
-  "smoothui.dev · Vercel Analytics",
-  "Swapped Plausible → Vercel",
+  "analytics-kit-demo · live traffic",
+  "Same widgets. This project’s visitors.",
 ];
 
 const FEATURES = [
@@ -72,7 +72,7 @@ const STEPS = [
 const FAQS = [
   {
     q: "Is this tied to Vercel?",
-    a: "No. This landing uses the Vercel connector as the example. Plausible, GA4, Umami, and PostHog ship in the same release. The widgets do not change.",
+    a: "No. This landing uses this site’s own Vercel Web Analytics as the example. Plausible, GA4, Umami, and PostHog ship in the same release. The widgets do not change.",
   },
   {
     q: "Where do API tokens live?",
@@ -182,13 +182,13 @@ export function HomePage() {
           <div>
             <p className="kicker">Live example</p>
             <h2>
-              smoothui.dev,
+              this project,
               <em> through Vercel.</em>
             </h2>
             <p className="lede compact">
               {live
-                ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel capability profile with SmoothUI routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load the real project."}
+                ? "Live Vercel Web Analytics for this site."
+                : "Vercel capability profile with this site’s routes. Set ANALYTICS_VERCEL_TOKEN or VERCEL_TOKEN on the server. On Vercel, VERCEL_PROJECT_ID is used automatically."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>

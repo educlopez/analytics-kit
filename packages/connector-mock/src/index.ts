@@ -51,29 +51,27 @@ const DEFAULT_DATASET: Required<MockDataset> = {
   mediums: ["organic", "social", "email", "referral"],
 };
 
-/** Real routes and sources from smoothui.dev — used when live Vercel credentials are not available. */
-export const SMOOTHUI_DATASET: Required<MockDataset> = {
+/** This site’s routes — used when live Vercel credentials are not available. */
+export const DEMO_DATASET: Required<MockDataset> = {
   paths: [
     "/",
     "/docs",
-    "/docs/components",
-    "/docs/components/siri-orb",
-    "/docs/components/dynamic-island",
-    "/docs/components/animated-tabs",
-    "/docs/components/scrollable-card-stack",
-    "/docs/components/expandable-cards",
-    "/docs/blocks",
-    "/docs/guides/ai-integration",
-    "/docs/guides/changelog",
-    "/sponsors",
+    "/components",
+    "/components/area-chart",
+    "/components/line-chart",
+    "/components/bar-chart",
+    "/components/dashboard",
+    "/components/metric-card",
+    "/components/funnel-chart",
+    "/llms.txt",
   ],
-  referrers: ["github.com", "google", "x.com", "direct", "shadcn.com", "youtube.com", "reddit.com"],
+  referrers: ["github.com", "google", "x.com", "direct", "vercel.com", "npmjs.com", "cursor.com"],
   countries: ["US", "DE", "GB", "IN", "BR", "ES", "FR", "NL"],
   devices: ["Desktop", "Mobile", "Tablet"],
   browsers: ["Chrome", "Safari", "Firefox", "Edge"],
   os: ["macOS", "Windows", "iOS", "Android", "Linux"],
   events: ["install_copy", "component_preview", "registry_install", "docs_search"],
-  campaigns: ["launch", "docs", "smoothui-kit", "brand"],
+  campaigns: ["launch", "docs", "catalog", "brand"],
   mediums: ["organic", "social", "email", "referral"],
 };
 
@@ -125,16 +123,16 @@ export function createMockConnector(options: MockConnectorOptions = {}): Analyti
   });
 }
 
-export function createSmoothuiMockConnector(
+export function createDemoMockConnector(
   options: Omit<MockConnectorOptions, "dataset" | "siteName"> = {},
 ): AnalyticsConnector {
   return createMockConnector({
     seed: 21,
     profile: "vercel",
-    scale: 2.4,
+    scale: 1.4,
     ...options,
-    siteName: "smoothui.dev",
-    dataset: SMOOTHUI_DATASET,
+    siteName: "analytics-kit-demo",
+    dataset: DEMO_DATASET,
   });
 }
 

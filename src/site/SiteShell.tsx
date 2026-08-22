@@ -102,9 +102,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <footer className="foot">
           <p>
             <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
-            <span> · sample from </span>
-            <a href="https://smoothui.dev">smoothui.dev</a>
-            <span> · </span>
+            <span> · this site’s Vercel Analytics · </span>
             <a href="/llms.txt">llms.txt</a>
             <span> · photos </span>
             <a href="https://unsplash.com">Unsplash</a>
