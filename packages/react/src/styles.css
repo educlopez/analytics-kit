@@ -431,6 +431,77 @@
   font-size: 13px;
 }
 
+.ak-sankey-label {
+  fill: var(--ak-muted);
+  font-size: 11px;
+}
+
+.ak-tiles,
+.ak-heat {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-tiles {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+}
+
+.ak-tiles li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  min-height: 64px;
+}
+
+.ak-tiles strong {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.ak-tiles span {
+  font-size: 11px;
+  color: var(--ak-text);
+}
+
+.ak-tiles-heat li {
+  min-height: 48px;
+}
+
+.ak-heat {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.ak-heat span {
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.ak-heat-matrix {
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.ak-rings,
+.ak-sunburst {
+  display: grid;
+  grid-template-columns: minmax(140px, 180px) 1fr;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+}
+
+.ak-rings .ak-gauge-svg,
+.ak-sunburst .ak-gauge-svg {
+  max-width: 180px;
+}
+
+.ak-candles {
+  width: 100%;
+}
+
 @keyframes ak-ping {
   0% {
     opacity: 0.38;

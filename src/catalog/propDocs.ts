@@ -209,6 +209,278 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       notes: "Chart container. Default height is 220px.",
     },
   ],
+  "scatter-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Points with numeric x and y. Optional z for bubble size.",
+    },
+    {
+      name: "xKey",
+      type: "string",
+      default: '"x"',
+      notes: "Horizontal numeric field.",
+    },
+    {
+      name: "yKey",
+      type: "string",
+      default: '"y"',
+      notes: "Vertical numeric field.",
+    },
+    {
+      name: "zKey",
+      type: "string",
+      default: '"z"',
+      notes: "Used only by the bubble variant.",
+    },
+    {
+      name: "variant",
+      type: '"dots" | "bubble" | "glow"',
+      default: '"dots"',
+      notes: "Equal dots, sized bubbles, or a bloom on each point.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Color and label for yKey.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "sankey-chart": [
+    {
+      name: "nodes",
+      type: "SankeyNode[]",
+      notes: "{ name }[]. Ignored when data is passed.",
+    },
+    {
+      name: "links",
+      type: "SankeyLink[]",
+      notes: "{ source, target, value }[] using node indexes.",
+    },
+    {
+      name: "data",
+      type: "{ nodes, links }",
+      notes: "Alternate payload. Wins over nodes and links.",
+    },
+    {
+      name: "variant",
+      type: '"flow" | "gradient" | "dither"',
+      default: '"flow"',
+      notes: "Link curvature and opacity. The drawing, not a palette.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "candlestick-chart": [
+    {
+      name: "data",
+      type: "CandleDatum[]",
+      notes: "{ date, open, high, low, close }[] in order.",
+    },
+    {
+      name: "variant",
+      type: '"ohlc" | "hollow" | "wick"',
+      default: '"ohlc"',
+      notes: "Solid bodies, hollow up-days, or a thin wick.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "choropleth-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Regions. Pass code for a two-letter tile label.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field used for intensity.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Region name. code falls back to the first two letters.",
+    },
+    {
+      name: "variant",
+      type: '"tiles" | "heat" | "dither"',
+      default: '"tiles"',
+      notes: "Labeled tiles, a tighter heat field, or a wash. Not a geoJSON map.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "live-line-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Full series. The chart windows the last N points and steps forward.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "windowSize",
+      type: "number",
+      default: "14",
+      notes: "How many points stay on screen.",
+    },
+    {
+      name: "intervalMs",
+      type: "number",
+      default: "700",
+      notes: "Advance interval. No-op when data.length ≤ windowSize.",
+    },
+    {
+      name: "variant",
+      type: '"stream" | "glow" | "dashed"',
+      default: '"stream"',
+      notes: "Ping on the last point, a bloom, or a dashed pulse.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "ring-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Up to five categories. One ring each when nested.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Legend name.",
+    },
+    {
+      name: "variant",
+      type: '"stack" | "nested" | "track"',
+      default: '"stack"',
+      notes: "Shared ring, concentric rings, or a thick track.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "heatmap-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "One cell per row. Dates read well as a week grid.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field used for intensity.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "Cell title.",
+    },
+    {
+      name: "variant",
+      type: '"calendar" | "matrix" | "dither"',
+      default: '"calendar"',
+      notes: "Seven-column week, a 10-column matrix, or a wash.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "sunburst-chart": [
+    {
+      name: "data",
+      type: "SunburstNode[]",
+      notes: "{ label, value, children? }[]. Two rings: parents then children.",
+    },
+    {
+      name: "variant",
+      type: '"nest" | "burst"',
+      default: '"nest"',
+      notes: "Tight rings or a more open burst.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "profit-loss-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Signed values. Positive is up, negative is down.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Signed numeric field.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "variant",
+      type: '"fill" | "stroke" | "bars"',
+      default: '"fill"',
+      notes: "Split area, a single stroke, or opposing bars.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Colors for up and down. Defaults to --ak-up / --ak-down.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
   "gauge-chart": [
     {
       name: "value",

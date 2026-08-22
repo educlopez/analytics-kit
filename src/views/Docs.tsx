@@ -266,7 +266,7 @@ export function DocsPage() {
             <h2>Charts</h2>
             <p className="lede compact">
               Tailwind + Recharts. Drawings sit next to ReUI, shadcn, Bklit, Ditherkit, EvilCharts,
-              and Amicro — funnel, radar, gauge, composed — still as a <code>variant</code>, not a
+              and Amicro — funnel through sunburst — still as a <code>variant</code>, not a
               palette. Colors come from CSS variables on the host page.
             </p>
             <pre className="snippet">
@@ -321,6 +321,60 @@ export function DocsPage() {
                   type: "arc | ring | tick",
                   default: "arc",
                   notes: "Single-value dial.",
+                },
+                {
+                  name: "ScatterChart",
+                  type: "dots | bubble | glow",
+                  default: "dots",
+                  notes: "Correlation. bubble sizes by z.",
+                },
+                {
+                  name: "SankeyChart",
+                  type: "flow | gradient | dither",
+                  default: "flow",
+                  notes: "Flow between stages. nodes + links.",
+                },
+                {
+                  name: "CandlestickChart",
+                  type: "ohlc | hollow | wick",
+                  default: "ohlc",
+                  notes: "Open, high, low, close.",
+                },
+                {
+                  name: "ChoroplethChart",
+                  type: "tiles | heat | dither",
+                  default: "tiles",
+                  notes: "Region tiles by intensity. Not a geoJSON map.",
+                },
+                {
+                  name: "LiveLineChart",
+                  type: "stream | glow | dashed",
+                  default: "stream",
+                  notes: "Sliding window over a series.",
+                },
+                {
+                  name: "RingChart",
+                  type: "stack | nested | track",
+                  default: "stack",
+                  notes: "Concentric KPI rings.",
+                },
+                {
+                  name: "HeatmapChart",
+                  type: "calendar | matrix | dither",
+                  default: "calendar",
+                  notes: "A grid of intensity cells.",
+                },
+                {
+                  name: "SunburstChart",
+                  type: "nest | burst",
+                  default: "nest",
+                  notes: "Hierarchy as two rings.",
+                },
+                {
+                  name: "ProfitLossChart",
+                  type: "fill | stroke | bars",
+                  default: "fill",
+                  notes: "Signed series above and below zero.",
                 },
                 {
                   name: "MetricCard",
@@ -444,10 +498,8 @@ export function DocsPage() {
               <em>{copied === "registry" ? "Copied" : "Copy"}</em>
             </button>
             <p className="lede compact">
-              Items: <code>chart</code>, <code>area-chart</code>, <code>line-chart</code>,{" "}
-              <code>bar-chart</code>, <code>pie-chart</code>, <code>metric-card</code>,{" "}
-              <code>dashboard</code>. Also <code>educlopez/analytics-kit/dashboard</code> from the
-              GitHub registry.
+              Items: every catalog chart plus <code>metric-card</code> and <code>dashboard</code>.
+              Also <code>educlopez/analytics-kit/dashboard</code> from the GitHub registry.
             </p>
           </section>
 

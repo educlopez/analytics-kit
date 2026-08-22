@@ -18,9 +18,9 @@ export function ComponentsIndex() {
           <em> Install one.</em>
         </h1>
         <p className="lede compact">
-          {CATALOG.length} pieces — area, line, bar, pie, funnel, radar, gauge, composed, metrics,
-          lists, dashboard. Each page has a live Preview, Customize knobs, a Code tab, and the full
-          props table. Colors come from <code>--chart-1</code>…<code>--chart-5</code>.
+          {CATALOG.length} pieces — area through sunburst, metrics, lists, dashboard. Each page has
+          a live Preview, Customize knobs, a Code tab, and the full props table. Colors come from{" "}
+          <code>--chart-1</code>…<code>--chart-5</code>.
         </p>
       </header>
 

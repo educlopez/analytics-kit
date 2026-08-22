@@ -39,10 +39,24 @@ export function itemControls(slug: string) {
     "pie-chart",
     "radar-chart",
     "composed-chart",
+    "scatter-chart",
+    "sankey-chart",
+    "live-line-chart",
+    "profit-loss-chart",
+    "candlestick-chart",
+  ];
+  const noMetric = [
+    "dashboard",
+    "funnel-chart",
+    "composed-chart",
+    "sankey-chart",
+    "candlestick-chart",
+    "sunburst-chart",
+    "profit-loss-chart",
   ];
   return {
     variant: slug !== "dashboard",
-    metric: !["dashboard", "funnel-chart", "composed-chart"].includes(slug),
+    metric: !noMetric.includes(slug),
     height: sized.includes(slug),
     columns: slug === "dashboard",
     showRange: slug === "dashboard",
@@ -128,6 +142,81 @@ const stages = [
   data={points}
   barKey="visitors"
   lineKey="pageviews"${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "scatter-chart") {
+    return `import { ScatterChart } from "@analytics-kit/react";
+
+<ScatterChart
+  data={points}
+  xKey="x"
+  yKey="y"${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "sankey-chart") {
+    return `import { SankeyChart } from "@analytics-kit/react";
+
+<SankeyChart
+  nodes={nodes}
+  links={links}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "candlestick-chart") {
+    return `import { CandlestickChart } from "@analytics-kit/react";
+
+<CandlestickChart
+  data={candles}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "choropleth-chart") {
+    return `import { ChoroplethChart } from "@analytics-kit/react";
+
+<ChoroplethChart
+  data={regions}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "live-line-chart") {
+    return `import { LiveLineChart } from "@analytics-kit/react";
+
+<LiveLineChart
+  data={points}${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "ring-chart") {
+    return `import { RingChart } from "@analytics-kit/react";
+
+<RingChart
+  data={rows}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "heatmap-chart") {
+    return `import { HeatmapChart } from "@analytics-kit/react";
+
+<HeatmapChart
+  data={points}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "sunburst-chart") {
+    return `import { SunburstChart } from "@analytics-kit/react";
+
+<SunburstChart
+  data={tree}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "profit-loss-chart") {
+    return `import { ProfitLossChart } from "@analytics-kit/react";
+
+<ProfitLossChart
+  data={deltas}${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
 />`;
   }
 

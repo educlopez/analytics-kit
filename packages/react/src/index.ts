@@ -7,25 +7,47 @@ export {
   AREA_CHART_VARIANTS,
   BAR_CHART_VARIANTS,
   BAR_LIST_VARIANTS,
+  CANDLESTICK_CHART_VARIANTS,
+  CHOROPLETH_CHART_VARIANTS,
   COMPOSED_CHART_VARIANTS,
   FUNNEL_CHART_VARIANTS,
   GAUGE_CHART_VARIANTS,
+  HEATMAP_CHART_VARIANTS,
   LINE_CHART_VARIANTS,
+  LIVE_LINE_CHART_VARIANTS,
   METRIC_CARD_VARIANTS,
   PIE_CHART_VARIANTS,
+  PROFIT_LOSS_CHART_VARIANTS,
   RADAR_CHART_VARIANTS,
+  RING_CHART_VARIANTS,
+  SANKEY_CHART_VARIANTS,
+  SCATTER_CHART_VARIANTS,
+  SUNBURST_CHART_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
   BarChartVariant,
   BarListVariant,
+  CandleDatum,
+  CandlestickChartVariant,
+  ChoroplethChartVariant,
   ComposedChartVariant,
   FunnelChartVariant,
   GaugeChartVariant,
+  HeatmapChartVariant,
   LineChartVariant,
+  LiveLineChartVariant,
   MetricCardVariant,
   PieChartVariant,
+  ProfitLossChartVariant,
   RadarChartVariant,
+  RingChartVariant,
+  SankeyChartVariant,
+  SankeyLink,
+  SankeyNode,
+  ScatterChartVariant,
+  SunburstChartVariant,
+  SunburstNode,
 } from "./charts/variants.js";
 export { ChartContainer, ChartTooltipBox } from "./charts/chart.js";
 export type { ChartConfig } from "./charts/chart.js";
@@ -37,6 +59,15 @@ export { FunnelChart } from "./charts/funnel-chart.js";
 export { RadarChart } from "./charts/radar-chart.js";
 export { GaugeChart } from "./charts/gauge-chart.js";
 export { ComposedChart } from "./charts/composed-chart.js";
+export { ScatterChart } from "./charts/scatter-chart.js";
+export { SankeyChart } from "./charts/sankey-chart.js";
+export { CandlestickChart } from "./charts/candlestick-chart.js";
+export { ChoroplethChart } from "./charts/choropleth-chart.js";
+export { LiveLineChart } from "./charts/live-line-chart.js";
+export { RingChart } from "./charts/ring-chart.js";
+export { HeatmapChart } from "./charts/heatmap-chart.js";
+export { SunburstChart } from "./charts/sunburst-chart.js";
+export { ProfitLossChart } from "./charts/profit-loss-chart.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,
