@@ -44,7 +44,14 @@ export function RingChart({
           const width = nested ? 9 : variant === "track" ? 16 : 12;
           return (
             <g key={row.label}>
-              <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--ak-border)" strokeWidth={width} />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={r}
+                fill="none"
+                stroke="var(--ak-border)"
+                strokeWidth={width}
+              />
               <circle
                 cx={cx}
                 cy={cy}

@@ -110,27 +110,27 @@ Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.
 <HeatmapChart data={points} variant="calendar" />
 ```
 
-| Component           | Variants                                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| `AreaChart`         | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow`, `hatched`, `bars`, `solid` |
-| `LineChart`         | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`, `ping`, `rainbow`, `values`          |
-| `BarChart`          | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`, `glow`, `gradient`, `duotone`                |
-| `PieChart`          | `donut`, `pie`, `legend`, `dither`, `rounded`, `radial`, `glow`                                        |
-| `FunnelChart`       | `tape`, `steps`, `vertical`                                                                            |
-| `RadarChart`        | `stroke`, `fill`, `glow`, `dither`                                                                     |
-| `ComposedChart`     | `combo`, `highlight`, `overlay`                                                                        |
-| `GaugeChart`        | `arc`, `ring`, `tick`                                                                                  |
-| `ScatterChart`      | `dots`, `bubble`, `glow`                                                                               |
-| `SankeyChart`       | `flow`, `gradient`, `dither`                                                                           |
-| `CandlestickChart`  | `ohlc`, `hollow`, `wick`                                                                               |
-| `ChoroplethChart`   | `tiles`, `heat`, `dither`                                                                              |
-| `LiveLineChart`     | `stream`, `glow`, `dashed`                                                                             |
-| `RingChart`         | `stack`, `nested`, `track`                                                                             |
-| `HeatmapChart`      | `calendar`, `matrix`, `dither`                                                                         |
-| `SunburstChart`     | `nest`, `burst`                                                                                        |
-| `ProfitLossChart`   | `fill`, `stroke`, `bars`                                                                               |
-| `MetricCard`        | `default`, `spark`, `compact`, `hero`                                                                  |
-| `RankedList`        | `bar`, `compact`, `table`                                                                              |
+| Component          | Variants                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `AreaChart`        | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow`, `hatched`, `bars`, `solid` |
+| `LineChart`        | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`, `ping`, `rainbow`, `values`          |
+| `BarChart`         | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`, `glow`, `gradient`, `duotone`                |
+| `PieChart`         | `donut`, `pie`, `legend`, `dither`, `rounded`, `radial`, `glow`                                        |
+| `FunnelChart`      | `tape`, `steps`, `vertical`                                                                            |
+| `RadarChart`       | `stroke`, `fill`, `glow`, `dither`                                                                     |
+| `ComposedChart`    | `combo`, `highlight`, `overlay`                                                                        |
+| `GaugeChart`       | `arc`, `ring`, `tick`                                                                                  |
+| `ScatterChart`     | `dots`, `bubble`, `glow`                                                                               |
+| `SankeyChart`      | `flow`, `gradient`, `dither`                                                                           |
+| `CandlestickChart` | `ohlc`, `hollow`, `wick`                                                                               |
+| `ChoroplethChart`  | `tiles`, `heat`, `dither`                                                                              |
+| `LiveLineChart`    | `stream`, `glow`, `dashed`                                                                             |
+| `RingChart`        | `stack`, `nested`, `track`                                                                             |
+| `HeatmapChart`     | `calendar`, `matrix`, `dither`                                                                         |
+| `SunburstChart`    | `nest`, `burst`                                                                                        |
+| `ProfitLossChart`  | `fill`, `stroke`, `bars`                                                                               |
+| `MetricCard`       | `default`, `spark`, `compact`, `hero`                                                                  |
+| `RankedList`       | `bar`, `compact`, `table`                                                                              |
 
 ## shadcn registry
 

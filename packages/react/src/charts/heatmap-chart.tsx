@@ -31,7 +31,11 @@ export function HeatmapChart({
             ? `color-mix(in srgb, var(--ak-chart-1) ${Math.round(t * 55 + 8)}%, transparent)`
             : `color-mix(in srgb, var(--ak-chart-1) ${Math.round(t * 90)}%, var(--ak-surface-2))`;
         return (
-          <span key={cell.label} style={{ background: fill }} title={`${cell.label}: ${cell.value}`} />
+          <span
+            key={cell.label}
+            style={{ background: fill }}
+            title={`${cell.label}: ${cell.value}`}
+          />
         );
       })}
     </div>

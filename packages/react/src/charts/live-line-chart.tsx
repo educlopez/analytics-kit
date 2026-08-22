@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart as RechartsLine, Tooltip, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
 import { GlowFilter, PingDot } from "./patterns.js";
-import { LIVE_LINE_CHART_VARIANTS, type ChartDatum, type LiveLineChartVariant } from "./variants.js";
+import {
+  LIVE_LINE_CHART_VARIANTS,
+  type ChartDatum,
+  type LiveLineChartVariant,
+} from "./variants.js";
 
 export function LiveLineChart({
   data,

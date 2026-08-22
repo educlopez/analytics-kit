@@ -1,5 +1,9 @@
 import { cn } from "../lib/cn.js";
-import { SUNBURST_CHART_VARIANTS, type SunburstChartVariant, type SunburstNode } from "./variants.js";
+import {
+  SUNBURST_CHART_VARIANTS,
+  type SunburstChartVariant,
+  type SunburstNode,
+} from "./variants.js";
 
 const PALETTE = [
   "var(--ak-chart-1, var(--chart-1))",
@@ -49,9 +53,7 @@ export function SunburstChart({
       color,
       label: node.label,
     });
-    const kids = node.children?.length
-      ? node.children
-      : [{ label: node.label, value: node.value }];
+    const kids = node.children?.length ? node.children : [{ label: node.label, value: node.value }];
     const kidTotal = kids.reduce((sum, kid) => sum + kid.value, 0) || 1;
     let kidAngle = angle;
     kids.forEach((kid) => {
@@ -73,7 +75,12 @@ export function SunburstChart({
           <path key={`i-${slice.label}`} d={slice.path} fill={slice.color} opacity="0.95" />
         ))}
         {outer.map((slice, index) => (
-          <path key={`o-${slice.label}-${index}`} d={slice.path} fill={slice.color} opacity="0.55" />
+          <path
+            key={`o-${slice.label}-${index}`}
+            d={slice.path}
+            fill={slice.color}
+            opacity="0.55"
+          />
         ))}
       </svg>
       <ul className="ak-legend">

@@ -1,5 +1,9 @@
 import { cn } from "../lib/cn.js";
-import { CANDLESTICK_CHART_VARIANTS, type CandleDatum, type CandlestickChartVariant } from "./variants.js";
+import {
+  CANDLESTICK_CHART_VARIANTS,
+  type CandleDatum,
+  type CandlestickChartVariant,
+} from "./variants.js";
 
 export function CandlestickChart({
   data,

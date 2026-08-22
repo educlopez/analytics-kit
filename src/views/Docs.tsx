@@ -266,8 +266,8 @@ export function DocsPage() {
             <h2>Charts</h2>
             <p className="lede compact">
               Tailwind + Recharts. Drawings sit next to ReUI, shadcn, Bklit, Ditherkit, EvilCharts,
-              and Amicro — funnel through sunburst — still as a <code>variant</code>, not a
-              palette. Colors come from CSS variables on the host page.
+              and Amicro — funnel through sunburst — still as a <code>variant</code>, not a palette.
+              Colors come from CSS variables on the host page.
             </p>
             <pre className="snippet">
               <code>{CHART}</code>

@@ -1,14 +1,10 @@
-import {
-  Area,
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { Area, Bar, CartesianGrid, ComposedChart, Line, Tooltip, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
-import { PROFIT_LOSS_CHART_VARIANTS, type ChartDatum, type ProfitLossChartVariant } from "./variants.js";
+import {
+  PROFIT_LOSS_CHART_VARIANTS,
+  type ChartDatum,
+  type ProfitLossChartVariant,
+} from "./variants.js";
 
 export function ProfitLossChart({
   data,
@@ -69,11 +65,29 @@ export function ProfitLossChart({
             <Bar dataKey="down" fill="var(--ak-down)" maxBarSize={18} radius={2} />
           </>
         ) : variant === "stroke" ? (
-          <Line type="monotone" dataKey={dataKey} stroke="var(--ak-chart-1)" strokeWidth={2} dot={false} />
+          <Line
+            type="monotone"
+            dataKey={dataKey}
+            stroke="var(--ak-chart-1)"
+            strokeWidth={2}
+            dot={false}
+          />
         ) : (
           <>
-            <Area type="monotone" dataKey="up" stroke="var(--ak-up)" fill="var(--ak-up)" fillOpacity={0.28} />
-            <Area type="monotone" dataKey="down" stroke="var(--ak-down)" fill="var(--ak-down)" fillOpacity={0.28} />
+            <Area
+              type="monotone"
+              dataKey="up"
+              stroke="var(--ak-up)"
+              fill="var(--ak-up)"
+              fillOpacity={0.28}
+            />
+            <Area
+              type="monotone"
+              dataKey="down"
+              stroke="var(--ak-down)"
+              fill="var(--ak-down)"
+              fillOpacity={0.28}
+            />
           </>
         )}
       </ComposedChart>

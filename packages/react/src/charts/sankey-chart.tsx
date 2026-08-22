@@ -1,6 +1,11 @@
 import { Layer, Rectangle, Sankey, Tooltip } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
-import { SANKEY_CHART_VARIANTS, type SankeyChartVariant, type SankeyLink, type SankeyNode } from "./variants.js";
+import {
+  SANKEY_CHART_VARIANTS,
+  type SankeyChartVariant,
+  type SankeyLink,
+  type SankeyNode,
+} from "./variants.js";
 
 const PALETTE = [
   "var(--ak-chart-1, var(--chart-1))",
@@ -91,7 +96,12 @@ function SankeyNodeBox({
         fill={PALETTE[(index ?? 0) % PALETTE.length]}
         radius={3}
       />
-      <text x={x + width + 8} y={y + height / 2} className="ak-sankey-label" dominantBaseline="middle">
+      <text
+        x={x + width + 8}
+        y={y + height / 2}
+        className="ak-sankey-label"
+        dominantBaseline="middle"
+      >
         {payload?.name}
       </text>
     </g>

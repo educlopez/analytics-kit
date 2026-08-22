@@ -1,5 +1,9 @@
 import { cn } from "../lib/cn.js";
-import { CHOROPLETH_CHART_VARIANTS, type ChartDatum, type ChoroplethChartVariant } from "./variants.js";
+import {
+  CHOROPLETH_CHART_VARIANTS,
+  type ChartDatum,
+  type ChoroplethChartVariant,
+} from "./variants.js";
 
 export function ChoroplethChart({
   data,
