@@ -125,21 +125,21 @@ Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.
 Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@analytics-kit/react` for data:
 
 ```bash
-pnpm dlx shadcn@latest add https://<your-domain>/r/dashboard.json
+pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/dashboard.json
 ```
 
 GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
 
 Items: `chart`, `area-chart`, `line-chart`, `bar-chart`, `pie-chart`, `metric-card`, `dashboard`.
 
-The Next.js site serves `/r/{name}.json`. Set `NEXT_PUBLIC_SITE_URL` so built registry items point at the production origin.
+The site serves `/r/{name}.json`. `NEXT_PUBLIC_SITE_URL` should be `https://analytics-kit-demo.vercel.app` in Vercel so built registry items keep that origin.
 
 Namespace:
 
 ```json
 {
   "registries": {
-    "@analytics-kit": "https://<your-domain>/r/{name}.json"
+    "@analytics-kit": "https://analytics-kit-demo.vercel.app/r/{name}.json"
   }
 }
 ```
@@ -186,7 +186,12 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
-The product site is the Next.js app at the repo root — landing, `/docs`, and `/components`. Import the GitHub repo in Vercel (leave Root Directory empty). The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
+Live site: **https://analytics-kit-demo.vercel.app**
+
+- Docs — https://analytics-kit-demo.vercel.app/docs
+- Components — https://analytics-kit-demo.vercel.app/components
+
+The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
 
 1. Import `educlopez/analytics-kit` in Vercel.
 2. Framework: **Next.js**. Root Directory: **empty** (repository root).
@@ -195,7 +200,7 @@ The product site is the Next.js app at the repo root — landing, `/docs`, and `
    - `ANALYTICS_VERCEL_TOKEN`
    - `ANALYTICS_VERCEL_PROJECT_ID`
    - `ANALYTICS_VERCEL_TEAM_ID`
-   - `NEXT_PUBLIC_SITE_URL` — production origin, no trailing slash
+   - `NEXT_PUBLIC_SITE_URL=https://analytics-kit-demo.vercel.app`
 
 Do not use Vercel’s auto-injected `VERCEL_PROJECT_ID` as the analytics source — that is this site, not SmoothUI.
 

@@ -7,12 +7,15 @@ const outputDir = path.join(root, "public/r");
 const site = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-  "https://analytics-kit.vercel.app"
+  "https://analytics-kit-demo.vercel.app"
 )
   .replace(/\/$/, "")
   .replace(/^(?!https?:\/\/)/, "https://");
 
-const rewriteSite = (value) => value.replaceAll("https://educlopez.github.io/analytics-kit", site);
+const rewriteSite = (value) =>
+  value
+    .replaceAll("https://educlopez.github.io/analytics-kit", site)
+    .replaceAll("https://analytics-kit-demo.vercel.app", site);
 
 const registry = JSON.parse(await readFile(path.join(root, "registry.json"), "utf8"));
 registry.homepage = `${site}/`;

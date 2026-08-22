@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "analytics-kit",
-  "homepage": "https://educlopez.github.io/analytics-kit/",
+  "homepage": "https://analytics-kit-demo.vercel.app/",
   "items": [
     {
       "name": "chart",
@@ -35,7 +35,7 @@
       "title": "Area chart",
       "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://educlopez.github.io/analytics-kit/r/chart.json"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/area-chart.tsx",
@@ -51,7 +51,7 @@
       "title": "Line chart",
       "description": "Time series line. Variants: monotone, linear, step, dashed, dots.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://educlopez.github.io/analytics-kit/r/chart.json"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/line-chart.tsx",
@@ -67,7 +67,7 @@
       "title": "Bar chart",
       "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://educlopez.github.io/analytics-kit/r/chart.json"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/bar-chart.tsx",
@@ -83,7 +83,7 @@
       "title": "Pie chart",
       "description": "Share of a whole. Variants: donut, pie, legend.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://educlopez.github.io/analytics-kit/r/chart.json"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/pie-chart.tsx",

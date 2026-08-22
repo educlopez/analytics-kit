@@ -34,7 +34,7 @@
       "esbuild"
     ]
   },
-  "homepage": "https://github.com/educlopez/analytics-kit",
+  "homepage": "https://analytics-kit-demo.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/educlopez/analytics-kit.git"
