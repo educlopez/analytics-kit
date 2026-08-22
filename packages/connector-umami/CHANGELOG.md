@@ -1,5 +1,12 @@
 # @analytics-kit/connector-umami
 
+## 0.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @analytics-kit/core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
