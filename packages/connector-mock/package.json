@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/connector-mock",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Deterministic mock analytics connector for demos, tests, and UI development.",
   "type": "module",
   "main": "./dist/index.cjs",

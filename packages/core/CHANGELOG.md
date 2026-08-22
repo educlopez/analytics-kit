@@ -1,5 +1,13 @@
 # @analytics-kit/core
 
+## 0.2.1
+
+### Patch Changes
+
+- [`d18ba26`](https://github.com/educlopez/analytics-kit/commit/d18ba266207b56b9a913970d7c143c5a0a49af1a) Thanks [@educlopez](https://github.com/educlopez)! - Publish with npm provenance attestations, via OIDC trusted publishing instead of a
+  long-lived token. Consumers can now verify that a tarball was built by this
+  repository's release workflow.
+
 ## 0.2.0
 
 ## 0.1.0
