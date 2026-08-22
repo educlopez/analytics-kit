@@ -1326,7 +1326,7 @@ html[data-theme="dark"] .style-switch button.is-active {
   margin: 0 0 16px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 16px;
   padding: 4px;
   width: fit-content;
   max-width: 100%;

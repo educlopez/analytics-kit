@@ -24,6 +24,11 @@
           "path": "packages/react/src/charts/variants.ts",
           "type": "registry:lib",
           "target": "@lib/chart-variants.ts"
+        },
+        {
+          "path": "packages/react/src/charts/patterns.tsx",
+          "type": "registry:ui",
+          "target": "@ui/patterns.tsx"
         }
       ],
       "docs": "Map --chart-1…--chart-5 in your CSS. Charts do not ship a color theme.",
@@ -33,7 +38,7 @@
       "name": "area-chart",
       "type": "registry:ui",
       "title": "Area chart",
-      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow.",
+      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow, hatched, bars, solid.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -49,7 +54,7 @@
       "name": "line-chart",
       "type": "registry:ui",
       "title": "Line chart",
-      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow.",
+      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow, ping, rainbow, values.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -65,7 +70,7 @@
       "name": "bar-chart",
       "type": "registry:ui",
       "title": "Bar chart",
-      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither.",
+      "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither, glow, gradient, duotone.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -81,7 +86,7 @@
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
-      "description": "Share of a whole. Variants: donut, pie, legend, dither.",
+      "description": "Share of a whole. Variants: donut, pie, legend, dither, rounded, radial, glow.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [

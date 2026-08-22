@@ -101,7 +101,7 @@ Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries` / `AreaC
 
 Layouts: `defaultDashboard` (Vercel-friendly) and `catalogDashboard` (every widget).
 
-Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [bklit](https://bklit.com/charts/area-chart), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
+Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [bklit](https://bklit.com/charts/area-chart), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Visual textures (hatch, stripes, ping, duotone, radial) sit in the same family as [EvilCharts](https://evilcharts.com). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
 
 ```tsx
 <AreaChart data={points} variant="gradient" />
@@ -111,14 +111,14 @@ Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.
 <MetricCard metric="visitors" variant="hero" />
 ```
 
-| Component    | Variants                                                                   |
-| ------------ | -------------------------------------------------------------------------- |
-| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow` |
-| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`           |
-| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`                   |
-| `PieChart`   | `donut`, `pie`, `legend`, `dither`                                         |
-| `MetricCard` | `default`, `spark`, `compact`, `hero`                                      |
-| `RankedList` | `bar`, `compact`, `table`                                                  |
+| Component    | Variants                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow`, `hatched`, `bars`, `solid` |
+| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`, `ping`, `rainbow`, `values`          |
+| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`, `glow`, `gradient`, `duotone`                |
+| `PieChart`   | `donut`, `pie`, `legend`, `dither`, `rounded`, `radial`, `glow`                                        |
+| `MetricCard` | `default`, `spark`, `compact`, `hero`                                                                  |
+| `RankedList` | `bar`, `compact`, `table`                                                                              |
 
 ## shadcn registry
 

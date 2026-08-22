@@ -265,9 +265,9 @@ export function DocsPage() {
             <p className="kicker">05</p>
             <h2>Charts</h2>
             <p className="lede compact">
-              Tailwind + Recharts, in the same spirit as ReUI, shadcn blocks, bklit, and Intent UI.{" "}
-              <code>variant</code> is how the series is drawn. Colors come from CSS variables on the
-              host page.
+              Tailwind + Recharts, in the same spirit as ReUI, shadcn blocks, bklit, Intent UI, and
+              the textured drawings in EvilCharts. <code>variant</code> is how the series is drawn.
+              Colors come from CSS variables on the host page.
             </p>
             <pre className="snippet">
               <code>{CHART}</code>
@@ -276,27 +276,27 @@ export function DocsPage() {
               rows={[
                 {
                   name: "AreaChart",
-                  type: "gradient | linear | natural | step | dots | spark | dither | glow",
+                  type: "gradient | linear | natural | step | dots | spark | dither | glow | hatched | bars | solid",
                   default: "gradient",
-                  notes: "Filled trend. dither is a stipple fill; glow blooms the stroke.",
+                  notes: "Filled trend. hatched and bars are SVG textures; glow blooms the stroke.",
                 },
                 {
                   name: "LineChart",
-                  type: "monotone | linear | step | dashed | dots | dither | glow",
+                  type: "monotone | linear | step | dashed | dots | dither | glow | ping | rainbow | values",
                   default: "monotone",
-                  notes: "Stroke only.",
+                  notes: "Stroke only. ping pulses the last point; rainbow uses --chart-1…5.",
                 },
                 {
                   name: "BarChart",
-                  type: "vertical | horizontal | rounded | hatched | dither",
+                  type: "vertical | horizontal | rounded | hatched | dither | glow | gradient | duotone",
                   default: "vertical",
-                  notes: "Breakdown bars.",
+                  notes: "Breakdown bars. duotone is a hard two-band fill.",
                 },
                 {
                   name: "PieChart",
-                  type: "donut | pie | legend | dither",
+                  type: "donut | pie | legend | dither | rounded | radial | glow",
                   default: "donut",
-                  notes: "Share of a dimension.",
+                  notes: "Share of a dimension. radial is a RadialBar.",
                 },
                 {
                   name: "MetricCard",

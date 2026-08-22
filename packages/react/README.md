@@ -16,15 +16,15 @@ import "@analytics-kit/react/styles.css";
 </AnalyticsProvider>;
 ```
 
-Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs step vs dots). Colors come from `--chart-1`…`--chart-5` on the host page.
+Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs hatch vs ping). Colors come from `--chart-1`…`--chart-5` on the host page.
 
-| Component    | Variants                                                                   |
-| ------------ | -------------------------------------------------------------------------- |
-| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow` |
-| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`           |
-| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`                   |
-| `PieChart`   | `donut`, `pie`, `legend`, `dither`                                         |
-| `MetricCard` | `default`, `spark`, `compact`, `hero`                                      |
+| Component    | Variants                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| `AreaChart`  | `gradient`, `linear`, `natural`, `step`, `dots`, `spark`, `dither`, `glow`, `hatched`, `bars`, `solid` |
+| `LineChart`  | `monotone`, `linear`, `step`, `dashed`, `dots`, `dither`, `glow`, `ping`, `rainbow`, `values`          |
+| `BarChart`   | `vertical`, `horizontal`, `rounded`, `hatched`, `dither`, `glow`, `gradient`, `duotone`                |
+| `PieChart`   | `donut`, `pie`, `legend`, `dither`, `rounded`, `radial`, `glow`                                        |
+| `MetricCard` | `default`, `spark`, `compact`, `hero`                                                                  |
 
 ## Widgets
 

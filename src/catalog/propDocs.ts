@@ -35,9 +35,10 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid"',
       default: '"gradient"',
-      notes: "How the fill and curve are drawn. Not a color theme.",
+      notes:
+        "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
     },
   ],
   "line-chart": [
@@ -50,9 +51,10 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow"',
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values"',
       default: '"monotone"',
-      notes: "Stroke interpolation and decoration.",
+      notes:
+        "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
     },
   ],
   "bar-chart": [
@@ -65,9 +67,10 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither"',
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone"',
       default: '"vertical"',
-      notes: "Orientation and bar fill. horizontal flips the axes.",
+      notes:
+        "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
     },
   ],
   "pie-chart": [
@@ -90,9 +93,9 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"donut" | "pie" | "legend" | "dither"',
+      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow"',
       default: '"donut"',
-      notes: "Ring vs full pie, optional legend, or stippled slices.",
+      notes: "Ring vs full pie, rounded gaps, radial bars, or a bloom on the slices.",
     },
     {
       name: "className",

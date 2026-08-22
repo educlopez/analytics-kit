@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { Bar, BarChart as RechartsBar, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
-import { DitherDots } from "./patterns.js";
+import { DitherDots, DuotoneGradient, FadeGradient, GlowFilter, HatchPattern } from "./patterns.js";
 import { BAR_CHART_VARIANTS, type BarChartVariant, type ChartDatum } from "./variants.js";
 
 export function BarChart({
@@ -26,25 +26,40 @@ export function BarChart({
   const uid = useId().replace(/:/g, "");
   const hatchId = `ak-hatch-${uid}`;
   const ditherId = `ak-bar-dither-${uid}`;
+  const fadeId = `ak-bar-fade-${uid}`;
+  const duotoneId = `ak-bar-duo-${uid}`;
+  const glowId = `ak-bar-glow-${uid}`;
   const horizontal = variant === "horizontal";
-  const radius = variant === "rounded" || variant === "hatched" || variant === "dither" ? 6 : 2;
+  const radius = variant === "vertical" || variant === "horizontal" ? 2 : 6;
   const fill =
-    variant === "hatched" ? `url(#${hatchId})` : variant === "dither" ? `url(#${ditherId})` : color;
+    variant === "hatched"
+      ? `url(#${hatchId})`
+      : variant === "dither"
+        ? `url(#${ditherId})`
+        : variant === "gradient"
+          ? `url(#${fadeId})`
+          : variant === "duotone"
+            ? `url(#${duotoneId})`
+            : color;
+  const decorated =
+    variant === "hatched" ||
+    variant === "dither" ||
+    variant === "gradient" ||
+    variant === "duotone" ||
+    variant === "glow";
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
       <RechartsBar data={data} layout={horizontal ? "vertical" : "horizontal"}>
-        {variant === "hatched" || variant === "dither" ? (
+        {decorated ? (
           <defs>
-            {variant === "hatched" ? (
-              <pattern id={hatchId} patternUnits="userSpaceOnUse" width="6" height="6">
-                <path d="M0 6L6 0" stroke={color} strokeWidth="1.5" />
-              </pattern>
-            ) : (
-              <DitherDots id={ditherId} color={color} />
-            )}
+            {variant === "hatched" ? <HatchPattern id={hatchId} color={color} /> : null}
+            {variant === "dither" ? <DitherDots id={ditherId} color={color} /> : null}
+            {variant === "gradient" ? <FadeGradient id={fadeId} color={color} /> : null}
+            {variant === "duotone" ? <DuotoneGradient id={duotoneId} color={color} /> : null}
+            {variant === "glow" ? <GlowFilter id={glowId} /> : null}
           </defs>
         ) : null}
         <CartesianGrid
@@ -86,7 +101,13 @@ export function BarChart({
             ) : null
           }
         />
-        <Bar dataKey={dataKey} fill={fill} radius={radius} maxBarSize={48} />
+        <Bar
+          dataKey={dataKey}
+          fill={fill}
+          radius={radius}
+          maxBarSize={48}
+          filter={variant === "glow" ? `url(#${glowId})` : undefined}
+        />
       </RechartsBar>
     </ChartContainer>
   );

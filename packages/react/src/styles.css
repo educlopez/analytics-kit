@@ -326,6 +326,34 @@
   font-size: 11px;
 }
 
+.ak-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ak-ping 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+.ak-ping-delay {
+  animation-delay: 0.55s;
+}
+
+.ak-value-dot {
+  fill: var(--ak-text);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+@keyframes ak-ping {
+  0% {
+    opacity: 0.38;
+    transform: scale(0.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.15);
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -363,6 +391,13 @@
 @keyframes ak-pulse {
   50% {
     opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-ping {
+    animation: none;
+    opacity: 0.18;
   }
 }
 
