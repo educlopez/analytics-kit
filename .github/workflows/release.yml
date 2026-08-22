@@ -23,6 +23,8 @@ jobs:
           node-version: 22
           cache: pnpm
           registry-url: https://registry.npmjs.org
+      # Trusted publishing needs a recent npm; node 22 ships one that is too old.
+      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - uses: changesets/action@v1
@@ -33,8 +35,7 @@ jobs:
           commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # changeset publish shells out to npm publish, which reads this and
-          # signs each tarball using the job's id-token: write permission.
+          # No npm token on purpose: npm prefers a token whenever one is present,
+          # and only falls back to OIDC trusted publishing when none is set. Every
+          # @analytics-kit/* package trusts educlopez/analytics-kit + release.yml.
           NPM_CONFIG_PROVENANCE: true
