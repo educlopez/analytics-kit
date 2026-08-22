@@ -265,9 +265,9 @@ export function DocsPage() {
             <p className="kicker">05</p>
             <h2>Charts</h2>
             <p className="lede compact">
-              Tailwind + Recharts, in the same spirit as ReUI, shadcn blocks, bklit, Intent UI, and
-              the textured drawings in EvilCharts. <code>variant</code> is how the series is drawn.
-              Colors come from CSS variables on the host page.
+              Tailwind + Recharts. Drawings sit next to ReUI, shadcn, Bklit, Ditherkit, EvilCharts,
+              and Amicro — funnel, radar, gauge, composed — still as a <code>variant</code>, not a
+              palette. Colors come from CSS variables on the host page.
             </p>
             <pre className="snippet">
               <code>{CHART}</code>
@@ -297,6 +297,30 @@ export function DocsPage() {
                   type: "donut | pie | legend | dither | rounded | radial | glow",
                   default: "donut",
                   notes: "Share of a dimension. radial is a RadialBar.",
+                },
+                {
+                  name: "FunnelChart",
+                  type: "tape | steps | vertical",
+                  default: "tape",
+                  notes: "Conversion stages with drop-off.",
+                },
+                {
+                  name: "RadarChart",
+                  type: "stroke | fill | glow | dither",
+                  default: "fill",
+                  notes: "Multi-axis comparison.",
+                },
+                {
+                  name: "ComposedChart",
+                  type: "combo | highlight | overlay",
+                  default: "combo",
+                  notes: "Two series on one axis.",
+                },
+                {
+                  name: "GaugeChart",
+                  type: "arc | ring | tick",
+                  default: "arc",
+                  notes: "Single-value dial.",
                 },
                 {
                   name: "MetricCard",

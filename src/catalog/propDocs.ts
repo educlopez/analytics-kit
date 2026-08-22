@@ -103,6 +103,141 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       notes: "Chart container. Default height is 220px.",
     },
   ],
+  "funnel-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Stages in order. The first value is 100%.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field on each stage.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Stage name.",
+    },
+    {
+      name: "variant",
+      type: '"tape" | "steps" | "vertical"',
+      default: '"tape"',
+      notes: "Tapering ribbon, discrete blocks, or stacked drop-off bars.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "radar-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "One row per axis.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field plotted on each axis.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Axis name.",
+    },
+    {
+      name: "variant",
+      type: '"stroke" | "fill" | "glow" | "dither"',
+      default: '"fill"',
+      notes: "Outline only, translucent fill, bloom, or a stipple fill.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Map of dataKey → { label?, color? }.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "composed-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Shared category rows. Needs both barKey and lineKey.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "X-axis field.",
+    },
+    {
+      name: "barKey",
+      type: "string",
+      default: '"bar"',
+      notes: "Numeric field for the bars (or the dashed overlay line).",
+    },
+    {
+      name: "lineKey",
+      type: "string",
+      default: '"line"',
+      notes: "Numeric field for the line or highlight area.",
+    },
+    {
+      name: "variant",
+      type: '"combo" | "highlight" | "overlay"',
+      default: '"combo"',
+      notes: "Bars + line, muted bars + glow, or dashed line over a glowing area.",
+    },
+    {
+      name: "config",
+      type: "ChartConfig",
+      notes: "Colors and labels for barKey and lineKey.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Chart container. Default height is 220px.",
+    },
+  ],
+  "gauge-chart": [
+    {
+      name: "value",
+      type: "number",
+      notes: "Current reading.",
+    },
+    {
+      name: "max",
+      type: "number",
+      default: "100",
+      notes: "Full-scale value. 100 prints as a percent.",
+    },
+    {
+      name: "label",
+      type: "string",
+      notes: "Caption under the number.",
+    },
+    {
+      name: "variant",
+      type: '"arc" | "ring" | "tick"',
+      default: '"arc"',
+      notes: "Semicircle, full ring, or tick marks with a needle.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
   "metric-card": [
     {
       name: "metric",

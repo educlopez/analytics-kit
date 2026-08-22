@@ -99,6 +99,68 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "funnel-chart",
+      "type": "registry:ui",
+      "title": "Funnel chart",
+      "description": "Conversion stages. Variants: tape, steps, vertical.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/funnel-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/funnel-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "radar-chart",
+      "type": "registry:ui",
+      "title": "Radar chart",
+      "description": "Multi-axis comparison. Variants: stroke, fill, glow, dither.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/radar-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/radar-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "composed-chart",
+      "type": "registry:ui",
+      "title": "Composed chart",
+      "description": "Two series on one axis. Variants: combo, highlight, overlay.",
+      "dependencies": ["recharts@2.15.4"],
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/composed-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/composed-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "gauge-chart",
+      "type": "registry:ui",
+      "title": "Gauge",
+      "description": "Single-value dial. Variants: arc, ring, tick.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/gauge-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/gauge-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",

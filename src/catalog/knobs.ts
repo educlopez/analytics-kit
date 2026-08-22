@@ -14,7 +14,7 @@ export interface PreviewKnobs {
 export function defaultKnobs(item: CatalogItem): PreviewKnobs {
   return {
     variant: item.defaultVariant || item.variants[0] || "",
-    metric: "visitors",
+    metric: item.slug === "gauge-chart" ? "bounceRate" : "visitors",
     height: 220,
     columns: 4,
     showRange: true,
@@ -32,11 +32,18 @@ export function knobsEqual(a: PreviewKnobs, b: PreviewKnobs): boolean {
 }
 
 export function itemControls(slug: string) {
-  const chart = ["area-chart", "line-chart", "bar-chart", "pie-chart"].includes(slug);
+  const sized = [
+    "area-chart",
+    "line-chart",
+    "bar-chart",
+    "pie-chart",
+    "radar-chart",
+    "composed-chart",
+  ];
   return {
     variant: slug !== "dashboard",
-    metric: slug !== "dashboard",
-    height: chart,
+    metric: !["dashboard", "funnel-chart", "composed-chart"].includes(slug),
+    height: sized.includes(slug),
     columns: slug === "dashboard",
     showRange: slug === "dashboard",
   };
@@ -87,6 +94,50 @@ const rows = [
   data={rows}
   dataKey="value"
   labelKey="label"${attr("variant", knobs.variant, item.defaultVariant || labelDefault)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "funnel-chart") {
+    return `import { FunnelChart } from "@analytics-kit/react";
+
+const stages = [
+  { label: "Visitors", value: 1240 },
+  { label: "Signup", value: 640 },
+  { label: "Paid", value: 210 },
+];
+
+<FunnelChart
+  data={stages}${attr("variant", knobs.variant, item.defaultVariant)}
+/>`;
+  }
+
+  if (item.slug === "radar-chart") {
+    return `import { RadarChart } from "@analytics-kit/react";
+
+<RadarChart
+  data={rows}
+  dataKey="value"
+  labelKey="label"${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "composed-chart") {
+    return `import { ComposedChart } from "@analytics-kit/react";
+
+<ComposedChart
+  data={points}
+  barKey="visitors"
+  lineKey="pageviews"${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+/>`;
+  }
+
+  if (item.slug === "gauge-chart") {
+    return `import { GaugeChart } from "@analytics-kit/react";
+
+<GaugeChart
+  value={42}
+  max={100}
+  label="${knobs.metric}"${attr("variant", knobs.variant, item.defaultVariant)}
 />`;
   }
 

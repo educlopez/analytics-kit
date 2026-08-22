@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   AREA_CHART_VARIANTS,
   BAR_CHART_VARIANTS,
+  COMPOSED_CHART_VARIANTS,
+  FUNNEL_CHART_VARIANTS,
+  GAUGE_CHART_VARIANTS,
   LINE_CHART_VARIANTS,
   METRIC_CARD_VARIANTS,
   PIE_CHART_VARIANTS,
+  RADAR_CHART_VARIANTS,
 } from "./charts/variants.js";
 
 describe("chart variants", () => {
@@ -30,6 +34,10 @@ describe("chart variants", () => {
     expect(PIE_CHART_VARIANTS).toContain("rounded");
     expect(PIE_CHART_VARIANTS).toContain("radial");
     expect(PIE_CHART_VARIANTS).toContain("glow");
+    expect(FUNNEL_CHART_VARIANTS).toContain("tape");
+    expect(RADAR_CHART_VARIANTS).toContain("dither");
+    expect(COMPOSED_CHART_VARIANTS).toContain("overlay");
+    expect(GAUGE_CHART_VARIANTS).toContain("ring");
     expect(METRIC_CARD_VARIANTS).toContain("hero");
   });
 });

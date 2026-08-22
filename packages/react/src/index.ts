@@ -7,17 +7,25 @@ export {
   AREA_CHART_VARIANTS,
   BAR_CHART_VARIANTS,
   BAR_LIST_VARIANTS,
+  COMPOSED_CHART_VARIANTS,
+  FUNNEL_CHART_VARIANTS,
+  GAUGE_CHART_VARIANTS,
   LINE_CHART_VARIANTS,
   METRIC_CARD_VARIANTS,
   PIE_CHART_VARIANTS,
+  RADAR_CHART_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
   BarChartVariant,
   BarListVariant,
+  ComposedChartVariant,
+  FunnelChartVariant,
+  GaugeChartVariant,
   LineChartVariant,
   MetricCardVariant,
   PieChartVariant,
+  RadarChartVariant,
 } from "./charts/variants.js";
 export { ChartContainer, ChartTooltipBox } from "./charts/chart.js";
 export type { ChartConfig } from "./charts/chart.js";
@@ -25,6 +33,10 @@ export { AreaChart } from "./charts/area-chart.js";
 export { LineChart } from "./charts/line-chart.js";
 export { BarChart } from "./charts/bar-chart.js";
 export { PieChart } from "./charts/pie-chart.js";
+export { FunnelChart } from "./charts/funnel-chart.js";
+export { RadarChart } from "./charts/radar-chart.js";
+export { GaugeChart } from "./charts/gauge-chart.js";
+export { ComposedChart } from "./charts/composed-chart.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,

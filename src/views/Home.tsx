@@ -87,7 +87,7 @@ const FAQS = [
   },
   {
     q: "How do I change how a chart looks?",
-    a: "Pass variant on the chart — gradient, hatched, ping, duotone, radial, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
+    a: "Pass variant on the chart — gradient, tape, overlay, arc, ping, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
   },
 ];
 

@@ -343,6 +343,94 @@
   font-weight: 600;
 }
 
+.ak-funnel,
+.ak-gauge {
+  width: 100%;
+}
+
+.ak-funnel-svg,
+.ak-gauge-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ak-funnel-label {
+  fill: var(--ak-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ak-funnel-count,
+.ak-funnel-drop {
+  fill: var(--ak-muted);
+  color: var(--ak-muted);
+  font-size: 11px;
+}
+
+.ak-funnel-pill {
+  fill: var(--ak-ink, #070503);
+}
+
+.ak-funnel-pill-text {
+  fill: #f9f8f5;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ak-funnel-vertical {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.ak-funnel-vertical-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.ak-funnel-vertical-meta em {
+  font-style: normal;
+  font-weight: 650;
+}
+
+.ak-funnel-vertical-track {
+  height: 14px;
+  border-radius: 999px;
+  background: var(--ak-surface-2);
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.ak-funnel-vertical-fill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.ak-gauge {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.ak-gauge-value {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.ak-gauge-label {
+  margin: 0;
+  color: var(--ak-muted);
+  font-size: 13px;
+}
+
 @keyframes ak-ping {
   0% {
     opacity: 0.38;
