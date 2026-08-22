@@ -8,9 +8,7 @@ export const dynamic = "force-dynamic";
 const token = process.env.ANALYTICS_VERCEL_TOKEN ?? process.env.VERCEL_TOKEN;
 const projectId = process.env.ANALYTICS_VERCEL_PROJECT_ID ?? process.env.VERCEL_PROJECT_ID;
 const teamId =
-  process.env.ANALYTICS_VERCEL_TEAM_ID ??
-  process.env.VERCEL_TEAM_ID ??
-  process.env.VERCEL_ORG_ID;
+  process.env.ANALYTICS_VERCEL_TEAM_ID ?? process.env.VERCEL_TEAM_ID ?? process.env.VERCEL_ORG_ID;
 
 const connector =
   token && projectId
