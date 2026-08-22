@@ -28,12 +28,12 @@ export function Stats() {
 }`;
 
 const TICKER = [
-  "12.4k visitors this week",
-  "Posted /components/area-chart",
-  "github.com is the top referrer",
-  "Desktop 62% · Mobile 31%",
-  "analytics-kit-demo.vercel.app · Vercel Analytics",
-  "Swapped Plausible → Vercel",
+  "One query model, five connectors",
+  "Visitors · pageviews · referrers · devices",
+  "Vercel today, Plausible tomorrow",
+  "Capabilities, not crashes",
+  "Keys stay on the server",
+  "Swap the vendor, keep the dashboard",
 ];
 
 const FEATURES = [
