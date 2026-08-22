@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { Bar, BarChart as RechartsBar, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import { DitherDots } from "./patterns.js";
 import { BAR_CHART_VARIANTS, type BarChartVariant, type ChartDatum } from "./variants.js";
 
 export function BarChart({
@@ -22,20 +23,28 @@ export function BarChart({
     [dataKey]: { label: dataKey, color: "var(--ak-chart-1, var(--chart-1, #2563eb))" },
   };
   const color = chartConfig[dataKey]?.color ?? "var(--ak-chart-1)";
-  const hatchId = `ak-hatch-${useId().replace(/:/g, "")}`;
+  const uid = useId().replace(/:/g, "");
+  const hatchId = `ak-hatch-${uid}`;
+  const ditherId = `ak-bar-dither-${uid}`;
   const horizontal = variant === "horizontal";
-  const radius = variant === "rounded" || variant === "hatched" ? 6 : 2;
+  const radius = variant === "rounded" || variant === "hatched" || variant === "dither" ? 6 : 2;
+  const fill =
+    variant === "hatched" ? `url(#${hatchId})` : variant === "dither" ? `url(#${ditherId})` : color;
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
       <RechartsBar data={data} layout={horizontal ? "vertical" : "horizontal"}>
-        {variant === "hatched" ? (
+        {variant === "hatched" || variant === "dither" ? (
           <defs>
-            <pattern id={hatchId} patternUnits="userSpaceOnUse" width="6" height="6">
-              <path d="M0 6L6 0" stroke={color} strokeWidth="1.5" />
-            </pattern>
+            {variant === "hatched" ? (
+              <pattern id={hatchId} patternUnits="userSpaceOnUse" width="6" height="6">
+                <path d="M0 6L6 0" stroke={color} strokeWidth="1.5" />
+              </pattern>
+            ) : (
+              <DitherDots id={ditherId} color={color} />
+            )}
           </defs>
         ) : null}
         <CartesianGrid
@@ -77,12 +86,7 @@ export function BarChart({
             ) : null
           }
         />
-        <Bar
-          dataKey={dataKey}
-          fill={variant === "hatched" ? `url(#${hatchId})` : color}
-          radius={radius}
-          maxBarSize={48}
-        />
+        <Bar dataKey={dataKey} fill={fill} radius={radius} maxBarSize={48} />
       </RechartsBar>
     </ChartContainer>
   );

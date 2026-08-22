@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { ComponentsPage } from "../../src/views/Components";
+import { ComponentsIndex } from "../../src/views/ComponentsIndex";
 
 export const metadata: Metadata = {
   title: "Components",
-  description: "Every Analytics Kit chart variant and its configuration options.",
+  description: "Analytics Kit charts by type — live demos, variants, and install commands.",
 };
 
 export default function Page() {
-  return <ComponentsPage />;
+  return <ComponentsIndex />;
 }

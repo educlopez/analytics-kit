@@ -10,10 +10,14 @@ import {
 describe("chart variants", () => {
   it("exposes visual forms, not color themes", () => {
     expect(AREA_CHART_VARIANTS).toContain("gradient");
-    expect(AREA_CHART_VARIANTS).toContain("step");
+    expect(AREA_CHART_VARIANTS).toContain("dither");
+    expect(AREA_CHART_VARIANTS).toContain("glow");
     expect(LINE_CHART_VARIANTS).toContain("dashed");
+    expect(LINE_CHART_VARIANTS).toContain("dither");
     expect(BAR_CHART_VARIANTS).toContain("horizontal");
+    expect(BAR_CHART_VARIANTS).toContain("dither");
     expect(PIE_CHART_VARIANTS).toContain("donut");
+    expect(PIE_CHART_VARIANTS).toContain("dither");
     expect(METRIC_CARD_VARIANTS).toContain("hero");
   });
 });
