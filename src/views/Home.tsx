@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
-import { createSmoothuiMockConnector } from "@analytics-kit/connector-mock";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import {
-  AnalyticsProvider,
-  Dashboard,
-  defaultDashboard,
-  type AnalyticsTheme,
-} from "@analytics-kit/react";
-import type { AnalyticsConnector } from "@analytics-kit/core";
-import { ChartGallery } from "./ChartGallery";
+"use client";
 
-const INSTALL = "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-vercel";
+import { useEffect, useMemo, useState } from "react";
+import { createHttpConnector } from "@analytics-kit/core";
+import { AnalyticsProvider, Dashboard, defaultDashboard } from "@analytics-kit/react";
+import Link from "next/link";
+import { ChartTeaser } from "../ChartTeaser";
+import { CoverImg } from "../site/CoverImg";
+import { useSite } from "../site/SiteShell";
+import { useCopy } from "../site/useCopy";
+import { useRegistryCommand } from "../site/useRegistryCommand";
 
-const REGISTRY =
-  "pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json";
+const INSTALL =
+  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
 
 const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
+import { createHttpConnector } from "@analytics-kit/core";
 
-const connector = createVercelConnector({
-  token: process.env.VERCEL_TOKEN!,
-  projectId: process.env.VERCEL_PROJECT_ID!,
-});
+const connector = createHttpConnector({ endpoint: "/api/analytics" });
 
 export function Stats() {
   return (
@@ -30,41 +25,6 @@ export function Stats() {
     </AnalyticsProvider>
   );
 }`;
-
-function unsplash(id: string, width: number) {
-  return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=72`;
-}
-
-function CoverImg({
-  id,
-  alt,
-  className = "cover-photo",
-  sizes = "100vw",
-  eager = false,
-  position,
-}: {
-  id: string;
-  alt: string;
-  className?: string;
-  sizes?: string;
-  eager?: boolean;
-  position?: string;
-}) {
-  return (
-    <img
-      className={className}
-      src={unsplash(id, 1600)}
-      srcSet={`${unsplash(id, 800)} 800w, ${unsplash(id, 1600)} 1600w, ${unsplash(id, 2400)} 2400w`}
-      sizes={sizes}
-      alt={alt}
-      width={1600}
-      height={1000}
-      loading={eager ? "eager" : "lazy"}
-      fetchPriority={eager ? "high" : undefined}
-      style={position ? { objectPosition: position } : undefined}
-    />
-  );
-}
 
 const TICKER = [
   "12.4k visitors this week",
@@ -131,66 +91,23 @@ const FAQS = [
   },
 ];
 
-function createDemoConnector(): { connector: AnalyticsConnector; live: boolean } {
-  const token = import.meta.env.VITE_VERCEL_TOKEN;
-  const projectId = import.meta.env.VITE_VERCEL_PROJECT_ID;
-  if (token && projectId) {
-    return {
-      live: true,
-      connector: createVercelConnector({
-        token,
-        projectId,
-        teamId: import.meta.env.VITE_VERCEL_TEAM_ID,
-      }),
-    };
-  }
-  return {
-    live: false,
-    connector: createSmoothuiMockConnector({ profile: "vercel" }),
-  };
-}
-
-export function App() {
-  const [{ connector, live }] = useState(createDemoConnector);
-  const [theme, setTheme] = useState<AnalyticsTheme>("light");
-  const [copied, setCopied] = useState<"install" | "snippet" | "registry" | null>(null);
+export function HomePage() {
+  const { theme } = useSite();
+  const connector = useMemo(() => createHttpConnector({ endpoint: "/api/analytics" }), []);
+  const { copied, copy } = useCopy();
+  const registry = useRegistryCommand("dashboard");
+  const [live, setLive] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-
-  const copy = async (value: string, which: "install" | "snippet" | "registry") => {
-    await navigator.clipboard.writeText(value);
-    setCopied(which);
-    setTimeout(() => setCopied(null), 1600);
-  };
+    void fetch("/api/analytics")
+      .then((response) => response.json() as Promise<{ id?: string }>)
+      .then((info) => setLive(info.id === "vercel"))
+      .catch(() => setLive(false));
+  }, []);
 
   return (
-    <div className="shell">
-      <nav className="nav">
-        <a className="brand" href="#top">
-          <span className="mark" aria-hidden="true" />
-          <span className="wordmark">Analytics Kit</span>
-        </a>
-        <div className="nav-links">
-          <a href="#dashboard">Demo</a>
-          <a href="#kit">Components</a>
-          <a href="#how">How it works</a>
-          <a href="https://github.com/educlopez/analytics-kit">GitHub</a>
-          <button
-            type="button"
-            className="ghost"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
-          <a className="btn btn-ink" href="#dashboard">
-            Get started
-          </a>
-        </div>
-      </nav>
-
+    <>
       <header className="hero" id="top">
         <div className="hero-stage">
           <CoverImg
@@ -270,7 +187,7 @@ export function App() {
             <p className="lede compact">
               {live
                 ? "Live Vercel Web Analytics for the SmoothUI project."
-                : "Vercel capability profile with SmoothUI routes. Add VITE_VERCEL_TOKEN and VITE_VERCEL_PROJECT_ID to load the real project."}
+                : "Vercel capability profile with SmoothUI routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load the real project."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>
@@ -293,13 +210,15 @@ export function App() {
               <em> Different shapes.</em>
             </h2>
             <p className="lede compact">
-              Area, line, bar, and pie — each with visual variants, like ReUI, shadcnblocks, bklit,
-              and Intent UI. Colors inherit from your CSS variables; pick a <code>variant</code> for
-              the drawing.
+              A small taste of the kit. Every chart has visual <code>variant</code>s — the drawing,
+              not a color theme. Colors inherit from your CSS.{" "}
+              <Link href="/components">See every component and its config</Link>
+              {" · "}
+              <Link href="/docs">Read the docs</Link>.
             </p>
           </div>
         </div>
-        <ChartGallery theme={theme} />
+        <ChartTeaser theme={theme} />
       </section>
 
       <section className="snippet-block" id="registry">
@@ -311,17 +230,18 @@ export function App() {
               <em> Own the file.</em>
             </h2>
             <p className="lede compact">
-              Add the catalog from GitHub Pages, or <code>educlopez/analytics-kit/dashboard</code>{" "}
-              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+              Add the catalog from this site’s <code>/r</code> folder, or{" "}
+              <code>educlopez/analytics-kit/dashboard</code> from the repo. Runtime still comes from
+              npm so connectors and queries stay canonical.
             </p>
           </div>
-          <button type="button" className="ghost" onClick={() => void copy(REGISTRY, "registry")}>
+          <button type="button" className="ghost" onClick={() => void copy(registry, "registry")}>
             {copied === "registry" ? "Copied" : "Copy"}
           </button>
         </div>
-        <button type="button" className="install" onClick={() => void copy(REGISTRY, "registry")}>
+        <button type="button" className="install" onClick={() => void copy(registry, "registry")}>
           <span>$</span>
-          <code>{REGISTRY}</code>
+          <code>{registry}</code>
           <em>{copied === "registry" ? "Copied" : "Copy"}</em>
         </button>
       </section>
@@ -428,17 +348,6 @@ export function App() {
           </a>
         </div>
       </section>
-
-      <footer className="foot">
-        <p>
-          <a href="https://github.com/educlopez/analytics-kit">educlopez/analytics-kit</a>
-          <span> · sample from </span>
-          <a href="https://smoothui.dev">smoothui.dev</a>
-          <span> · photos </span>
-          <a href="https://unsplash.com">Unsplash</a>
-          <span> · MIT</span>
-        </p>
-      </footer>
-    </div>
+    </>
   );
 }

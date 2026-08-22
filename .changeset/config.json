@@ -19,5 +19,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@analytics-kit/demo"]
+  "ignore": []
 }

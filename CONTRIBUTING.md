@@ -4,9 +4,12 @@
 
 ```bash
 pnpm install
+pnpm build
 pnpm check
 pnpm dev
 ```
+
+`pnpm dev` starts the Next.js site at the repo root.
 
 Requires Node 20+ (22 recommended, see `.nvmrc`) and pnpm 10.
 
@@ -22,7 +25,7 @@ Requires Node 20+ (22 recommended, see `.nvmrc`) and pnpm 10.
 | `pnpm publint`        | Validate publishable `package.json` exports |
 | `pnpm check`          | All of the above (same as CI)               |
 | `pnpm changeset`      | Describe a user-facing change               |
-| `pnpm registry:build` | Write shadcn JSON to `apps/demo/public/r`   |
+| `pnpm registry:build` | Write shadcn JSON to `public/r`             |
 
 ## Versioning and publish
 
@@ -39,7 +42,7 @@ First-time npm setup:
 3. Add repo secret `NPM_TOKEN` (Automation token) so GitHub Actions can publish.
 4. Grant the token publish rights on the org.
 
-The demo app (`@analytics-kit/demo`) is private and never published.
+The Next.js product site at the repo root is private and never published.
 
 ## Adding a provider
 
@@ -49,4 +52,4 @@ Copy [`examples/custom-connector.ts`](examples/custom-connector.ts) into `packag
 
 See [`examples/custom-widget.tsx`](examples/custom-widget.tsx). Register with `defineWidget` so `<Dashboard />` can render it by id.
 
-To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files for GitHub Pages (`/r/{name}.json`).
+To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files into `public/r` (served by the Next.js site).

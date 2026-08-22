@@ -3,9 +3,19 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outputDir = path.join(root, "apps/demo/public/r");
+const outputDir = path.join(root, "public/r");
+const site = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+  "https://analytics-kit.vercel.app"
+)
+  .replace(/\/$/, "")
+  .replace(/^(?!https?:\/\/)/, "https://");
+
+const rewriteSite = (value) => value.replaceAll("https://educlopez.github.io/analytics-kit", site);
 
 const registry = JSON.parse(await readFile(path.join(root, "registry.json"), "utf8"));
+registry.homepage = `${site}/`;
 
 await mkdir(outputDir, { recursive: true });
 
@@ -21,6 +31,7 @@ for (const item of registry.items) {
     $schema: "https://ui.shadcn.com/schema/registry-item.json",
     ...item,
     files: [],
+    registryDependencies: item.registryDependencies?.map(rewriteSite),
   };
 
   for (const file of item.files ?? []) {

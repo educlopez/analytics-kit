@@ -125,19 +125,21 @@ Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.
 Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@analytics-kit/react` for data:
 
 ```bash
-pnpm dlx shadcn@latest add https://educlopez.github.io/analytics-kit/r/dashboard.json
+pnpm dlx shadcn@latest add https://<your-domain>/r/dashboard.json
 ```
 
 GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
 
 Items: `chart`, `area-chart`, `line-chart`, `bar-chart`, `pie-chart`, `metric-card`, `dashboard`.
 
+The Next.js site serves `/r/{name}.json`. Set `NEXT_PUBLIC_SITE_URL` so built registry items point at the production origin.
+
 Namespace:
 
 ```json
 {
   "registries": {
-    "@analytics-kit": "https://educlopez.github.io/analytics-kit/r/{name}.json"
+    "@analytics-kit": "https://<your-domain>/r/{name}.json"
   }
 }
 ```
@@ -184,15 +186,23 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
-Live landing with a **Vercel Web Analytics** dashboard:
+The product site is the Next.js app at the repo root — landing, `/docs`, and `/components`. Import the GitHub repo in Vercel (leave Root Directory empty). The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
 
-**https://educlopez.github.io/analytics-kit/**
+1. Import `educlopez/analytics-kit` in Vercel.
+2. Framework: **Next.js**. Root Directory: **empty** (repository root).
+3. Install / build commands come from `vercel.json` (workspace install, package build, registry, then `next build`).
+4. Env (optional, for the live SmoothUI dashboard):
+   - `ANALYTICS_VERCEL_TOKEN`
+   - `ANALYTICS_VERCEL_PROJECT_ID`
+   - `ANALYTICS_VERCEL_TEAM_ID`
+   - `NEXT_PUBLIC_SITE_URL` — production origin, no trailing slash
 
-The demo (`apps/demo`) is the Analytics Kit product page. Widgets use `@analytics-kit/connector-vercel` when `VITE_VERCEL_TOKEN` and `VITE_VERCEL_PROJECT_ID` are set (GitHub Actions secrets for Pages); otherwise they fall back to a Vercel-profile mock shaped like [smoothui.dev](https://smoothui.dev) traffic.
+Do not use Vercel’s auto-injected `VERCEL_PROJECT_ID` as the analytics source — that is this site, not SmoothUI.
+
+Without those analytics env vars, the dashboard uses the Vercel-profile mock shaped like [smoothui.dev](https://smoothui.dev) traffic.
 
 ```bash
 pnpm install
-pnpm test
 pnpm build
 pnpm dev
 ```

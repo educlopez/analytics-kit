@@ -8,7 +8,7 @@ coverage
 *.tsbuildinfo
 .idea
 .vscode
-apps/demo/dist
-apps/demo/public/r
+.next
+public/r
 agent-tools
 *.tgz
