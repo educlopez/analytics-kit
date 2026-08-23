@@ -21,3 +21,10 @@ Adds `unionCapabilities`, and uses it for the wrapper's reported capabilities.
 `mergeCapabilities` is override semantics, so a sample connector declaring
 `realtime: false` used to cancel a primary that supports it — and the widget
 was then rejected before the live source was ever reached.
+
+Note for anyone theming the widgets: `--ak-surface-2` falls back to `--muted`,
+which shadcn uses for a surface but plenty of palettes use for muted _text_. If
+yours does, map `--ak-*` explicitly — the demo site had to, after the active
+range pill rendered at 2:1 contrast. The package's own light-theme block is
+`.ak-root[data-ak-theme="light"]`, so an override needs at least that
+specificity to win.
