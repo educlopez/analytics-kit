@@ -28,6 +28,28 @@ export function Stats() {
   );
 }`;
 
+/**
+ * Custom events and UTM dimensions are paid-plan Web Analytics features, so on
+ * this project's Vercel plan those two widgets could only ever render sample
+ * data. A demo of live analytics is better off without them than padded with
+ * permanent Sample badges. Filtered rather than hardcoded so the demo picks up
+ * anything new the package adds to its default.
+ */
+const PLAN_UNSUPPORTED = new Set(["events", "top-sources"]);
+
+/**
+ * Dropping one widget from each of those two rows leaves a one-column hole in a
+ * four-column grid, so widen the lead metric and the last breakdown to close
+ * them. Keeps every row full instead of trailing empty space.
+ */
+const REBALANCED_SPANS: Record<string, number> = { visitors: 2, "top-countries": 2 };
+
+const DEMO_DASHBOARD = defaultDashboard
+  .filter((item) => !PLAN_UNSUPPORTED.has(item.widget))
+  .map((item) =>
+    REBALANCED_SPANS[item.widget] ? { ...item, span: REBALANCED_SPANS[item.widget] } : item,
+  );
+
 const TICKER = [
   "One query model, five connectors",
   "Visitors · pageviews · referrers · devices",
@@ -213,7 +235,7 @@ export function HomePage() {
         </div>
         <div className="dashboard-frame">
           <AnalyticsProvider connector={connector} theme={theme} range="7d">
-            <Dashboard widgets={defaultDashboard} showRange columns={4} />
+            <Dashboard widgets={DEMO_DASHBOARD} showRange columns={4} />
           </AnalyticsProvider>
         </div>
       </section>
