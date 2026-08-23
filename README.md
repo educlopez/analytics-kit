@@ -101,7 +101,7 @@ Primitives you can reuse in custom widgets: `WidgetFrame`, `Timeseries` / `AreaC
 
 Layouts: `defaultDashboard` (Vercel-friendly) and `catalogDashboard` (every widget).
 
-Charts are Tailwind + Recharts, same stack as [shadcn charts](https://ui.shadcn.com/charts), [ReUI](https://reui.io/blocks/application/chart), [Bklit](https://bklit.com/), [Ditherkit](https://ditherkit.com/), and [Intent UI](https://intentui.com/docs/components/visualizations/line-chart). Funnel through sunburst sit next to the textured drawings from [EvilCharts](https://evilcharts.com). Each chart has a `variant` for the drawing — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
+Charts are Tailwind + Recharts, so they drop into a shadcn-style codebase without a second charting stack. Eighteen types, funnel through sunburst, each with a `variant` for the drawing — gradient, dither, hatched, glow — not a color theme. Colors inherit `--chart-1`…`--chart-5`, `--card`, `--foreground` from the host site.
 
 ```tsx
 <AreaChart data={points} variant="gradient" />

@@ -276,9 +276,9 @@ export function DocsPage() {
             <p className="kicker">05</p>
             <h2>Charts</h2>
             <p className="lede compact">
-              Tailwind + Recharts. Drawings sit next to ReUI, shadcn, Bklit, Ditherkit, EvilCharts,
-              and Amicro — funnel through sunburst — still as a <code>variant</code>, not a palette.
-              Colors come from CSS variables on the host page.
+              Tailwind + Recharts. Eighteen types, funnel through sunburst, and the drawing is a{" "}
+              <code>variant</code> — gradient, dither, hatched, glow — not a palette. Colors come
+              from CSS variables on the host page.
             </p>
             <CodeBlock code={CHART} lang="tsx" title="chart.tsx" />
             <PropsTable
