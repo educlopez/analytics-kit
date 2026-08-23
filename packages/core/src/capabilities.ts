@@ -79,3 +79,38 @@ export function mergeCapabilities(
     presets: override.presets ?? base.presets,
   };
 }
+
+/**
+ * What two connectors can do *between them*. Unlike `mergeCapabilities`, which
+ * is override semantics (a profile narrowing a base), this never lets one side's
+ * `false` cancel the other's `true` — needed when a wrapper can satisfy a
+ * capability through either connector.
+ */
+export function unionCapabilities(
+  a: ConnectorCapabilities,
+  b: ConnectorCapabilities,
+): ConnectorCapabilities {
+  const unionFlags = <K extends string>(
+    left: Partial<Record<K, boolean>>,
+    right: Partial<Record<K, boolean>>,
+  ): Partial<Record<K, boolean>> => {
+    const out: Partial<Record<K, boolean>> = { ...left };
+    for (const key of Object.keys(right) as K[]) {
+      out[key] = Boolean(left[key]) || Boolean(right[key]);
+    }
+    return out;
+  };
+
+  return {
+    metrics: unionFlags(a.metrics, b.metrics),
+    dimensions: unionFlags(a.dimensions, b.dimensions),
+    granularity: [...new Set([...a.granularity, ...b.granularity])],
+    filters: a.filters || b.filters,
+    realtime: a.realtime || b.realtime,
+    previousPeriod: a.previousPeriod || b.previousPeriod,
+    presets:
+      a.presets || b.presets
+        ? [...new Set([...(a.presets ?? []), ...(b.presets ?? [])])]
+        : undefined,
+  };
+}

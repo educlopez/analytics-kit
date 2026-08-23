@@ -233,6 +233,98 @@ describe("withSampleFallback", () => {
     expect(result.meta.sample).toBe(true);
   });
 
+  it("keeps a real zero live instead of swapping it for sample data", async () => {
+    const quiet = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: fullCapabilities(),
+      async query() {
+        return {
+          totals: { visitors: 0 },
+          series: [],
+          breakdown: [{ key: "/", values: { visitors: 0 } }],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: quiet, sample: sampleConnector });
+    const result = await wrapped.query({
+      range: "7d",
+      metrics: ["visitors"],
+      dimensions: ["path"],
+    });
+    expect(result.breakdown[0]?.values.visitors).toBe(0);
+    expect(result.meta.sample).toBeUndefined();
+  });
+
+  it("does not let the sample connector cancel a capability the primary has", () => {
+    const liveRealtime = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: fullCapabilities(),
+      async query() {
+        return {
+          totals: {},
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+      async realtime() {
+        return { visitors: 5 };
+      },
+    });
+    const noRealtimeSample = defineConnector({
+      id: "sample",
+      name: "Sample",
+      capabilities: mergeCapabilities(fullCapabilities(), { realtime: false }),
+      async query() {
+        return {
+          totals: {},
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "sample", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: liveRealtime, sample: noRealtimeSample });
+    expect(wrapped.capabilities.realtime).toBe(true);
+  });
+
+  it("throws rather than reporting a made-up realtime count", async () => {
+    const brokenRealtime = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: fullCapabilities(),
+      async query() {
+        return {
+          totals: {},
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+      async realtime(): Promise<never> {
+        throw new AnalyticsError("NETWORK", "down");
+      },
+    });
+    const noRealtimeSample = defineConnector({
+      id: "sample",
+      name: "Sample",
+      capabilities: fullCapabilities(),
+      async query() {
+        return {
+          totals: {},
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "sample", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: brokenRealtime, sample: noRealtimeSample });
+    await expect(wrapped.realtime?.({})).rejects.toThrow(AnalyticsError);
+  });
+
   it("passes through real data untouched and unmarked", async () => {
     const live = defineConnector({
       id: "primary",
