@@ -119,7 +119,9 @@ export function Sparkline({ values, fill = false }: { values: number[]; fill?: b
     .join(" ");
   const area = `${d} L${width},${height} L0,${height} Z`;
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="ak-spark">
+    // The number beside it already carries the value; the shape is trend garnish,
+    // so it stays out of the accessibility tree rather than reading as an unnamed graphic.
+    <svg viewBox={`0 0 ${width} ${height}`} className="ak-spark" aria-hidden="true">
       {fill ? (
         <>
           <defs>

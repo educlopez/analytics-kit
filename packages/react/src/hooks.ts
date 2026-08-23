@@ -17,6 +17,8 @@ export interface UseQueryResult {
   status: QueryStatus;
   error?: AnalyticsError | Error;
   missing: string[];
+  /** True when `data` came from a sample/mock fallback rather than the live provider. */
+  sample: boolean;
   reload: () => void;
 }
 
@@ -89,6 +91,7 @@ export function useQuery(
     status,
     error,
     missing,
+    sample: Boolean(data?.meta?.sample),
     reload: () => setTick((value) => value + 1),
   };
 }

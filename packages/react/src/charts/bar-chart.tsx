@@ -104,6 +104,9 @@ export function BarChart({
         <Bar
           dataKey={dataKey}
           fill={fill}
+          // Same mount-animation gap as the pie: without this the bars never
+          // paint until something forces a re-render.
+          isAnimationActive={false}
           radius={radius}
           maxBarSize={48}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}

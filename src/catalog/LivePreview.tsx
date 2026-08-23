@@ -134,24 +134,27 @@ function PreviewInner({
   const rows = browsers.data?.breakdown ?? [];
   const gaugeValue = totals[knobs.metric] ?? 0;
   const gaugeMax = knobs.metric === "bounceRate" ? 100 : Math.max(gaugeValue * 1.2, 1);
+  // Knobs carry "" for "no variant chosen". Passing that through would beat each
+  // chart's own default parameter and leave the preview blank.
+  const activeVariant = knobs.variant || undefined;
 
   if (slug === "area-chart") {
-    return <AreaChart data={series} variant={knobs.variant as AreaChartVariant} />;
+    return <AreaChart data={series} variant={activeVariant as AreaChartVariant} />;
   }
   if (slug === "line-chart") {
-    return <LineChart data={series} variant={knobs.variant as LineChartVariant} />;
+    return <LineChart data={series} variant={activeVariant as LineChartVariant} />;
   }
   if (slug === "bar-chart") {
-    return <BarChart data={breakdown} variant={knobs.variant as BarChartVariant} />;
+    return <BarChart data={breakdown} variant={activeVariant as BarChartVariant} />;
   }
   if (slug === "pie-chart") {
-    return <PieChart data={breakdown} variant={knobs.variant as PieChartVariant} />;
+    return <PieChart data={breakdown} variant={activeVariant as PieChartVariant} />;
   }
   if (slug === "funnel-chart") {
-    return <FunnelChart data={funnel} variant={knobs.variant as FunnelChartVariant} />;
+    return <FunnelChart data={funnel} variant={activeVariant as FunnelChartVariant} />;
   }
   if (slug === "radar-chart") {
-    return <RadarChart data={breakdown} variant={knobs.variant as RadarChartVariant} />;
+    return <RadarChart data={breakdown} variant={activeVariant as RadarChartVariant} />;
   }
   if (slug === "composed-chart") {
     return (
@@ -159,42 +162,42 @@ function PreviewInner({
         data={composed}
         barKey="visitors"
         lineKey="pageviews"
-        variant={knobs.variant as ComposedChartVariant}
+        variant={activeVariant as ComposedChartVariant}
       />
     );
   }
   if (slug === "scatter-chart") {
-    return <ScatterChart data={scatter} variant={knobs.variant as ScatterChartVariant} />;
+    return <ScatterChart data={scatter} variant={activeVariant as ScatterChartVariant} />;
   }
   if (slug === "sankey-chart") {
     return (
       <SankeyChart
         nodes={sankeyNodes}
         links={sankeyLinks}
-        variant={knobs.variant as SankeyChartVariant}
+        variant={activeVariant as SankeyChartVariant}
       />
     );
   }
   if (slug === "candlestick-chart") {
-    return <CandlestickChart data={candles} variant={knobs.variant as CandlestickChartVariant} />;
+    return <CandlestickChart data={candles} variant={activeVariant as CandlestickChartVariant} />;
   }
   if (slug === "choropleth-chart") {
-    return <ChoroplethChart data={regions} variant={knobs.variant as ChoroplethChartVariant} />;
+    return <ChoroplethChart data={regions} variant={activeVariant as ChoroplethChartVariant} />;
   }
   if (slug === "live-line-chart") {
-    return <LiveLineChart data={series} variant={knobs.variant as LiveLineChartVariant} />;
+    return <LiveLineChart data={series} variant={activeVariant as LiveLineChartVariant} />;
   }
   if (slug === "ring-chart") {
-    return <RingChart data={breakdown} variant={knobs.variant as RingChartVariant} />;
+    return <RingChart data={breakdown} variant={activeVariant as RingChartVariant} />;
   }
   if (slug === "heatmap-chart") {
-    return <HeatmapChart data={series} variant={knobs.variant as HeatmapChartVariant} />;
+    return <HeatmapChart data={series} variant={activeVariant as HeatmapChartVariant} />;
   }
   if (slug === "sunburst-chart") {
-    return <SunburstChart data={tree} variant={knobs.variant as SunburstChartVariant} />;
+    return <SunburstChart data={tree} variant={activeVariant as SunburstChartVariant} />;
   }
   if (slug === "profit-loss-chart") {
-    return <ProfitLossChart data={deltas} variant={knobs.variant as ProfitLossChartVariant} />;
+    return <ProfitLossChart data={deltas} variant={activeVariant as ProfitLossChartVariant} />;
   }
   if (slug === "gauge-chart") {
     return (
@@ -202,16 +205,16 @@ function PreviewInner({
         value={gaugeValue}
         max={gaugeMax}
         label={knobs.metric}
-        variant={knobs.variant as GaugeChartVariant}
+        variant={activeVariant as GaugeChartVariant}
       />
     );
   }
   if (slug === "metric-card") {
-    return <MetricCard metric={knobs.metric} variant={knobs.variant as MetricCardVariant} />;
+    return <MetricCard metric={knobs.metric} variant={activeVariant as MetricCardVariant} />;
   }
   if (slug === "ranked-list") {
     return (
-      <RankedList rows={rows} metric={knobs.metric} variant={knobs.variant as BarListVariant} />
+      <RankedList rows={rows} metric={knobs.metric} variant={activeVariant as BarListVariant} />
     );
   }
   if (slug === "dashboard") {

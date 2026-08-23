@@ -61,8 +61,13 @@ export type {
 
 export { normalizeQuery, percentDelta, serializeQuery } from "./normalize.js";
 export { assertSupported, missingRequirements } from "./validate.js";
-export { defineConnector, withCache, withRetry } from "./connector.js";
-export type { AnalyticsConnector, ConnectorInfo, DefineConnectorInput } from "./connector.js";
+export { defineConnector, withCache, withRetry, withSampleFallback } from "./connector.js";
+export type {
+  AnalyticsConnector,
+  ConnectorInfo,
+  DefineConnectorInput,
+  SampleFallbackOptions,
+} from "./connector.js";
 export { providerFetch, providerJson } from "./http.js";
 export { createHttpConnector } from "./remote.js";
 export type { RemoteConnectorOptions } from "./remote.js";

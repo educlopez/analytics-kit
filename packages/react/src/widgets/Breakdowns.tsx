@@ -3,6 +3,7 @@ import { getDimension } from "@analytics-kit/core";
 import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { BreakdownTable, CategoryBars, Donut, RankedList, Tracker } from "../primitives/Charts.js";
 import { useQuery } from "../hooks.js";
+import { useAnalytics } from "../context.js";
 import { registerWidget } from "../registry.js";
 
 type Variant = "list" | "bars" | "donut" | "table" | "compact";
@@ -24,7 +25,7 @@ export function BreakdownWidget({
   span?: number;
   limit?: number;
 }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: [metric],
     dimensions: [dimension],
     range,
@@ -32,9 +33,29 @@ export function BreakdownWidget({
   });
   const rows = data?.breakdown ?? [];
   const heading = title ?? getDimension(dimension)?.label ?? dimension;
+  // "bars" draws a real chart container, not a row list — giving it the list
+  // skeleton pops a text placeholder into a 220px chart.
+  const kind =
+    variant === "table"
+      ? "table"
+      : variant === "donut"
+        ? "donut"
+        : variant === "bars"
+          ? "chart"
+          : "list";
 
   return (
-    <WidgetFrame title={heading} status={status} missing={missing} error={error} span={span}>
+    <WidgetFrame
+      title={heading}
+      status={status}
+      missing={missing}
+      error={error}
+      span={span}
+      kind={kind}
+      rows={limit}
+      sample={sample}
+      onRetry={reload}
+    >
       {variant === "bars" ? <CategoryBars rows={rows} metric={metric} /> : null}
       {variant === "donut" ? <Donut rows={rows} metric={metric} /> : null}
       {variant === "table" ? <BreakdownTable rows={rows} metric={metric} /> : null}
@@ -89,12 +110,23 @@ export function PagesTable(
   );
 }
 
+/** Days the tracker will draw, so the skeleton reserves the rows the range needs. */
+const TRACKER_CELLS: Record<string, number> = {
+  "24h": 1,
+  "7d": 7,
+  "30d": 30,
+  "90d": 90,
+  "12mo": 365,
+};
+
 export function VisitTracker({ range, span = 4 }: { range?: DateRangeInput; span?: number }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: ["visitors"],
     granularity: "day",
     range,
   });
+  const { range: contextRange } = useAnalytics();
+  const preset = typeof (range ?? contextRange) === "string" ? String(range ?? contextRange) : "";
   return (
     <WidgetFrame
       title="Daily visitors"
@@ -103,6 +135,10 @@ export function VisitTracker({ range, span = 4 }: { range?: DateRangeInput; span
       missing={missing}
       error={error}
       span={span}
+      kind="tracker"
+      cells={data?.series?.length ?? TRACKER_CELLS[preset]}
+      sample={sample}
+      onRetry={reload}
     >
       <Tracker values={(data?.series ?? []).map((point) => point.values.visitors ?? 0)} />
     </WidgetFrame>

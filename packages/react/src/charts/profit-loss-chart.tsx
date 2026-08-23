@@ -59,11 +59,27 @@ export function ProfitLossChart({
             ) : null
           }
         />
+        {/* Arrays, not fragments: recharts walks its own children to find the
+            series, and a fragment hides them — the chart renders bare axes. */}
         {variant === "bars" ? (
-          <>
-            <Bar dataKey="up" fill="var(--ak-up)" maxBarSize={18} radius={2} />
-            <Bar dataKey="down" fill="var(--ak-down)" maxBarSize={18} radius={2} />
-          </>
+          [
+            <Bar
+              key="up"
+              dataKey="up"
+              fill="var(--ak-up)"
+              maxBarSize={18}
+              radius={2}
+              isAnimationActive={false}
+            />,
+            <Bar
+              key="down"
+              dataKey="down"
+              fill="var(--ak-down)"
+              maxBarSize={18}
+              radius={2}
+              isAnimationActive={false}
+            />,
+          ]
         ) : variant === "stroke" ? (
           <Line
             type="monotone"
@@ -71,24 +87,29 @@ export function ProfitLossChart({
             stroke="var(--ak-chart-1)"
             strokeWidth={2}
             dot={false}
+            isAnimationActive={false}
           />
         ) : (
-          <>
+          [
             <Area
+              key="up"
               type="monotone"
               dataKey="up"
               stroke="var(--ak-up)"
               fill="var(--ak-up)"
               fillOpacity={0.28}
-            />
+              isAnimationActive={false}
+            />,
             <Area
+              key="down"
               type="monotone"
               dataKey="down"
               stroke="var(--ak-down)"
               fill="var(--ak-down)"
               fillOpacity={0.28}
-            />
-          </>
+              isAnimationActive={false}
+            />,
+          ]
         )}
       </ComposedChart>
     </ChartContainer>

@@ -252,6 +252,8 @@ a.ghost {
   align-items: center;
   gap: 10px;
   min-width: 0;
+  /* Home link on every screen, so it needs a thumb-sized hit area too. */
+  min-height: 44px;
   text-decoration: none;
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -295,7 +297,9 @@ html[data-theme="dark"] .mark {
   border: 1px solid var(--line);
   color: var(--text);
   border-radius: 999px;
-  padding: 7px 12px;
+  /* Copy / theme toggles use this; 30px was under the 44px touch minimum. */
+  min-height: 44px;
+  padding: 7px 16px;
   font-size: 13px;
   white-space: nowrap;
 }
@@ -989,7 +993,9 @@ html[data-theme="dark"] .style-switch button.is-active {
   background: rgb(249 248 245 / 0.06);
   color: #f3f0e9;
   border-radius: 999px;
-  padding: 5px 10px;
+  /* Standalone control, so it needs a thumb-sized hit area on a phone. */
+  min-height: 44px;
+  padding: 5px 14px;
   cursor: pointer;
   font: inherit;
   font-family: var(--body);
@@ -1044,9 +1050,16 @@ html[data-theme="dark"] .style-switch button.is-active {
   color: var(--text);
   font-family: var(--mono);
   font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* On a phone these commands are ~730px of text in a 272px box. Ellipsis alone
+     hid the half that matters with no way to reach it, so let it scroll. */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.install code::-webkit-scrollbar {
+  display: none;
 }
 
 .install em {
@@ -1310,11 +1323,28 @@ html[data-theme="dark"] .style-switch button.is-active {
 
 .demo-chart-frame {
   width: 100%;
-  min-height: 72px;
+  min-height: max(72px, var(--demo-chart-height, 220px));
+}
+
+/* The frame sets the height the knob asks for. AnalyticsProvider renders an
+   .ak-root wrapper in between, so without a height here the chart resolves 100%
+   against a zero-height parent and recharts draws nothing at all.
+   The column lets charts that stack extra chrome underneath — the pie's legend —
+   give the plot whatever space is left instead of squeezing it back to zero. */
+/* AnalyticsProvider renders an .ak-root wrapper — and the charts add one more
+   unnamed wrapper inside it — between the frame and the plot. Without a height
+   on that chain the plot resolves against nothing and recharts draws no SVG. */
+.demo-chart-frame > .ak-root,
+.demo-chart-frame > .ak-root > * {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .demo-chart-frame .ak-rechart {
-  height: 100% !important;
+  flex: 0 0 auto;
+  height: var(--demo-chart-height, 220px) !important;
+  min-height: 0;
 }
 
 .demo-canvas-mini {
@@ -1528,7 +1558,10 @@ html[data-theme="dark"] .style-switch button.is-active {
   background: transparent;
   color: var(--muted);
   border-radius: 999px;
-  padding: 7px 12px;
+  /* The knobs are how the catalog is actually used; 34px was too small to hit
+     reliably on a phone. */
+  min-height: 44px;
+  padding: 7px 14px;
   cursor: pointer;
   font: inherit;
   font-size: 13px;
