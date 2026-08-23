@@ -198,9 +198,13 @@
 
 .ak-chart-svg,
 .ak-donut-svg,
+/* A sparkline is a trend garnish, not a chart: it should get wider in a wider
+   card, never taller. With `height: auto` the viewBox ratio made a span-2 metric
+   card render a 150px-tall spark against 68px in its neighbours, forcing the
+   whole row to match. Fixed height plus a stretched path keeps the row calm. */
 .ak-spark {
   width: 100%;
-  height: auto;
+  height: 36px;
   display: block;
 }
 

@@ -121,7 +121,14 @@ export function Sparkline({ values, fill = false }: { values: number[]; fill?: b
   return (
     // The number beside it already carries the value; the shape is trend garnish,
     // so it stays out of the accessibility tree rather than reading as an unnamed graphic.
-    <svg viewBox={`0 0 ${width} ${height}`} className="ak-spark" aria-hidden="true">
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      // The CSS pins the height, so let the path stretch to whatever width the
+      // card gives it rather than scaling both axes together.
+      preserveAspectRatio="none"
+      className="ak-spark"
+      aria-hidden="true"
+    >
       {fill ? (
         <>
           <defs>
@@ -133,7 +140,14 @@ export function Sparkline({ values, fill = false }: { values: number[]; fill?: b
           <path d={area} fill={`url(#${fillId})`} />
         </>
       ) : null}
-      <path d={d} fill="none" stroke="var(--ak-chart-1)" strokeWidth="2" />
+      <path
+        d={d}
+        fill="none"
+        stroke="var(--ak-chart-1)"
+        strokeWidth="2"
+        // Non-uniform scaling would squash the stroke along with the path.
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 }
