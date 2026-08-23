@@ -1,4 +1,4 @@
-import type { ConnectorCapabilities } from "./capabilities.js";
+import { mergeCapabilities, type ConnectorCapabilities } from "./capabilities.js";
 import { AnalyticsError } from "./errors.js";
 import { normalizeQuery } from "./normalize.js";
 import type { AnalyticsQuery, AnalyticsResult, RealtimeQuery, RealtimeResult } from "./query.js";
@@ -95,6 +95,82 @@ export function withCache(connector: AnalyticsConnector, ttlMs = 30_000): Analyt
       return promise;
     },
   };
+}
+
+export interface SampleFallbackOptions {
+  /** The primary connector — usually live/remote. */
+  connector: AnalyticsConnector;
+  /** Queried whenever the primary connector is unsupported, errors, or has no signal. */
+  sample: AnalyticsConnector;
+  /** Override the default "no signal" heuristic (all-zero totals / empty breakdown / empty series). */
+  isEmpty?: (result: AnalyticsResult, query: NormalizedQuery) => boolean;
+}
+
+/**
+ * Wrap a connector so a query that the primary connector can't answer — because
+ * it's unsupported, it throws, or it comes back with no signal (all-zero
+ * totals, empty breakdown, empty series) — transparently falls back to a
+ * sample connector instead of surfacing an error or an empty widget.
+ *
+ * The fallback result is tagged with `meta.sample = true` so UIs can render an
+ * honest "this is sample data" signal instead of passing it off as live.
+ *
+ * Reported capabilities are the union of both connectors: the point is that a
+ * widget should never have to "sit out" on this wrapper — it either gets live
+ * data or a clearly labeled sample, decided per query at request time, not by
+ * a static pre-flight capability check.
+ */
+export function withSampleFallback(options: SampleFallbackOptions): AnalyticsConnector {
+  const { connector, sample } = options;
+  const isEmpty = options.isEmpty ?? defaultResultIsEmpty;
+  const capabilities = mergeCapabilities(connector.capabilities, sample.capabilities);
+  const primaryRealtime = connector.realtime;
+  const sampleRealtime = sample.realtime;
+
+  return defineConnector({
+    id: connector.id,
+    name: connector.name,
+    capabilities,
+    async query(query) {
+      try {
+        const result = await connector.query(query);
+        return isEmpty(result, query) ? tagSample(await sample.query(query)) : result;
+      } catch {
+        return tagSample(await sample.query(query));
+      }
+    },
+    realtime:
+      primaryRealtime || sampleRealtime
+        ? async (rtQuery) => {
+            try {
+              if (!primaryRealtime) throw new AnalyticsError("UNSUPPORTED", "No realtime source.");
+              return await primaryRealtime(rtQuery);
+            } catch {
+              return sampleRealtime ? sampleRealtime(rtQuery) : { visitors: 0 };
+            }
+          }
+        : undefined,
+    refreshCapabilities: connector.refreshCapabilities
+      ? async () => mergeCapabilities(await connector.refreshCapabilities!(), sample.capabilities)
+      : undefined,
+  });
+}
+
+function tagSample(result: AnalyticsResult): AnalyticsResult {
+  return { ...result, meta: { ...result.meta, sample: true } };
+}
+
+function defaultResultIsEmpty(result: AnalyticsResult, query: NormalizedQuery): boolean {
+  const hasSignal = (values: Record<string, number> | undefined) =>
+    query.metrics.some((metric) => Number(values?.[metric]) > 0);
+
+  if (query.dimensions.length > 0) {
+    return !result.breakdown?.some((row) => hasSignal(row.values));
+  }
+  if (query.includePrevious || !query.granularity) {
+    return !hasSignal(result.totals);
+  }
+  return !result.series?.some((point) => hasSignal(point.values));
 }
 
 export async function withRetry<T>(fn: () => Promise<T>, attempts = 2, delayMs = 250): Promise<T> {

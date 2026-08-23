@@ -52,7 +52,7 @@ export function PieChart({
             startAngle={90}
             endAngle={-270}
           >
-            <RadialBar dataKey={dataKey} background cornerRadius={6}>
+            <RadialBar dataKey={dataKey} background cornerRadius={6} isAnimationActive={false}>
               {data.map((row, index) => (
                 <Cell key={String(row[labelKey])} fill={PALETTE[index % PALETTE.length]} />
               ))}
@@ -86,6 +86,10 @@ export function PieChart({
               data={data}
               dataKey={dataKey}
               nameKey={labelKey}
+              // Recharts runs the mount animation off a post-hydration effect that
+              // never fires here, leaving the pie layer with zero sectors until
+              // something forces a re-render. Drawing straight away is the fix.
+              isAnimationActive={false}
               innerRadius={inner}
               outerRadius={80}
               paddingAngle={variant === "rounded" ? 4 : 0}

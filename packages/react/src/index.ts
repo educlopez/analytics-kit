@@ -81,6 +81,7 @@ export type { WidgetDefinition, WidgetRequirements } from "./registry.js";
 export { catalogDashboard, Dashboard, defaultDashboard } from "./Dashboard.js";
 export type { DashboardItem } from "./Dashboard.js";
 export { MetricValue, Skeleton, Unsupported, WidgetFrame } from "./primitives/WidgetFrame.js";
+export type { WidgetFrameProps, WidgetKind } from "./primitives/WidgetFrame.js";
 export {
   BarList,
   BreakdownTable,

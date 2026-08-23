@@ -19,7 +19,7 @@ export function TimeseriesChart({
   span?: number;
   variant?: AreaChartVariant;
 }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: [metric],
     granularity: "day",
     range,
@@ -31,6 +31,9 @@ export function TimeseriesChart({
       missing={missing}
       error={error}
       span={span}
+      kind="chart"
+      sample={sample}
+      onRetry={reload}
     >
       <Timeseries series={data?.series ?? []} metric={metric} variant={variant} />
     </WidgetFrame>
@@ -38,56 +41,92 @@ export function TimeseriesChart({
 }
 
 export function TopPages({ range, span }: { range?: DateRangeInput; span?: number }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: ["pageviews"],
     dimensions: ["path"],
     range,
     limit: 8,
   });
   return (
-    <WidgetFrame title="Top pages" status={status} missing={missing} error={error} span={span}>
+    <WidgetFrame
+      title="Top pages"
+      status={status}
+      missing={missing}
+      error={error}
+      span={span}
+      kind="list"
+      sample={sample}
+      onRetry={reload}
+    >
       <RankedList rows={data?.breakdown ?? []} metric="pageviews" />
     </WidgetFrame>
   );
 }
 
 export function TopReferrers({ range, span }: { range?: DateRangeInput; span?: number }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: ["visitors"],
     dimensions: ["referrer"],
     range,
     limit: 8,
   });
   return (
-    <WidgetFrame title="Top referrers" status={status} missing={missing} error={error} span={span}>
+    <WidgetFrame
+      title="Top referrers"
+      status={status}
+      missing={missing}
+      error={error}
+      span={span}
+      kind="list"
+      sample={sample}
+      onRetry={reload}
+    >
       <RankedList rows={data?.breakdown ?? []} metric="visitors" />
     </WidgetFrame>
   );
 }
 
 export function TopCountries({ range, span }: { range?: DateRangeInput; span?: number }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: ["visitors"],
     dimensions: ["country"],
     range,
     limit: 8,
   });
   return (
-    <WidgetFrame title="Countries" status={status} missing={missing} error={error} span={span}>
+    <WidgetFrame
+      title="Countries"
+      status={status}
+      missing={missing}
+      error={error}
+      span={span}
+      kind="list"
+      sample={sample}
+      onRetry={reload}
+    >
       <RankedList rows={data?.breakdown ?? []} metric="visitors" />
     </WidgetFrame>
   );
 }
 
 export function Devices({ range, span }: { range?: DateRangeInput; span?: number }) {
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: ["visitors"],
     dimensions: ["device"],
     range,
     limit: 6,
   });
   return (
-    <WidgetFrame title="Devices" status={status} missing={missing} error={error} span={span}>
+    <WidgetFrame
+      title="Devices"
+      status={status}
+      missing={missing}
+      error={error}
+      span={span}
+      kind="donut"
+      sample={sample}
+      onRetry={reload}
+    >
       <Donut rows={data?.breakdown ?? []} metric="visitors" />
     </WidgetFrame>
   );
@@ -96,7 +135,7 @@ export function Devices({ range, span }: { range?: DateRangeInput; span?: number
 export function RealtimeCard({ span }: { span?: number }) {
   const { data, status, missing } = useRealtime();
   return (
-    <WidgetFrame title="Right now" status={status} missing={missing} span={span}>
+    <WidgetFrame title="Right now" status={status} missing={missing} span={span} kind="metric">
       <div className="ak-metric">
         <div className="ak-metric-value">{data?.visitors ?? 0}</div>
         <span className="ak-live">live visitors</span>

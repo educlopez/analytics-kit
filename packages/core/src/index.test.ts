@@ -17,6 +17,8 @@ import {
   serializeQuery,
   toIsoDate,
   withCache,
+  withSampleFallback,
+  type AnalyticsConnector,
 } from "./index.js";
 
 describe("resolveRange", () => {
@@ -153,5 +155,105 @@ describe("defaultGranularity", () => {
     expect(defaultGranularity(resolveRange("24h", now))).toBe("hour");
     expect(defaultGranularity(resolveRange("30d", now))).toBe("day");
     expect(defaultGranularity(resolveRange("12mo", now))).toBe("week");
+  });
+});
+
+describe("withSampleFallback", () => {
+  const sampleConnector: AnalyticsConnector = defineConnector({
+    id: "sample",
+    name: "Sample",
+    capabilities: fullCapabilities(),
+    async query(query) {
+      return {
+        totals: Object.fromEntries(query.metrics.map((metric) => [metric, 99])),
+        series: [],
+        breakdown: query.dimensions.map((dimension) => ({
+          key: dimension,
+          values: { visitors: 99 },
+        })),
+        meta: { connectorId: "sample", range: { from: "", to: "" } },
+      };
+    },
+  });
+
+  it("reports the union of both connectors' capabilities", () => {
+    const restricted = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: mergeCapabilities(fullCapabilities(), { metrics: { bounceRate: false } }),
+      async query() {
+        return {
+          totals: {},
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: restricted, sample: sampleConnector });
+    expect(wrapped.capabilities.metrics.bounceRate).toBe(true);
+  });
+
+  it("falls back to the sample connector when the primary throws UNSUPPORTED", async () => {
+    const restricted = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: mergeCapabilities(fullCapabilities(), { metrics: { bounceRate: false } }),
+      async query() {
+        throw new AnalyticsError("UNSUPPORTED", "nope");
+      },
+    });
+    const wrapped = withSampleFallback({ connector: restricted, sample: sampleConnector });
+    const result = await wrapped.query({ range: "7d", metrics: ["bounceRate"] });
+    expect(result.totals.bounceRate).toBe(99);
+    expect(result.meta.sample).toBe(true);
+  });
+
+  it("falls back to the sample connector when the primary returns no signal", async () => {
+    const empty = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: fullCapabilities(),
+      async query(query) {
+        return {
+          totals: Object.fromEntries(query.metrics.map((metric) => [metric, 0])),
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: empty, sample: sampleConnector });
+    const result = await wrapped.query({
+      range: "7d",
+      metrics: ["visitors"],
+      includePrevious: true,
+    });
+    expect(result.totals.visitors).toBe(99);
+    expect(result.meta.sample).toBe(true);
+  });
+
+  it("passes through real data untouched and unmarked", async () => {
+    const live = defineConnector({
+      id: "primary",
+      name: "Primary",
+      capabilities: fullCapabilities(),
+      async query() {
+        return {
+          totals: { visitors: 12 },
+          series: [],
+          breakdown: [],
+          meta: { connectorId: "primary", range: { from: "", to: "" } },
+        };
+      },
+    });
+    const wrapped = withSampleFallback({ connector: live, sample: sampleConnector });
+    const result = await wrapped.query({
+      range: "7d",
+      metrics: ["visitors"],
+      includePrevious: true,
+    });
+    expect(result.totals.visitors).toBe(12);
+    expect(result.meta.sample).toBeUndefined();
   });
 });

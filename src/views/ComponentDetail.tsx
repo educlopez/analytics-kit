@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { CatalogShell } from "../catalog/CatalogShell";
 import { CodePanel } from "../catalog/CodePanel";
 import { Customize } from "../catalog/Customize";
@@ -77,8 +77,13 @@ export function ComponentDetail({ item }: { item: CatalogItem }) {
           <div
             className={`demo-canvas demo-canvas-hero${item.slug === "dashboard" ? " demo-canvas-wide" : ""}`}
           >
+            {/* The knob sizes the plot, not the frame: charts that stack a legend
+                under the plot (pie/donut) grow instead of squeezing it to nothing. */}
             {chart ? (
-              <div className="demo-chart-frame" style={{ height: knobs.height }}>
+              <div
+                className="demo-chart-frame"
+                style={{ "--demo-chart-height": `${knobs.height}px` } as CSSProperties}
+              >
                 <LivePreview slug={item.slug} theme={theme} knobs={knobs} />
               </div>
             ) : (

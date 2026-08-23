@@ -2,6 +2,7 @@ import {
   AnalyticsError,
   defineConnector,
   emptyResult,
+  isAnalyticsError,
   previousRange,
   providerJson,
   queryNeeds,
@@ -38,7 +39,9 @@ export const VERCEL_CAPABILITIES: ConnectorCapabilities = {
     visitors: true,
     pageviews: true,
     visits: true,
-    events: true,
+    // Custom Events counting is a paid Web Analytics feature; Hobby-plan
+    // projects get HTTP 402 from /v1/query/web-analytics/events/*.
+    events: false,
     bounceRate: false,
     avgDuration: false,
     viewsPerVisit: false,
@@ -50,10 +53,13 @@ export const VERCEL_CAPABILITIES: ConnectorCapabilities = {
     device: true,
     browser: true,
     os: true,
-    source: true,
-    medium: true,
-    campaign: true,
-    eventName: true,
+    // UTM breakdowns (source/medium/campaign) and the Custom Events dimension
+    // are also paid-plan-only and 402 on Hobby. Declaring them unsupported
+    // keeps widgets from ever attempting a request that can't succeed.
+    source: false,
+    medium: false,
+    campaign: false,
+    eventName: false,
     host: false,
   },
   granularity: ["hour", "day", "week", "month"],
@@ -84,16 +90,18 @@ export function createVercelConnector(options: VercelConnectorOptions): Analytic
       const visitMetrics = query.metrics.filter((metric) => metric !== "events");
 
       if (visitMetrics.length) {
-        const totals = await countVisits(fetchImpl, options, query);
+        const totals = await safe<VisitTotals>({}, () => countVisits(fetchImpl, options, query));
         Object.assign(result.totals, pickVisitMetrics(visitMetrics, totals));
       }
       if (eventMetrics.length) {
-        const events = await countEvents(fetchImpl, options, query);
+        const events = await safe(0, () => countEvents(fetchImpl, options, query));
         result.totals.events = events;
       }
 
       if (needs.series && query.granularity && visitMetrics.length) {
-        const rows = await aggregateVisits(fetchImpl, options, query, [query.granularity]);
+        const rows = await safe<VisitTotals[]>([], () =>
+          aggregateVisits(fetchImpl, options, query, [query.granularity as string]),
+        );
         result.series = rows.map((row) => ({
           date: String(row.timestamp ?? row.day ?? row.hour ?? row.week ?? row.month ?? ""),
           values: pickVisitMetrics(visitMetrics, row),
@@ -103,7 +111,9 @@ export function createVercelConnector(options: VercelConnectorOptions): Analytic
       if (needs.breakdown) {
         const dimension = query.dimensions[0];
         if (dimension === "eventName") {
-          const rows = await aggregateEvents(fetchImpl, options, query, ["eventName"]);
+          const rows = await safe<Array<Record<string, unknown>>>([], () =>
+            aggregateEvents(fetchImpl, options, query, ["eventName"]),
+          );
           result.breakdown = rows.map((row) => ({
             key: String(row.eventName ?? "(none)"),
             label: String(row.eventName ?? "(none)"),
@@ -111,7 +121,9 @@ export function createVercelConnector(options: VercelConnectorOptions): Analytic
           }));
         } else {
           const vercelDim = mapVercelDimension(dimension);
-          const rows = await aggregateVisits(fetchImpl, options, query, [vercelDim]);
+          const rows = await safe<VisitTotals[]>([], () =>
+            aggregateVisits(fetchImpl, options, query, [vercelDim]),
+          );
           result.breakdown = rows.slice(0, query.limit).map((row) => ({
             key: String(row[vercelDim] ?? row.route ?? "(none)"),
             label: String(row[vercelDim] ?? row.route ?? "(none)"),
@@ -122,16 +134,34 @@ export function createVercelConnector(options: VercelConnectorOptions): Analytic
 
       if (needs.previous && visitMetrics.length) {
         const prevQuery: NormalizedQuery = { ...query, range: previousRange(query.range) };
-        const prev = await countVisits(fetchImpl, options, prevQuery);
+        const prev = await safe<VisitTotals>({}, () => countVisits(fetchImpl, options, prevQuery));
         result.previous = { totals: pickVisitMetrics(visitMetrics, prev) };
         if (eventMetrics.length) {
-          result.previous.totals.events = await countEvents(fetchImpl, options, prevQuery);
+          result.previous.totals.events = await safe(0, () =>
+            countEvents(fetchImpl, options, prevQuery),
+          );
         }
       }
 
       return result;
     },
   });
+}
+
+/**
+ * Run a Vercel API call and, when it fails because the plan doesn't cover it
+ * (HTTP 402, surfaced as `AnalyticsError("UNSUPPORTED", ...)` by `providerFetch`),
+ * degrade that one slice to `fallback` instead of failing the whole query.
+ * Any other error (auth, rate limit, network, unexpected provider error)
+ * still propagates — those are real failures, not capability gaps.
+ */
+async function safe<T>(fallback: T, fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (isAnalyticsError(error) && error.code === "UNSUPPORTED") return fallback;
+    throw error;
+  }
 }
 
 interface VisitTotals {
@@ -150,22 +180,39 @@ function pickVisitMetrics(metrics: MetricId[], row: VisitTotals): Record<string,
   return values;
 }
 
+/**
+ * Vercel's `until` can't be in the future. `resolveRange` sets `to` to the
+ * *end* of today (23:59:59.999) for every relative preset, which is later
+ * than "now" for most of the day — clamp it so the outbound request always
+ * asks for a real, already-elapsed window.
+ */
+function clampUntil(date: Date, now: Date = new Date()): Date {
+  return date.getTime() > now.getTime() ? now : date;
+}
+
+/** `count` endpoints are documented to return a single totals object, but be
+ * defensive in case a response comes back array-shaped like `aggregate` does. */
+function firstRow(data: VisitTotals | VisitTotals[] | undefined): VisitTotals {
+  if (Array.isArray(data)) return data[0] ?? {};
+  return data ?? {};
+}
+
 async function countVisits(
   fetchImpl: typeof fetch,
   options: VercelConnectorOptions,
   query: NormalizedQuery,
 ): Promise<VisitTotals> {
-  const payload = await vercelGet<{ data: VisitTotals }>(
+  const payload = await vercelGet<{ data: VisitTotals | VisitTotals[] }>(
     fetchImpl,
     options,
     "/v1/query/web-analytics/visits/count",
     {
       since: query.range.from.toISOString(),
-      until: query.range.to.toISOString(),
+      until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters),
     },
   );
-  return payload.data ?? {};
+  return firstRow(payload.data);
 }
 
 async function countEvents(
@@ -173,18 +220,21 @@ async function countEvents(
   options: VercelConnectorOptions,
   query: NormalizedQuery,
 ): Promise<number> {
-  const payload = await vercelGet<{ data: { events?: number; total?: number } | number }>(
+  type EventsCount = { events?: number; total?: number };
+  const payload = await vercelGet<{ data: EventsCount | EventsCount[] | number }>(
     fetchImpl,
     options,
     "/v1/query/web-analytics/events/count",
     {
       since: query.range.from.toISOString(),
-      until: query.range.to.toISOString(),
+      until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters, true),
     },
   );
-  if (typeof payload.data === "number") return payload.data;
-  return Number(payload.data?.events ?? payload.data?.total ?? 0);
+  const data = payload.data;
+  if (typeof data === "number") return data;
+  const row = Array.isArray(data) ? data[0] : data;
+  return Number(row?.events ?? row?.total ?? 0);
 }
 
 async function aggregateVisits(
@@ -199,7 +249,7 @@ async function aggregateVisits(
     "/v1/query/web-analytics/visits/aggregate",
     {
       since: query.range.from.toISOString(),
-      until: query.range.to.toISOString(),
+      until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters),
       limit: String(query.limit),
     },
@@ -220,7 +270,7 @@ async function aggregateEvents(
     "/v1/query/web-analytics/events/aggregate",
     {
       since: query.range.from.toISOString(),
-      until: query.range.to.toISOString(),
+      until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters, true),
       limit: String(query.limit),
     },

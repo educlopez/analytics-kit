@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { createHttpConnector } from "@analytics-kit/core";
+import { createHttpConnector, withSampleFallback } from "@analytics-kit/core";
+import { ANALYTICS_KIT_DATASET, createMockConnector } from "@analytics-kit/connector-mock";
 import { AnalyticsProvider, Dashboard, defaultDashboard } from "@analytics-kit/react";
 import Link from "next/link";
 import { ChartTeaser } from "../ChartTeaser";
@@ -94,7 +95,22 @@ const FAQS = [
 
 export function HomePage() {
   const { theme } = useSite();
-  const connector = useMemo(() => createHttpConnector({ endpoint: "/api/analytics" }), []);
+  const connector = useMemo(() => {
+    const live = createHttpConnector({ endpoint: "/api/analytics" });
+    // The Vercel connector's real capabilities exclude UTM/event dimensions
+    // (paid-plan only) and can legitimately return no traffic for a slice.
+    // Rather than showing an error or an empty widget, fall back to a full
+    // sample profile — WidgetFrame renders a visible "Sample" badge whenever
+    // that happens, so the landing never looks broken but never lies either.
+    const sample = createMockConnector({
+      profile: "full",
+      seed: 21,
+      scale: 2.4,
+      dataset: ANALYTICS_KIT_DATASET,
+      siteName: "analytics-kit-demo.vercel.app",
+    });
+    return withSampleFallback({ connector: live, sample });
+  }, []);
   const { copied, copy } = useCopy();
   const registry = useRegistryCommand("dashboard");
   const [live, setLive] = useState(false);
@@ -187,8 +203,8 @@ export function HomePage() {
             </h2>
             <p className="lede compact">
               {live
-                ? "Live Vercel Web Analytics for this site."
-                : "Vercel capability profile with this site's routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load real data."}
+                ? "Live Vercel Web Analytics for this site. Widgets marked Sample show representative data where Vercel's plan or a given slice can't answer yet."
+                : "Vercel capability profile with this site's routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load real data. Nothing below is live yet."}
             </p>
           </div>
           <span className={`pill ${live ? "live" : ""}`}>

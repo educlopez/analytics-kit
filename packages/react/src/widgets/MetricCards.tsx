@@ -22,7 +22,7 @@ export interface MetricCardProps {
 
 export function MetricCard({ metric, title, range, span, variant = "default" }: MetricCardProps) {
   const definition = getMetric(metric);
-  const { data, status, missing, error } = useQuery({
+  const { data, status, missing, error, sample, reload } = useQuery({
     metrics: [metric],
     granularity: "day",
     includePrevious: true,
@@ -39,6 +39,9 @@ export function MetricCard({ metric, title, range, span, variant = "default" }: 
       missing={missing}
       error={error}
       span={span}
+      kind="metric"
+      sample={sample}
+      onRetry={reload}
       trailing={
         variant === "compact" ? null : (
           <Sparkline fill values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />

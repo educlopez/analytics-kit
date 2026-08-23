@@ -75,6 +75,7 @@ export function ComposedChart({
           <Bar
             dataKey={barKey}
             fill={barColor}
+            isAnimationActive={false}
             radius={4}
             maxBarSize={28}
             fillOpacity={variant === "highlight" ? 0.35 : 0.85}
@@ -101,7 +102,14 @@ export function ComposedChart({
             dot={false}
           />
         ) : (
-          <Line type="monotone" dataKey={lineKey} stroke={lineColor} strokeWidth={2} dot={false} />
+          <Line
+            type="monotone"
+            dataKey={lineKey}
+            stroke={lineColor}
+            strokeWidth={2}
+            dot={false}
+            isAnimationActive={false}
+          />
         )}
       </RechartsComposed>
     </ChartContainer>

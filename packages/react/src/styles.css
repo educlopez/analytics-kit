@@ -13,6 +13,10 @@
   --ak-chart-5: var(--chart-5, #f07178);
   --ak-up: #3dd68c;
   --ak-down: #ff6b7a;
+  /* Status hue, deliberately outside the --chart-N scale so it never collides
+     with a real data slice. Fixed, not themeable: it has to clear AA on the
+     widget surface even when the host defines no tokens at all. */
+  --ak-notice: #f0b866;
   --ak-radius: var(--radius, 18px);
   --ak-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
   --ak-font: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
@@ -36,6 +40,7 @@
   --ak-chart-5: var(--chart-5, #ef4444);
   --ak-up: #16a34a;
   --ak-down: #ef4444;
+  --ak-notice: #8a4d0a;
   --ak-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
@@ -86,6 +91,10 @@
   padding: 6px 12px;
   cursor: pointer;
   font: inherit;
+  /* The range switcher is the dashboard's primary control; on a phone these were
+     32px tall, under the 44px minimum. Keep the pill compact, grow the hit area. */
+  min-height: 44px;
+  min-width: 44px;
   font-size: 13px;
 }
 
@@ -116,6 +125,9 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+  /* Title + sample badge + trailing sparkline have to share the narrowest
+     column in a 4-up grid; without this they squash instead of wrapping. */
+  flex-wrap: wrap;
 }
 
 .ak-widget-title {
@@ -314,6 +326,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.ak-tracker-cell {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--ak-chart-1);
 }
 
 .ak-rechart {
@@ -530,21 +550,176 @@
   font-size: 13px;
 }
 
+.ak-error {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
+.ak-retry {
+  appearance: none;
+  justify-self: start;
+  border: 1px solid var(--ak-border);
+  background: var(--ak-surface-2);
+  color: var(--ak-text);
+  border-radius: 999px;
+  /* Recovering from a failed load is the one action that must not be fiddly. */
+  min-height: 44px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ak-retry:hover {
+  border-color: var(--ak-accent);
+}
+
+/* Most slices fall back at once in practice, so this repeats across the whole
+   grid. It stays quiet chrome — the card ring below carries the grouping — and
+   uses its own token: --ak-chart-3 also encodes a real slice inside these
+   widgets, and at text sizes it does not clear AA on either surface. */
+.ak-sample-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ak-notice) 35%, var(--ak-border));
+  color: var(--ak-notice);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.ak-widget[data-ak-sample="true"] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ak-notice) 22%, transparent);
+}
+
+.ak-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Loading skeletons: shaped per widget kind so the swap to real content
+   doesn't shift layout, with a fixed min-height reserved per shape below. */
+.ak-skeleton-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.ak-skel-note {
+  font-size: 12px;
+  margin: 0;
+}
+
 .ak-skeleton {
   display: grid;
   gap: 10px;
+  min-height: 46px;
 }
 
 .ak-skel-line {
   height: 10px;
   border-radius: 99px;
   background: linear-gradient(90deg, var(--ak-surface-2), transparent, var(--ak-surface-2));
-  animation: ak-pulse 1.4s ease infinite;
 }
 
 .ak-skel-lg {
   height: 28px;
   width: 46%;
+}
+
+.ak-skel-chart {
+  min-height: 210px;
+}
+
+.ak-skel-block {
+  flex: 1;
+  min-height: 172px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--ak-surface-2), transparent, var(--ak-surface-2));
+}
+
+/* Row count is driven by the query's limit, so height comes from the rows
+   themselves rather than a fixed guess that drifts from the real list. */
+.ak-skel-rows {
+  gap: 14px;
+}
+
+.ak-skel-row {
+  display: grid;
+  gap: 8px;
+}
+
+.ak-skel-row-label {
+  width: 62%;
+}
+
+.ak-skel-row-value {
+  width: 30%;
+  height: 6px;
+}
+
+/* Mirrors PieChart: a 220px chart block with the legend stacked underneath. */
+.ak-skel-donut {
+  min-height: 292px;
+  display: grid;
+  grid-template-rows: 220px auto;
+  gap: 12px;
+  justify-items: center;
+}
+
+.ak-skel-ring {
+  width: 160px;
+  height: 160px;
+  align-self: center;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--ak-surface-2), transparent, var(--ak-surface-2));
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 18px),
+    #000 calc(100% - 18px)
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 calc(100% - 18px));
+}
+
+.ak-skel-legend {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.ak-skel-tracker {
+  min-height: 96px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-content: flex-start;
+}
+
+.ak-skel-cell {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--ak-surface-2);
+}
+
+.ak-skeleton .ak-skel-line,
+.ak-skeleton .ak-skel-block,
+.ak-skeleton .ak-skel-ring,
+.ak-skeleton .ak-skel-cell {
+  animation: ak-pulse 1.4s ease infinite;
 }
 
 @keyframes ak-pulse {
@@ -557,6 +732,14 @@
   .ak-ping {
     animation: none;
     opacity: 0.18;
+  }
+
+  .ak-skeleton .ak-skel-line,
+  .ak-skeleton .ak-skel-block,
+  .ak-skeleton .ak-skel-ring,
+  .ak-skeleton .ak-skel-cell {
+    animation: none;
+    opacity: 0.7;
   }
 }
 

@@ -53,6 +53,8 @@ export interface AnalyticsResult {
     range: { from: string; to: string; preset?: string };
     granularity?: TimeGranularity;
     warnings?: string[];
+    /** True when this result came from a sample/mock fallback, not the live provider. */
+    sample?: boolean;
   };
 }
 

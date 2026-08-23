@@ -96,13 +96,18 @@ export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> =
   posthog: mergeCapabilities(fullCapabilities(), {
     metrics: { bounceRate: true, avgDuration: true },
   }),
+  // Mirrors @analytics-kit/connector-vercel's VERCEL_CAPABILITIES: Vercel's
+  // Hobby plan 402s on UTM breakdowns and Custom Events, so this profile
+  // (used for local/dev previews when no live token is configured) reports
+  // the same limits instead of promising data the real connector can't serve.
   vercel: mergeCapabilities(fullCapabilities(), {
     metrics: {
       bounceRate: false,
       avgDuration: false,
       viewsPerVisit: false,
+      events: false,
     },
-    dimensions: { host: false },
+    dimensions: { host: false, source: false, medium: false, campaign: false, eventName: false },
     realtime: false,
     previousPeriod: true,
   }),
