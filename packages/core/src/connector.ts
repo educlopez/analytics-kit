@@ -1,4 +1,4 @@
-import { mergeCapabilities, type ConnectorCapabilities } from "./capabilities.js";
+import { unionCapabilities, type ConnectorCapabilities } from "./capabilities.js";
 import { AnalyticsError } from "./errors.js";
 import { normalizeQuery } from "./normalize.js";
 import type { AnalyticsQuery, AnalyticsResult, RealtimeQuery, RealtimeResult } from "./query.js";
@@ -123,7 +123,10 @@ export interface SampleFallbackOptions {
 export function withSampleFallback(options: SampleFallbackOptions): AnalyticsConnector {
   const { connector, sample } = options;
   const isEmpty = options.isEmpty ?? defaultResultIsEmpty;
-  const capabilities = mergeCapabilities(connector.capabilities, sample.capabilities);
+  // Union, not merge: merge is override semantics, so a sample connector
+  // declaring `realtime: false` would cancel a primary that supports it and
+  // defineConnector would reject realtime before we ever reach the live source.
+  const capabilities = unionCapabilities(connector.capabilities, sample.capabilities);
   const primaryRealtime = connector.realtime;
   const sampleRealtime = sample.realtime;
 
@@ -145,13 +148,21 @@ export function withSampleFallback(options: SampleFallbackOptions): AnalyticsCon
             try {
               if (!primaryRealtime) throw new AnalyticsError("UNSUPPORTED", "No realtime source.");
               return await primaryRealtime(rtQuery);
-            } catch {
-              return sampleRealtime ? sampleRealtime(rtQuery) : { visitors: 0 };
+            } catch (error) {
+              // A fabricated 0 would render as "0 live visitors" with nothing
+              // marking it as invented. With no sample stream to fall back to,
+              // failing is the honest outcome.
+              if (!sampleRealtime) {
+                throw error instanceof AnalyticsError
+                  ? error
+                  : new AnalyticsError("UNSUPPORTED", "No realtime source.");
+              }
+              return sampleRealtime(rtQuery);
             }
           }
         : undefined,
     refreshCapabilities: connector.refreshCapabilities
-      ? async () => mergeCapabilities(await connector.refreshCapabilities!(), sample.capabilities)
+      ? async () => unionCapabilities(await connector.refreshCapabilities!(), sample.capabilities)
       : undefined,
   });
 }
@@ -160,17 +171,26 @@ function tagSample(result: AnalyticsResult): AnalyticsResult {
   return { ...result, meta: { ...result.meta, sample: true } };
 }
 
+/**
+ * "The provider gave us nothing to show" — deliberately not "the numbers are
+ * zero". A site with genuinely zero visitors has real data, and replacing that
+ * honest zero with invented numbers is the failure this wrapper exists to avoid.
+ * So a breakdown row or a series point counts as data whatever it holds.
+ *
+ * A totals-only query (metric cards) is the one case that can't be told apart:
+ * `emptyResult` fills every requested metric with 0, so "no data" and "real
+ * zero" are byte-identical. There we still fall back — the visible sample badge
+ * keeps it honest — and a connector that can assert a true zero should pass its
+ * own `isEmpty`.
+ */
 function defaultResultIsEmpty(result: AnalyticsResult, query: NormalizedQuery): boolean {
-  const hasSignal = (values: Record<string, number> | undefined) =>
-    query.metrics.some((metric) => Number(values?.[metric]) > 0);
-
   if (query.dimensions.length > 0) {
-    return !result.breakdown?.some((row) => hasSignal(row.values));
+    return !result.breakdown?.length;
   }
   if (query.includePrevious || !query.granularity) {
-    return !hasSignal(result.totals);
+    return !query.metrics.some((metric) => Number(result.totals?.[metric]) > 0);
   }
-  return !result.series?.some((point) => hasSignal(point.values));
+  return !result.series?.length;
 }
 
 export async function withRetry<T>(fn: () => Promise<T>, attempts = 2, delayMs = 250): Promise<T> {

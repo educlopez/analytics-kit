@@ -30,6 +30,7 @@ export {
   hasGranularity,
   hasMetric,
   mergeCapabilities,
+  unionCapabilities,
 } from "./capabilities.js";
 export type { ConnectorCapabilities } from "./capabilities.js";
 

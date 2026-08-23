@@ -1321,6 +1321,27 @@ html[data-theme="dark"] .style-switch button.is-active {
   align-content: center;
 }
 
+/* The widget package derives its palette from shadcn-style token names, and on
+   this site `--muted` is a text colour rather than a surface. Left to guess, it
+   painted the active range pill dark-on-dark (~1.9:1). Map the contract
+   explicitly instead — body raises specificity over the package's own defaults,
+   which are imported after this file. */
+/* The attribute selector is load-bearing: the package's own light block is
+   `.ak-root[data-ak-theme="light"]`, so a plain `.ak-root` here loses to it. */
+body .ak-root[data-ak-theme] {
+  --ak-bg: var(--bg);
+  --ak-surface: var(--surface);
+  --ak-surface-2: var(--stone-300);
+  --ak-border: var(--line);
+  --ak-text: var(--text);
+  --ak-muted: var(--muted);
+  --ak-accent: var(--blue);
+}
+
+html[data-theme="dark"] body .ak-root[data-ak-theme] {
+  --ak-surface-2: var(--paper);
+}
+
 .demo-chart-frame {
   width: 100%;
   min-height: max(72px, var(--demo-chart-height, 220px));
