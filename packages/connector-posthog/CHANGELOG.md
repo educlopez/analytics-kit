@@ -1,5 +1,12 @@
 # @analytics-kit/connector-posthog
 
+## 0.3.0
+
+### Patch Changes
+
+- Updated dependencies [[`4e68bba`](https://github.com/educlopez/analytics-kit/commit/4e68bba74568cb941ddf7fb916d95d7cb82ba3d8)]:
+  - @analytics-kit/core@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes

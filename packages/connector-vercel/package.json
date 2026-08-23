@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/connector-vercel",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Vercel Web Analytics API connector for Analytics Kit.",
   "type": "module",
   "main": "./dist/index.cjs",
