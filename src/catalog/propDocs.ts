@@ -44,7 +44,8 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       name: "dataKeys",
       type: "string[]",
       default: "[dataKey]",
-      notes: 'Series to compose. Required by variant="stacked"; ignored by the others.',
+      notes:
+        'Series to compose. Pass two or more to make variant="stacked" stack something; ignored by the other variants.',
     },
   ],
   "line-chart": [
@@ -83,7 +84,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       type: "string[]",
       default: "[dataKey]",
       notes:
-        "Series to compare. Required by grouped, stacked and stacked-100. stacked-100 rebases the drawing to share; the tooltip still reports real counts.",
+        "Series to compare. Pass two or more for grouped, stacked and stacked-100 to have anything to compare. stacked-100 rebases the drawing to share; the tooltip still reports real counts.",
     },
   ],
   "pie-chart": [
