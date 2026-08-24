@@ -221,7 +221,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100"',
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100" | "diverging" | "editorial"',
       default: '"vertical"',
       notes:
         "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
@@ -254,7 +254,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow"',
+      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow" | "half"',
       default: '"donut"',
       notes: "Ring vs full pie, rounded gaps, radial bars, or a bloom on the slices.",
     },
@@ -661,7 +661,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"arc" | "ring" | "tick"',
+      type: '"arc" | "ring" | "tick" | "score"',
       default: '"arc"',
       notes: "Semicircle, full ring, or tick marks with a needle.",
     },
@@ -669,6 +669,13 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       name: "className",
       type: "string",
       notes: "Outer wrapper.",
+    },
+    {
+      name: "bands",
+      type: "{ label, color }[]",
+      default: "Low / Medium / High",
+      notes:
+        "Qualitative bands for the score variant, low to high. The arc is split into these and the value's band is named under it.",
     },
   ],
   "metric-card": [

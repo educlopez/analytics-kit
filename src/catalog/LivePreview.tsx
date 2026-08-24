@@ -292,6 +292,16 @@ function PreviewInner({
         />
       );
     }
+    if (activeVariant === "diverging") {
+      // Real signed numbers, not abs values dressed up: the treemap deltas are
+      // a genuine difference of two queries.
+      return (
+        <BarChart
+          data={treemap.map((row) => ({ label: row.label, value: row.delta }))}
+          variant={activeVariant as BarChartVariant}
+        />
+      );
+    }
     return <BarChart data={breakdown} variant={activeVariant as BarChartVariant} />;
   }
   if (slug === "pie-chart") {

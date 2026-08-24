@@ -1,10 +1,21 @@
 import { useId } from "react";
-import { Bar, BarChart as RechartsBar, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart as RechartsBar,
+  CartesianGrid,
+  Cell,
+  LabelList,
+  ReferenceLine,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   ChartContainer,
   ChartLegend,
   ChartTooltipBox,
   ChartTooltipRows,
+  formatNumber,
   seriesConfig,
   type ChartConfig,
 } from "./chart.js";
@@ -46,7 +57,11 @@ export function BarChart({
   const fadeId = `ak-bar-fade-${uid}`;
   const duotoneId = `ak-bar-duo-${uid}`;
   const glowId = `ak-bar-glow-${uid}`;
-  const horizontal = variant === "horizontal";
+  const horizontal = variant === "horizontal" || variant === "diverging";
+  // Zero-centred bars running both ways, gainers and losers coloured apart.
+  const diverging = variant === "diverging";
+  // No axes, no grid, no ticks: a display-scale mark for a marketing page.
+  const editorial = variant === "editorial";
   const radius = variant === "vertical" || variant === "horizontal" ? 2 : 6;
   const fill =
     variant === "hatched"
@@ -153,14 +168,26 @@ export function BarChart({
             {variant === "glow" ? <GlowFilter id={glowId} /> : null}
           </defs>
         ) : null}
-        <CartesianGrid
-          vertical={!horizontal}
-          horizontal={horizontal}
-          stroke="var(--ak-border)"
-          strokeDasharray="3 6"
-        />
+        {editorial ? null : (
+          <CartesianGrid
+            vertical={!horizontal}
+            horizontal={horizontal}
+            stroke="var(--ak-border)"
+            strokeDasharray="3 6"
+          />
+        )}
+        {diverging ? <ReferenceLine x={0} stroke="var(--ak-border)" strokeWidth={1.5} /> : null}
         {horizontal ? (
           <XAxis type="number" tickLine={false} axisLine={false} hide />
+        ) : editorial ? (
+          <XAxis
+            dataKey={labelKey}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={10}
+            interval={0}
+            tickFormatter={(value: string) => String(value).slice(0, 12)}
+          />
         ) : (
           <XAxis
             dataKey={labelKey}
@@ -199,9 +226,33 @@ export function BarChart({
           // paint until something forces a re-render.
           isAnimationActive={false}
           radius={radius}
-          maxBarSize={48}
+          maxBarSize={editorial ? 96 : 48}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
-        />
+        >
+          {diverging
+            ? data.map((row) => (
+                <Cell
+                  key={String(row[labelKey])}
+                  fill={
+                    Number(row[dataKey] ?? 0) >= 0
+                      ? "var(--ak-chart-2, var(--chart-2))"
+                      : "var(--ak-chart-3, var(--chart-3))"
+                  }
+                />
+              ))
+            : null}
+          {editorial ? (
+            // The value belongs inside the bar: with no axis to read against,
+            // an unlabelled bar is a shape rather than a number.
+            <LabelList
+              dataKey={dataKey}
+              position="insideTop"
+              offset={14}
+              className="ak-bar-editorial-label"
+              formatter={(value: number) => formatNumber(value)}
+            />
+          ) : null}
+        </Bar>
       </RechartsBar>
     </ChartContainer>
   );

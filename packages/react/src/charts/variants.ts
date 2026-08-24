@@ -44,6 +44,8 @@ export const BAR_CHART_VARIANTS = [
   "grouped",
   "stacked",
   "stacked-100",
+  "diverging",
+  "editorial",
 ] as const;
 export type BarChartVariant = (typeof BAR_CHART_VARIANTS)[number];
 
@@ -58,6 +60,7 @@ export const PIE_CHART_VARIANTS = [
   "rounded",
   "radial",
   "glow",
+  "half",
 ] as const;
 export type PieChartVariant = (typeof PIE_CHART_VARIANTS)[number];
 
@@ -73,7 +76,7 @@ export type FunnelChartVariant = (typeof FUNNEL_CHART_VARIANTS)[number];
 export const RADAR_CHART_VARIANTS = ["stroke", "fill", "glow", "dither"] as const;
 export type RadarChartVariant = (typeof RADAR_CHART_VARIANTS)[number];
 
-export const GAUGE_CHART_VARIANTS = ["arc", "ring", "tick"] as const;
+export const GAUGE_CHART_VARIANTS = ["arc", "ring", "tick", "score"] as const;
 export type GaugeChartVariant = (typeof GAUGE_CHART_VARIANTS)[number];
 
 export const COMPOSED_CHART_VARIANTS = ["combo", "highlight", "overlay"] as const;
