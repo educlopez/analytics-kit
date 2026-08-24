@@ -442,6 +442,28 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-bar-editorial-label {
+  fill: var(--ak-surface);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-pie-total {
+  fill: var(--ak-text);
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-gauge-band {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ak-muted);
+}
+
 .ak-legend-name {
   display: inline-flex;
   align-items: center;

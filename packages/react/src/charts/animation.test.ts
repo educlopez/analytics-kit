@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -11,7 +12,10 @@ import { describe, expect, it } from "vitest";
  * That shipped once (the area and line charts were empty on the deployed site),
  * so the guard is asserted here rather than left to review.
  */
-const CHARTS_DIR = join(import.meta.dirname, ".");
+// fileURLToPath rather than import.meta.dirname: the latter needs Node 20.11,
+// and the package declares engines node >=20. Changing a published engine range
+// for a test-only convenience is the wrong trade.
+const CHARTS_DIR = dirname(fileURLToPath(import.meta.url));
 
 /** recharts marks that animate on mount. Sankey is absent: it takes no such prop. */
 const ANIMATED_MARKS = ["Area", "Line", "Bar", "Pie", "RadialBar", "Scatter", "Radar", "Funnel"];

@@ -33,9 +33,12 @@ export function PieChart({
       { label: String(row[labelKey]), color: PALETTE[index % PALETTE.length] },
     ]),
   );
-  const inner = variant === "pie" ? 0 : variant === "rounded" ? 52 : 58;
+  // The half arc gets a bigger radius: a semicircle drawn at the full-circle
+  // radius leaves the top half of the container empty.
+  const inner = variant === "pie" ? 0 : variant === "rounded" ? 52 : variant === "half" ? 104 : 58;
   const total = data.reduce((sum, row) => sum + Number(row[dataKey] ?? 0), 0);
-  const showLegend = variant !== "pie";
+  const half = variant === "half";
+  const showLegend = variant !== "pie" && !half;
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
 
@@ -86,12 +89,17 @@ export function PieChart({
               data={data}
               dataKey={dataKey}
               nameKey={labelKey}
+              // A semicircle: half the height, and the vacated middle becomes
+              // room for the total instead of dead space.
+              startAngle={half ? 180 : 0}
+              endAngle={half ? 0 : 360}
+              cy={half ? "78%" : "50%"}
               // Recharts runs the mount animation off a post-hydration effect that
               // never fires here, leaving the pie layer with zero sectors until
               // something forces a re-render. Drawing straight away is the fix.
               isAnimationActive={false}
               innerRadius={inner}
-              outerRadius={80}
+              outerRadius={half ? 140 : 80}
               paddingAngle={variant === "rounded" ? 4 : 0}
               cornerRadius={variant === "rounded" ? 10 : 0}
               stroke="var(--ak-surface)"
@@ -109,6 +117,11 @@ export function PieChart({
                 />
               ))}
             </Pie>
+            {half ? (
+              <text className="ak-pie-total" x="50%" y="74%" textAnchor="middle">
+                {formatNumber(total)}
+              </text>
+            ) : null}
             <Tooltip
               content={({ active, payload }) =>
                 active && payload?.[0] ? (

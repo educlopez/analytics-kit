@@ -2,17 +2,27 @@ import { formatNumber } from "./chart.js";
 import { cn } from "../lib/cn.js";
 import { GAUGE_CHART_VARIANTS, type GaugeChartVariant } from "./variants.js";
 
+/** Qualitative bands, low to high. The arc is split into these, in order. */
+const DEFAULT_BANDS = [
+  { label: "Low", color: "var(--ak-chart-3, var(--chart-3))" },
+  { label: "Medium", color: "var(--ak-chart-4, var(--chart-4))" },
+  { label: "High", color: "var(--ak-chart-2, var(--chart-2))" },
+];
+
 export function GaugeChart({
   value,
   max = 100,
   label,
   variant = "arc",
+  bands = DEFAULT_BANDS,
   className,
 }: {
   value: number;
   max?: number;
   label?: string;
   variant?: GaugeChartVariant;
+  /** Qualitative bands for the score variant. Ignored by the others. */
+  bands?: { label: string; color: string }[];
   className?: string;
 }) {
   const ratio = max <= 0 ? 0 : Math.min(1, Math.max(0, value / max));
@@ -24,10 +34,21 @@ export function GaugeChart({
         <RingGauge ratio={ratio} color={color} />
       ) : variant === "tick" ? (
         <TickGauge ratio={ratio} color={color} />
+      ) : variant === "score" ? (
+        <ScoreGauge ratio={ratio} bands={bands} />
       ) : (
         <ArcGauge ratio={ratio} color={color} />
       )}
-      <p className="ak-gauge-value">{formatGauge(value, max)}</p>
+      <p className="ak-gauge-value">
+        {variant === "score"
+          ? `${formatNumber(value)} / ${formatNumber(max)}`
+          : formatGauge(value, max)}
+      </p>
+      {variant === "score" ? (
+        // A raw 38 means nothing on its own; the band it lands in is the
+        // interpretation, so it belongs in the mark rather than a caption.
+        <p className="ak-gauge-band">{bandFor(ratio, bands).label}</p>
+      ) : null}
       {label ? <p className="ak-gauge-label">{label}</p> : null}
     </div>
   );
@@ -36,6 +57,61 @@ export function GaugeChart({
 function formatGauge(value: number, max: number): string {
   if (max === 100) return `${Math.round(value)}%`;
   return formatNumber(value);
+}
+
+function bandFor(ratio: number, bands: { label: string; color: string }[]) {
+  const index = Math.min(bands.length - 1, Math.floor(ratio * bands.length));
+  return bands[Math.max(0, index)];
+}
+
+/** Arc split into its qualitative bands, with a marker where the value lands. */
+function ScoreGauge({
+  ratio,
+  bands,
+}: {
+  ratio: number;
+  bands: { label: string; color: string }[];
+}) {
+  const cx = 90;
+  const cy = 104;
+  const r = 68;
+  const point = (t: number) => {
+    const rad = Math.PI + Math.PI * t;
+    return [cx + Math.cos(rad) * r, cy + Math.sin(rad) * r] as const;
+  };
+  const [mx, my] = point(ratio);
+
+  return (
+    <svg viewBox="0 0 180 112" className="ak-gauge-svg" aria-hidden>
+      {bands.map((band, index) => {
+        // A hair of padding between bands so the joins read as segments
+        // rather than as one arc that changes colour.
+        const from = index / bands.length;
+        const to = (index + 1) / bands.length - 0.012;
+        const [x1, y1] = point(from);
+        const [x2, y2] = point(to);
+        return (
+          <path
+            key={band.label}
+            d={`M${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`}
+            fill="none"
+            stroke={band.color}
+            strokeWidth="12"
+            strokeLinecap="round"
+            strokeOpacity={bandFor(ratio, bands).label === band.label ? 1 : 0.32}
+          />
+        );
+      })}
+      <circle
+        cx={mx}
+        cy={my}
+        r="7"
+        fill="var(--ak-surface)"
+        stroke="var(--ak-text)"
+        strokeWidth="2.5"
+      />
+    </svg>
+  );
 }
 
 function ArcGauge({ ratio, color }: { ratio: number; color: string }) {

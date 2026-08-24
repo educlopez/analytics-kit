@@ -15,10 +15,15 @@ export type ChartConfig = Record<
  * locale, so Node renders `4279` where the browser renders `4,279` and React
  * throws a hydration mismatch on every server-rendered number.
  */
-const NUMBER_FORMAT = new Intl.NumberFormat("en-US");
+const NUMBER_FORMAT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
+/**
+ * Fractions are kept rather than rounded away. A pie slice sized from 1.5 that
+ * prints "2" is a label disagreeing with its own geometry, and metrics like
+ * bounce rate are routinely fractional. Integers still print as integers.
+ */
 export function formatNumber(value: number): string {
-  return Number.isFinite(value) ? NUMBER_FORMAT.format(Math.round(value)) : "—";
+  return Number.isFinite(value) ? NUMBER_FORMAT.format(value) : "—";
 }
 
 export const PALETTE = [
