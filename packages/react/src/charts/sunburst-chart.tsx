@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import { cn } from "../lib/cn.js";
 import {
   SUNBURST_CHART_VARIANTS,
@@ -88,7 +89,7 @@ export function SunburstChart({
           <li key={node.label}>
             <i style={{ background: PALETTE[index % PALETTE.length] }} />
             <span>{node.label}</span>
-            <strong>{Math.round(node.value).toLocaleString()}</strong>
+            <strong>{formatNumber(node.value)}</strong>
           </li>
         ))}
       </ul>

@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { Cell, Pie, PieChart as RechartsPie, RadialBar, RadialBarChart, Tooltip } from "recharts";
-import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import { ChartContainer, ChartTooltipBox, formatNumber, type ChartConfig } from "./chart.js";
 import { DitherDots, GlowFilter } from "./patterns.js";
 import { PIE_CHART_VARIANTS, type ChartDatum, type PieChartVariant } from "./variants.js";
 
@@ -128,7 +128,7 @@ export function PieChart({
             <li key={String(row[labelKey])}>
               <i style={{ background: PALETTE[index % PALETTE.length] }} />
               <span>{String(row[labelKey])}</span>
-              <strong>{Number(row[dataKey] ?? 0).toLocaleString()}</strong>
+              <strong>{formatNumber(Number(row[dataKey] ?? 0))}</strong>
             </li>
           ))}
         </ul>
@@ -137,7 +137,7 @@ export function PieChart({
       variant === "dither" ||
       variant === "rounded" ||
       variant === "glow" ? (
-        <p className="sr-only">Total {Math.round(total).toLocaleString()}</p>
+        <p className="sr-only">Total {formatNumber(total)}</p>
       ) : null}
     </div>
   );

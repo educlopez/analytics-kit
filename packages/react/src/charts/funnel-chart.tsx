@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import { useId } from "react";
 import { cn } from "../lib/cn.js";
 import { FUNNEL_CHART_VARIANTS, type ChartDatum, type FunnelChartVariant } from "./variants.js";
@@ -125,7 +126,7 @@ function RibbonFunnel({
                 {stage.label}
               </text>
               <text x={x} y={52} textAnchor="middle" className="ak-funnel-count">
-                {Math.round(stage.value).toLocaleString()}
+                {formatNumber(stage.value)}
               </text>
               <rect
                 x={x - 28}
@@ -198,7 +199,7 @@ function VerticalFunnel({
           <li key={stage.label}>
             <div className="ak-funnel-vertical-meta">
               <span>{stage.label}</span>
-              <strong>{Math.round(stage.value).toLocaleString()}</strong>
+              <strong>{formatNumber(stage.value)}</strong>
             </div>
             <div className="ak-funnel-vertical-track">
               <div

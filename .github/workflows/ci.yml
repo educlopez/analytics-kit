@@ -31,3 +31,27 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm publint
       - run: pnpm attw
+
+  smoke:
+    name: production smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build
+      - run: pnpm registry:build
+      - run: pnpm exec next build
+      # The dev server cannot reproduce hydration mismatches or the metadata
+      # routes at all, so this runs against a real production server.
+      - name: Start production server
+        run: pnpm exec next start -p 3100 &
+      - name: Wait for server
+        run: npx --yes wait-on http://localhost:3100 --timeout 120000
+      - run: pnpm smoke

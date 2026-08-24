@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import { cn } from "../lib/cn.js";
 import { GAUGE_CHART_VARIANTS, type GaugeChartVariant } from "./variants.js";
 
@@ -34,7 +35,7 @@ export function GaugeChart({
 
 function formatGauge(value: number, max: number): string {
   if (max === 100) return `${Math.round(value)}%`;
-  return Math.round(value).toLocaleString();
+  return formatNumber(value);
 }
 
 function ArcGauge({ ratio, color }: { ratio: number; color: string }) {

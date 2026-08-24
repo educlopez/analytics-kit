@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 export function DitherDots({ id, color }: { id: string; color: string }) {
   return (
     <pattern id={id} patternUnits="userSpaceOnUse" width="6" height="6">
@@ -121,8 +122,7 @@ export function ValueDot({
   show?: boolean;
 }) {
   if (cx == null || cy == null) return null;
-  const label =
-    typeof value === "number" ? Math.round(value).toLocaleString() : String(value ?? "");
+  const label = typeof value === "number" ? formatNumber(value) : String(value ?? "");
   return (
     <g>
       <circle cx={cx} cy={cy} r={2.5} fill={color} />

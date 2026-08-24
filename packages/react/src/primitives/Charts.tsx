@@ -1,5 +1,6 @@
 import type { BreakdownRow, SeriesPoint } from "@analytics-kit/core";
 import { useId } from "react";
+import { formatNumber } from "../charts/chart.js";
 import { AreaChart, type AreaChartVariant } from "../charts/area-chart.js";
 import { BarChart, type BarChartVariant } from "../charts/bar-chart.js";
 import { PieChart, type PieChartVariant } from "../charts/pie-chart.js";
@@ -49,7 +50,7 @@ export function RankedList({
           <li key={row.key} className="ak-rank-row">
             <div className="ak-rank-top">
               <span className="ak-rank-label">{row.label ?? row.key}</span>
-              <span className="ak-rank-value">{Math.round(value).toLocaleString()}</span>
+              <span className="ak-rank-value">{formatNumber(value)}</span>
             </div>
             {variant === "compact" ? null : (
               <div className="ak-rank-track">
@@ -169,7 +170,7 @@ export function BreakdownTable({ rows, metric }: { rows: BreakdownRow[]; metric:
                   <div className="ak-rank-fill" style={{ width: `${(value / max) * 100}%` }} />
                 </div>
               </td>
-              <td>{Math.round(value).toLocaleString()}</td>
+              <td>{formatNumber(value)}</td>
               <td className="ak-muted">{Math.round((value / total) * 100)}%</td>
             </tr>
           );
