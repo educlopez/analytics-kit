@@ -1,8 +1,20 @@
 import { useId } from "react";
 import { Area, AreaChart as RechartsArea, CartesianGrid, Tooltip, XAxis } from "recharts";
-import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartTooltipBox,
+  ChartTooltipRows,
+  seriesConfig,
+  type ChartConfig,
+} from "./chart.js";
 import { BarStripePattern, DitherDots, GlowFilter, HatchPattern } from "./patterns.js";
-import { AREA_CHART_VARIANTS, type AreaChartVariant, type ChartDatum } from "./variants.js";
+import {
+  AREA_CHART_VARIANTS,
+  AREA_MULTI_VARIANTS,
+  type AreaChartVariant,
+  type ChartDatum,
+} from "./variants.js";
 
 const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"> = {
   gradient: "monotone",
@@ -16,11 +28,13 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   hatched: "monotone",
   bars: "monotone",
   solid: "monotone",
+  stacked: "monotone",
 };
 
 export function AreaChart({
   data,
   dataKey = "value",
+  dataKeys,
   labelKey = "date",
   variant = "gradient",
   config,
@@ -28,12 +42,16 @@ export function AreaChart({
 }: {
   data: ChartDatum[];
   dataKey?: string;
+  /** Series keys for the multi-series variants. Falls back to `[dataKey]`. */
+  dataKeys?: string[];
   labelKey?: string;
   variant?: AreaChartVariant;
   config?: ChartConfig;
   className?: string;
 }) {
   const spark = variant === "spark";
+  const multi = AREA_MULTI_VARIANTS.includes(variant);
+  const keys = dataKeys?.length ? dataKeys : [dataKey];
   const faded =
     variant === "gradient" || variant === "spark" || variant === "dots" || variant === "glow";
   const chartConfig: ChartConfig = config ?? {
@@ -60,6 +78,60 @@ export function AreaChart({
               : "none";
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
+
+  if (multi) {
+    const stackConfig = seriesConfig(keys, config);
+    return (
+      <div className="grid gap-3">
+        <ChartContainer className={className} config={stackConfig}>
+          <RechartsArea data={data}>
+            <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+            <XAxis
+              dataKey={labelKey}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={24}
+              tickFormatter={(value: string) => String(value).slice(0, 10)}
+            />
+            <Tooltip
+              cursor={{ stroke: "var(--ak-border)" }}
+              content={({ active, payload, label }) =>
+                active && payload?.length ? (
+                  <ChartTooltipRows
+                    label={String(label ?? "")}
+                    total
+                    rows={payload.map((item) => ({
+                      name: stackConfig[String(item.dataKey)]?.label ?? String(item.dataKey),
+                      value: Number(item.value ?? 0),
+                      color: stackConfig[String(item.dataKey)]?.color ?? "",
+                    }))}
+                  />
+                ) : null
+              }
+            />
+            {keys.map((key) => (
+              <Area
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stackId="ak-stack"
+                stroke={stackConfig[key]?.color}
+                strokeWidth={1}
+                fill={stackConfig[key]?.color}
+                fillOpacity={0.62}
+                // Same mount-animation gap as the other recharts marks: without
+                // this the bands never paint until something forces a re-render.
+                isAnimationActive={false}
+                activeDot={{ r: 3 }}
+              />
+            ))}
+          </RechartsArea>
+        </ChartContainer>
+        <ChartLegend keys={keys} config={stackConfig} data={data} />
+      </div>
+    );
+  }
 
   return (
     <ChartContainer className={className} config={chartConfig}>

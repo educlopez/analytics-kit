@@ -287,6 +287,34 @@
   letter-spacing: 0.08em;
 }
 
+.ak-legend-name {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ak-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.ak-legend-row li {
+  justify-content: flex-start;
+  gap: 6px;
+  color: var(--ak-muted);
+}
+
+.ak-legend-row strong {
+  color: var(--ak-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-legend-total {
+  border-top: 1px solid var(--ak-border);
+  padding-top: 6px;
+  color: var(--ak-muted);
+}
+
 .ak-legend i {
   width: 8px;
   height: 8px;
