@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Analytics Kit">
+  <rect width="32" height="32" rx="9" fill="#070503"/>
+  <rect x="7" y="7" width="18" height="18" rx="4" fill="#f9f8f5"/>
+  <rect x="11" y="11" width="10" height="10" rx="2" fill="#070503"/>
+</svg>
