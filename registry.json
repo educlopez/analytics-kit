@@ -300,6 +300,21 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "horizon-chart",
+      "type": "registry:ui",
+      "title": "Horizon chart",
+      "description": "Many series folded into bands. Variants: bands, mirror.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/horizon-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/horizon-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",

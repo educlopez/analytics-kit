@@ -287,6 +287,47 @@
   letter-spacing: 0.08em;
 }
 
+.ak-horizon {
+  display: grid;
+  gap: 3px;
+}
+
+.ak-horizon-row {
+  display: grid;
+  grid-template-columns: minmax(56px, 96px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.ak-horizon-label,
+.ak-horizon-total {
+  font-size: 12px;
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-horizon-total {
+  font-variant-numeric: tabular-nums;
+  color: var(--ak-text);
+}
+
+.ak-horizon-lane {
+  display: block;
+  width: 100%;
+  background: var(--ak-surface-2);
+  border-radius: 3px;
+}
+
+.ak-horizon-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ak-muted);
+  padding-top: 8px;
+}
+
 .ak-endpoint-pill {
   fill: var(--ak-surface);
   stroke: var(--ak-border);

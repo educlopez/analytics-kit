@@ -11,11 +11,12 @@ export const AREA_CHART_VARIANTS = [
   "bars",
   "solid",
   "stacked",
+  "stream",
 ] as const;
 export type AreaChartVariant = (typeof AREA_CHART_VARIANTS)[number];
 
 /** Variants that draw one band per key in `dataKeys` instead of a single series. */
-export const AREA_MULTI_VARIANTS: readonly AreaChartVariant[] = ["stacked"];
+export const AREA_MULTI_VARIANTS: readonly AreaChartVariant[] = ["stacked", "stream"];
 
 export const LINE_CHART_VARIANTS = [
   "monotone",
@@ -104,6 +105,9 @@ export type SunburstChartVariant = (typeof SUNBURST_CHART_VARIANTS)[number];
 
 export const PROFIT_LOSS_CHART_VARIANTS = ["fill", "stroke", "bars"] as const;
 export type ProfitLossChartVariant = (typeof PROFIT_LOSS_CHART_VARIANTS)[number];
+
+export const HORIZON_CHART_VARIANTS = ["bands", "mirror"] as const;
+export type HorizonChartVariant = (typeof HORIZON_CHART_VARIANTS)[number];
 
 export type ChartDatum = Record<string, string | number>;
 

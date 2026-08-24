@@ -37,6 +37,7 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   bars: "monotone",
   solid: "monotone",
   stacked: "monotone",
+  stream: "natural",
 };
 
 interface EndpointProps {
@@ -108,11 +109,18 @@ export function AreaChart({
 
   if (multi) {
     const stackConfig = seriesConfig(keys, config);
+    const stream = variant === "stream";
     return (
       <div className="grid gap-3">
         <ChartContainer className={className} config={stackConfig}>
-          <RechartsArea data={data}>
-            <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+          {/* silhouette centres the stack on a floating baseline, which is what
+              makes each ribbon's own thickness its value. */}
+          <RechartsArea data={data} stackOffset={stream ? "silhouette" : "none"}>
+            {/* A stream has no meaningful zero, so gridlines would invite
+                reading heights off an axis that means nothing. */}
+            {stream ? null : (
+              <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+            )}
             <XAxis
               dataKey={labelKey}
               tickLine={false}
@@ -140,13 +148,13 @@ export function AreaChart({
             {keys.map((key) => (
               <Area
                 key={key}
-                type="monotone"
+                type={CURVE[variant]}
                 dataKey={key}
                 stackId="ak-stack"
-                stroke={stackConfig[key]?.color}
+                stroke={stream ? "none" : stackConfig[key]?.color}
                 strokeWidth={1}
                 fill={stackConfig[key]?.color}
-                fillOpacity={0.62}
+                fillOpacity={stream ? 0.85 : 0.62}
                 // Same mount-animation gap as the other recharts marks: without
                 // this the bands never paint until something forces a re-render.
                 isAnimationActive={false}
