@@ -1,12 +1,25 @@
 import { useId } from "react";
 import { Bar, BarChart as RechartsBar, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
-import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartTooltipBox,
+  ChartTooltipRows,
+  seriesConfig,
+  type ChartConfig,
+} from "./chart.js";
 import { DitherDots, DuotoneGradient, FadeGradient, GlowFilter, HatchPattern } from "./patterns.js";
-import { BAR_CHART_VARIANTS, type BarChartVariant, type ChartDatum } from "./variants.js";
+import {
+  BAR_CHART_VARIANTS,
+  BAR_MULTI_VARIANTS,
+  type BarChartVariant,
+  type ChartDatum,
+} from "./variants.js";
 
 export function BarChart({
   data,
   dataKey = "value",
+  dataKeys,
   labelKey = "label",
   variant = "vertical",
   config,
@@ -14,11 +27,15 @@ export function BarChart({
 }: {
   data: ChartDatum[];
   dataKey?: string;
+  /** Series keys for the multi-series variants. Falls back to `[dataKey]`. */
+  dataKeys?: string[];
   labelKey?: string;
   variant?: BarChartVariant;
   config?: ChartConfig;
   className?: string;
 }) {
+  const multi = BAR_MULTI_VARIANTS.includes(variant);
+  const keys = dataKeys?.length ? dataKeys : [dataKey];
   const chartConfig: ChartConfig = config ?? {
     [dataKey]: { label: dataKey, color: "var(--ak-chart-1, var(--chart-1, #2563eb))" },
   };
@@ -49,6 +66,80 @@ export function BarChart({
     variant === "glow";
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
+
+  if (multi) {
+    const multiConfig = seriesConfig(keys, config);
+    const normalized = variant === "stacked-100";
+    // Normalising here rather than in the axis keeps the tooltip honest: it
+    // still reports the real counts, only the drawing is rebased to share.
+    const rows: ChartDatum[] = normalized
+      ? data.map((row) => {
+          const total = keys.reduce((acc, key) => acc + Number(row[key] ?? 0), 0);
+          const scaled: ChartDatum = { ...row };
+          for (const key of keys) {
+            scaled[`${key}__share`] = total > 0 ? (Number(row[key] ?? 0) / total) * 100 : 0;
+          }
+          return scaled;
+        })
+      : data;
+
+    return (
+      <div className="grid gap-3">
+        <ChartContainer className={className} config={multiConfig}>
+          <RechartsBar data={rows}>
+            <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+            <XAxis
+              dataKey={labelKey}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value: string) => String(value).slice(0, 8)}
+            />
+            {normalized ? (
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={34}
+                domain={[0, 100]}
+                // Explicit ticks: left to itself recharts derives them from the
+                // summed shares and lands on 100.00000000000001.
+                ticks={[0, 25, 50, 75, 100]}
+                tickFormatter={(value: number) => `${Math.round(value)}%`}
+              />
+            ) : null}
+            <Tooltip
+              cursor={{ fill: "var(--ak-surface-2)" }}
+              content={({ active, payload, label }) =>
+                active && payload?.length ? (
+                  <ChartTooltipRows
+                    label={String(label ?? "")}
+                    total={variant !== "grouped"}
+                    rows={keys.map((key) => ({
+                      name: multiConfig[key]?.label ?? key,
+                      value: Number(payload[0]?.payload?.[key] ?? 0),
+                      color: multiConfig[key]?.color ?? "",
+                    }))}
+                  />
+                ) : null
+              }
+            />
+            {keys.map((key) => (
+              <Bar
+                key={key}
+                dataKey={normalized ? `${key}__share` : key}
+                stackId={variant === "grouped" ? undefined : "ak-stack"}
+                fill={multiConfig[key]?.color}
+                isAnimationActive={false}
+                radius={variant === "grouped" ? 2 : 0}
+                maxBarSize={48}
+              />
+            ))}
+          </RechartsBar>
+        </ChartContainer>
+        <ChartLegend keys={keys} config={multiConfig} data={data} />
+      </div>
+    );
+  }
 
   return (
     <ChartContainer className={className} config={chartConfig}>

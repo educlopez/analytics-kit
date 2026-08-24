@@ -70,6 +70,12 @@ function PreviewInner({
     dimensions: ["browser"],
     limit: 6,
   });
+  // The multi-series bar variants need more than one metric per label.
+  const browsersDual = useQuery({
+    metrics: ["visitors", "pageviews"],
+    dimensions: ["browser"],
+    limit: 6,
+  });
   const countries = useQuery({
     metrics: [knobs.metric],
     dimensions: ["country"],
@@ -131,6 +137,11 @@ function PreviewInner({
     label: row.label ?? row.key,
     value: row.values[knobs.metric] ?? 0,
   }));
+  const breakdownDual = (browsersDual.data?.breakdown ?? []).map((row) => ({
+    label: row.label ?? row.key,
+    visitors: row.values.visitors ?? 0,
+    pageviews: row.values.pageviews ?? 0,
+  }));
   const rows = browsers.data?.breakdown ?? [];
   const gaugeValue = totals[knobs.metric] ?? 0;
   const gaugeMax = knobs.metric === "bounceRate" ? 100 : Math.max(gaugeValue * 1.2, 1);
@@ -139,12 +150,35 @@ function PreviewInner({
   const activeVariant = knobs.variant || undefined;
 
   if (slug === "area-chart") {
+    // The composition variants need a second series to compose.
+    if (activeVariant === "stacked") {
+      return (
+        <AreaChart
+          data={composed}
+          dataKeys={["visitors", "pageviews"]}
+          variant={activeVariant as AreaChartVariant}
+        />
+      );
+    }
     return <AreaChart data={series} variant={activeVariant as AreaChartVariant} />;
   }
   if (slug === "line-chart") {
     return <LineChart data={series} variant={activeVariant as LineChartVariant} />;
   }
   if (slug === "bar-chart") {
+    if (
+      activeVariant === "grouped" ||
+      activeVariant === "stacked" ||
+      activeVariant === "stacked-100"
+    ) {
+      return (
+        <BarChart
+          data={breakdownDual}
+          dataKeys={["visitors", "pageviews"]}
+          variant={activeVariant as BarChartVariant}
+        />
+      );
+    }
     return <BarChart data={breakdown} variant={activeVariant as BarChartVariant} />;
   }
   if (slug === "pie-chart") {

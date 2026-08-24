@@ -35,10 +35,17 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked"',
       default: '"gradient"',
       notes:
         "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      default: "[dataKey]",
+      notes:
+        'Series to compose. Pass two or more to make variant="stacked" stack something; ignored by the other variants.',
     },
   ],
   "line-chart": [
@@ -67,10 +74,17 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone"',
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100"',
       default: '"vertical"',
       notes:
         "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      default: "[dataKey]",
+      notes:
+        "Series to compare. Pass two or more for grouped, stacked and stacked-100 to have anything to compare. stacked-100 rebases the drawing to share; the tooltip still reports real counts.",
     },
   ],
   "pie-chart": [

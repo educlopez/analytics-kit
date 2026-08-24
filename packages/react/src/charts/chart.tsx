@@ -10,6 +10,26 @@ export type ChartConfig = Record<
   }
 >;
 
+export const PALETTE = [
+  "var(--ak-chart-1, var(--chart-1))",
+  "var(--ak-chart-2, var(--chart-2))",
+  "var(--ak-chart-3, var(--chart-3))",
+  "var(--ak-chart-4, var(--chart-4))",
+  "var(--ak-chart-5, var(--chart-5))",
+];
+
+/** Config for a multi-series chart, one palette colour per key. */
+export function seriesConfig(keys: string[], config?: ChartConfig): ChartConfig {
+  const out: ChartConfig = {};
+  keys.forEach((key, index) => {
+    out[key] = {
+      label: config?.[key]?.label ?? key,
+      color: config?.[key]?.color ?? PALETTE[index % PALETTE.length],
+    };
+  });
+  return out;
+}
+
 export function ChartContainer({
   className,
   config,
@@ -35,6 +55,76 @@ export function ChartContainer({
         {children}
       </ResponsiveContainer>
     </div>
+  );
+}
+
+/**
+ * Multi-series tooltip. A stacked chart is unreadable with a single value, so
+ * every series in the hovered slot gets a row, plus a total when it means
+ * something (it does for stacked, not for grouped).
+ */
+export function ChartTooltipRows({
+  label,
+  rows,
+  total,
+}: {
+  label?: string;
+  rows: { name: string; value: number; color: string }[];
+  total?: boolean;
+}) {
+  if (!rows.length) return null;
+  const sum = rows.reduce((acc, row) => acc + row.value, 0);
+  return (
+    <div className="rounded-lg border border-[color:var(--ak-border)] bg-[color:var(--ak-surface)] px-2.5 py-1.5 text-xs shadow-md">
+      {label ? <p className="mb-1 text-[color:var(--ak-muted)]">{label}</p> : null}
+      <ul className="ak-legend">
+        {rows.map((row) => (
+          <li key={row.name}>
+            {/* Swatch and name are one unit — left them separate and
+                space-between strands the dot at the far edge. */}
+            <span className="ak-legend-name">
+              <i style={{ background: row.color }} />
+              {row.name}
+            </span>
+            <strong>{row.value.toLocaleString()}</strong>
+          </li>
+        ))}
+        {total && rows.length > 1 ? (
+          <li className="ak-legend-total">
+            <span>Total</span>
+            <strong>{sum.toLocaleString()}</strong>
+          </li>
+        ) : null}
+      </ul>
+    </div>
+  );
+}
+
+/** Series legend for the multi-series variants, totalled over the whole range. */
+export function ChartLegend({
+  keys,
+  config,
+  data,
+}: {
+  keys: string[];
+  config: ChartConfig;
+  data: Record<string, string | number>[];
+}) {
+  return (
+    // Row layout, not the stacked list: this legend sits under a full-width
+    // chart, where the list's space-between would strand each value at the far
+    // edge of the card.
+    <ul className="ak-legend ak-legend-row">
+      {keys.map((key) => (
+        <li key={key}>
+          <i style={{ background: config[key]?.color }} />
+          <span>{config[key]?.label ?? key}</span>
+          <strong>
+            {data.reduce((acc, row) => acc + Number(row[key] ?? 0), 0).toLocaleString()}
+          </strong>
+        </li>
+      ))}
+    </ul>
   );
 }
 
