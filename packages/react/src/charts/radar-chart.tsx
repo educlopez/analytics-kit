@@ -58,6 +58,7 @@ export function RadarChart({
           fill={fill}
           fillOpacity={fillOpacity}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
+          isAnimationActive={false}
         />
       </RechartsRadar>
     </ChartContainer>

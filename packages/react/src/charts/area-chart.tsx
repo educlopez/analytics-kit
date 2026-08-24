@@ -263,6 +263,11 @@ export function AreaChart({
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
           dot={variant === "dots" ? { r: 3, fill: color, strokeWidth: 0 } : false}
           connectNulls={join}
+          // recharts' mount animation starts clipped to zero width and needs a
+          // second render to advance. Production has no StrictMode
+          // double-render, so the area stayed a 1px sliver there while looking
+          // correct in dev.
+          isAnimationActive={false}
           activeDot={spark ? false : { r: 4 }}
         />
         {emphasizeLast ? (

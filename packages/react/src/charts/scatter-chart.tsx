@@ -66,6 +66,7 @@ export function ScatterChart({
           fill={color}
           fillOpacity={variant === "glow" ? 0.85 : 0.75}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
+          isAnimationActive={false}
         />
       </RechartsScatter>
     </ChartContainer>
