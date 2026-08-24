@@ -15,9 +15,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const item = catalogBySlug(slug);
   if (!item) return { title: "Components" };
+  const url = `/components/${item.slug}`;
   return {
     title: item.title,
     description: item.blurb,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${item.title} — Analytics Kit`,
+      description: item.blurb,
+      url,
+    },
   };
 }
 
