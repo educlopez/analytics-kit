@@ -6,6 +6,7 @@ import type { AnalyticsQuery } from "@analytics-kit/core";
 import {
   AnalyticsProvider,
   AreaChart,
+  HorizonChart,
   BarChart,
   CandlestickChart,
   ChoroplethChart,
@@ -30,6 +31,7 @@ import {
   useQuery,
   type AnalyticsTheme,
   type AreaChartVariant,
+  type HorizonChartVariant,
   type BarChartVariant,
   type BarListVariant,
   type CandlestickChartVariant,
@@ -62,6 +64,10 @@ function PreviewInner({
 }) {
   const seriesQuery = useQuery({ metrics: [knobs.metric], granularity: "day" });
   const dualQuery = useQuery({ metrics: ["visitors", "pageviews"], granularity: "day" });
+  const horizonQuery = useQuery({
+    metrics: ["visitors", "pageviews", "visits", "events"],
+    granularity: "day",
+  });
   const totalsQuery = useQuery({
     metrics: ["visitors", "pageviews", "visits", "events", "bounceRate"],
   });
@@ -142,6 +148,16 @@ function PreviewInner({
     visitors: row.values.visitors ?? 0,
     pageviews: row.values.pageviews ?? 0,
   }));
+  // Horizon lanes come from the metrics that actually vary over time, rather
+  // than from invented per-page series.
+  const horizonKeys = ["visitors", "pageviews", "visits", "events"];
+  const horizon = (horizonQuery.data?.series ?? []).map((point) => ({
+    date: point.date,
+    visitors: point.values.visitors ?? 0,
+    pageviews: point.values.pageviews ?? 0,
+    visits: point.values.visits ?? 0,
+    events: point.values.events ?? 0,
+  }));
   // The treatments need data the plain sample series doesn't carry: a previous
   // period to compare against, and an actual hole to draw a gap across.
   const previousSeries = composed.map((point) => ({
@@ -161,9 +177,18 @@ function PreviewInner({
   // chart's own default parameter and leave the preview blank.
   const activeVariant = knobs.variant || undefined;
 
+  if (slug === "horizon-chart") {
+    return (
+      <HorizonChart
+        data={horizon}
+        dataKeys={horizonKeys}
+        variant={activeVariant as HorizonChartVariant}
+      />
+    );
+  }
   if (slug === "area-chart") {
     // The composition variants need a second series to compose.
-    if (activeVariant === "stacked") {
+    if (activeVariant === "stacked" || activeVariant === "stream") {
       return (
         <AreaChart
           data={composed}

@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import type { ChartDatum } from "./variants.js";
 
 /** Key the previous-period series is merged onto. Internal to the ghost treatment. */
@@ -59,8 +60,7 @@ export function EndpointDot({
   if (cx == null || cy == null) return null;
   if (!show) return <circle key={index} cx={cx} cy={cy} r={0} fill="none" />;
   const point = Array.isArray(value) ? value[value.length - 1] : value;
-  const label =
-    typeof point === "number" ? Math.round(point).toLocaleString() : String(point ?? "");
+  const label = typeof point === "number" ? formatNumber(point) : String(point ?? "");
   // Estimated rather than measured: getComputedTextLength would force a second
   // layout pass on every point, and the pill only has to enclose the digits.
   const width = label.length * 7 + 16;

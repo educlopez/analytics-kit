@@ -23,6 +23,7 @@ export {
   SANKEY_CHART_VARIANTS,
   SCATTER_CHART_VARIANTS,
   SUNBURST_CHART_VARIANTS,
+  HORIZON_CHART_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
@@ -35,6 +36,7 @@ export type {
   FunnelChartVariant,
   GaugeChartVariant,
   HeatmapChartVariant,
+  HorizonChartVariant,
   LineChartVariant,
   LiveLineChartVariant,
   MetricCardVariant,
@@ -68,6 +70,7 @@ export { RingChart } from "./charts/ring-chart.js";
 export { HeatmapChart } from "./charts/heatmap-chart.js";
 export { SunburstChart } from "./charts/sunburst-chart.js";
 export { ProfitLossChart } from "./charts/profit-loss-chart.js";
+export { HorizonChart } from "./charts/horizon-chart.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,

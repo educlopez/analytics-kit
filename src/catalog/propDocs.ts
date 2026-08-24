@@ -49,6 +49,47 @@ const CHART_SHARED: PropRow[] = [
 ];
 
 export const PROP_DOCS: Record<string, PropRow[]> = {
+  "horizon-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Shared time rows. Every lane reads its own key off the same rows.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      notes: "One lane per key, in order. This is the point of the chart — pass many.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"date"',
+      notes: "Field used for the first and last axis labels.",
+    },
+    {
+      name: "variant",
+      type: '"bands" | "mirror"',
+      default: '"bands"',
+      notes: "mirror folds negative values back up, so a drop reads as depth rather than as zero.",
+    },
+    {
+      name: "bands",
+      type: "number",
+      default: "3",
+      notes: "How many times each lane's range is folded. More bands, more resolution per pixel.",
+    },
+    {
+      name: "laneHeight",
+      type: "number",
+      default: "26",
+      notes: "Height of one lane in px. The whole chart is this times the number of keys.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
   "area-chart": [
     ...CHART_SHARED,
     {
@@ -59,7 +100,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream"',
       default: '"gradient"',
       notes:
         "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
@@ -69,7 +110,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       type: "string[]",
       default: "[dataKey]",
       notes:
-        'Series to compose. Pass two or more to make variant="stacked" stack something; ignored by the other variants.',
+        "Series to compose. Pass two or more for the stacked and stream variants; ignored by the others.",
     },
     ...SERIES_TREATMENTS,
   ],

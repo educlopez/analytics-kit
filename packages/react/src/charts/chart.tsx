@@ -10,6 +10,17 @@ export type ChartConfig = Record<
   }
 >;
 
+/**
+ * Pinned locale on purpose. Bare `toLocaleString()` follows the runtime's
+ * locale, so Node renders `4279` where the browser renders `4,279` and React
+ * throws a hydration mismatch on every server-rendered number.
+ */
+const NUMBER_FORMAT = new Intl.NumberFormat("en-US");
+
+export function formatNumber(value: number): string {
+  return Number.isFinite(value) ? NUMBER_FORMAT.format(Math.round(value)) : "—";
+}
+
 export const PALETTE = [
   "var(--ak-chart-1, var(--chart-1))",
   "var(--ak-chart-2, var(--chart-2))",
@@ -86,13 +97,13 @@ export function ChartTooltipRows({
               <i style={{ background: row.color }} />
               {row.name}
             </span>
-            <strong>{row.value.toLocaleString()}</strong>
+            <strong>{formatNumber(row.value)}</strong>
           </li>
         ))}
         {total && rows.length > 1 ? (
           <li className="ak-legend-total">
             <span>Total</span>
-            <strong>{sum.toLocaleString()}</strong>
+            <strong>{formatNumber(sum)}</strong>
           </li>
         ) : null}
       </ul>
@@ -119,9 +130,7 @@ export function ChartLegend({
         <li key={key}>
           <i style={{ background: config[key]?.color }} />
           <span>{config[key]?.label ?? key}</span>
-          <strong>
-            {data.reduce((acc, row) => acc + Number(row[key] ?? 0), 0).toLocaleString()}
-          </strong>
+          <strong>{formatNumber(data.reduce((acc, row) => acc + Number(row[key] ?? 0), 0))}</strong>
         </li>
       ))}
     </ul>
@@ -143,7 +152,7 @@ export function ChartTooltipBox({
       {label ? <p className="mb-1 text-[color:var(--ak-muted)]">{label}</p> : null}
       <p className="font-medium text-[color:var(--ak-text)]">
         {name ? `${name}: ` : null}
-        {typeof value === "number" ? value.toLocaleString() : value}
+        {typeof value === "number" ? formatNumber(value) : value}
       </p>
     </div>
   );

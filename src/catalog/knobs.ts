@@ -65,6 +65,8 @@ export function itemControls(slug: string) {
     "candlestick-chart",
     "sunburst-chart",
     "profit-loss-chart",
+    // Horizon lanes are fixed metrics, so a single-metric switch means nothing.
+    "horizon-chart",
   ];
   return {
     variant: slug !== "dashboard",
