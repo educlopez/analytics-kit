@@ -1,5 +1,57 @@
 # @analytics-kit/react
 
+## 0.4.0
+
+### Minor Changes
+
+- [#30](https://github.com/educlopez/analytics-kit/pull/30) [`c13d19f`](https://github.com/educlopez/analytics-kit/commit/c13d19ffafab0c84d151f97e3c936015f87c0c8f) Thanks [@educlopez](https://github.com/educlopez)! - Add the shared chart infrastructure: `SyncGroup`, `annotations` and `brush`.
+
+  `SyncGroup` shares one hovered index across every chart inside it, so hovering Tuesday in one card highlights Tuesday in all of them. The `annotations` prop draws dated markers — deploys, releases, incidents — over any x-scaled chart, turning a curve into a causal story. `brush` adds a drag-to-zoom strip under the chart.
+
+  `AreaChart` and `LineChart` take both new props today. Because these are layers rather than variants, every later chart on the same x-scale inherits them.
+
+- [#27](https://github.com/educlopez/analytics-kit/pull/27) [`f0fc0cd`](https://github.com/educlopez/analytics-kit/commit/f0fc0cd78ba11cb2f8113c9544728075230529e6) Thanks [@educlopez](https://github.com/educlopez)! - Add `CohortGrid` and `TreemapChart`.
+
+  `CohortGrid` puts cohorts down and periods across, heat-tinting each cell by retained share. Rows stay ragged on purpose: a cohort that started three weeks ago has three periods of history, and padding it to full width would invent data. `TreemapChart` packs categories by value using a squarified layout, so tiles stay readable rather than collapsing into slivers; `variant="diverging"` colours by the sign of a delta instead.
+
+  Both are hand-drawn rather than recharts-backed, so neither adds a dependency.
+
+- [#24](https://github.com/educlopez/analytics-kit/pull/24) [`355e03a`](https://github.com/educlopez/analytics-kit/commit/355e03aae9397732b60a8c75c23dfb4e78011ba6) Thanks [@educlopez](https://github.com/educlopez)! - Add the multi-series composition variants: `AreaChart variant="stacked"` and `BarChart variant="grouped" | "stacked" | "stacked-100"`.
+
+  Both components take a new optional `dataKeys: string[]` naming the series to compose, defaulting to `[dataKey]` so every existing call is unchanged. The multi-series variants render a per-series tooltip (with a total, where a total means something) and a series legend. `stacked-100` rebases only the drawing to share — the tooltip still reports the real counts.
+
+- [#32](https://github.com/educlopez/analytics-kit/pull/32) [`697c7fe`](https://github.com/educlopez/analytics-kit/commit/697c7fea7c7e8f34660f9168555354d7d194c3a5) Thanks [@educlopez](https://github.com/educlopez)! - Add `BarChart variant="diverging" | "editorial"`, `PieChart variant="half"` and `GaugeChart variant="score"`.
+
+  `diverging` runs bars both ways from a zero axis with gainers and losers coloured apart — the natural mark for period deltas. `editorial` drops the axes and grid for display-scale bars with the value set inside them. `half` draws a semicircle at half the height, putting the total in the vacated middle. `score` splits the arc into qualitative bands and names the one the value lands in, because a raw number without its band is not yet an interpretation; the bands are configurable via a new `bands` prop.
+
+  Also fixes `formatNumber` rounding fractions away. A pie slice sized from 1.5 printed "2" while recharts used 1.5 for the geometry, and fractional metrics like bounce rate lost their precision. Integers still print as integers.
+
+- [#25](https://github.com/educlopez/analytics-kit/pull/25) [`c57931d`](https://github.com/educlopez/analytics-kit/commit/c57931d2511dcd0161235fbccab26e19a427d67f) Thanks [@educlopez](https://github.com/educlopez)! - Add three cross-cutting treatments to `AreaChart` and `LineChart`: `emphasizeLast`, `previous`, and `gaps`.
+
+  `emphasizeLast` draws a terminal dot and a value pill on the final point, on its own layer so it composes with any variant. `previous` takes a second set of rows and draws them dashed underneath, aligned by index rather than by date, adding a Previous row to the tooltip. `gaps` chooses whether a null is bridged across or left open — neither coerces the missing point to zero, which would draw a cliff that reads as a traffic collapse rather than a hole in collection.
+
+- [#26](https://github.com/educlopez/analytics-kit/pull/26) [`77a4332`](https://github.com/educlopez/analytics-kit/commit/77a4332ce985c4043dcf0e1c5020f6c2387b6c60) Thanks [@educlopez](https://github.com/educlopez)! - Add `HorizonChart` and `AreaChart variant="stream"`.
+
+  `HorizonChart` folds each series into stacked colour bands so a lane needs about 26px instead of a whole card — twenty series fit where two line charts would. `variant="mirror"` folds negatives back up so a drop reads as depth. `AreaChart variant="stream"` centres the stack on a floating baseline, making each ribbon's own thickness its value.
+
+  Also fixes a hydration mismatch in the chart number formatting. `toLocaleString()` follows the runtime's locale, so Node rendered `4279` where the browser rendered `4,279`; all chart numbers now go through a formatter pinned to `en-US`.
+
+### Patch Changes
+
+- [#31](https://github.com/educlopez/analytics-kit/pull/31) [`6c5528c`](https://github.com/educlopez/analytics-kit/commit/6c5528c6725eff19f1533c1cff0cd0b0930b21a1) Thanks [@educlopez](https://github.com/educlopez)! - Fix hydration mismatches from locale-dependent number formatting, and stop legend swatches drifting away from their labels.
+
+  Twelve call sites across the pie, funnel, ring, sunburst, choropleth and gauge charts, the ranked list and the value dot still used bare `toLocaleString()`, which follows the runtime's locale. When the server's locale differs from the viewer's, React throws a hydration mismatch on every server-rendered number. All of them now go through the formatter pinned to `en-US`.
+
+  The legend rows hold three children — swatch, label, value — and `space-between` spread all three, stranding the swatch at the far edge of a wide card. The label now takes the slack instead.
+
+- [#22](https://github.com/educlopez/analytics-kit/pull/22) [`f9615d7`](https://github.com/educlopez/analytics-kit/commit/f9615d74761da7e9dec4391c4296461ff2510bb7) Thanks [@educlopez](https://github.com/educlopez)! - Keep the metric-card sparkline a fixed 36px tall instead of scaling with the
+  card's width. In a widened card (`span: 2`) the viewBox ratio grew it to 150px
+  against 68px in its neighbours, and grid stretch then forced the whole row to
+  match. The path stretches horizontally now, with a non-scaling stroke so the
+  line keeps its weight.
+- Updated dependencies [[`d22f48a`](https://github.com/educlopez/analytics-kit/commit/d22f48a4fcbcceae3fb470ce88048aee526df80b)]:
+  - @analytics-kit/core@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
