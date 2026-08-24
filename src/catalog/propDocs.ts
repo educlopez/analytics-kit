@@ -49,6 +49,74 @@ const CHART_SHARED: PropRow[] = [
 ];
 
 export const PROP_DOCS: Record<string, PropRow[]> = {
+  "treemap-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "Category rows. Sorted by value and squarified, so tile order is derived, not given.",
+    },
+    {
+      name: "dataKey",
+      type: "string",
+      default: '"value"',
+      notes: "Numeric field that sets tile area. Rows at or below zero are dropped.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Tile name. Hidden on tiles too small to read it.",
+    },
+    {
+      name: "deltaKey",
+      type: "string",
+      default: '"delta"',
+      notes: "Signed change per row. Only read by the diverging variant.",
+    },
+    {
+      name: "variant",
+      type: '"heat" | "diverging"',
+      default: '"heat"',
+      notes:
+        "heat tints by share of the largest tile. diverging colours by the sign of delta and tints by its size.",
+    },
+    {
+      name: "height",
+      type: "number",
+      default: "260",
+      notes: "Height in px. Width is fluid.",
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper.",
+    },
+  ],
+  "cohort-grid": [
+    {
+      name: "data",
+      type: "CohortRow[]",
+      notes:
+        "{ label, size, values[] } per cohort. Rows may be ragged — a young cohort has fewer periods, and padding it out would invent data.",
+    },
+    {
+      name: "variant",
+      type: '"triangle" | "counts"',
+      default: '"triangle"',
+      notes: "Cells show retained share, or the raw retained count.",
+    },
+    {
+      name: "periodLabel",
+      type: "string",
+      default: '"Period"',
+      notes: 'Column header prefix. "Week" gives Week 0, Week 1, and so on.',
+    },
+    {
+      name: "className",
+      type: "string",
+      notes: "Outer wrapper. The table scrolls horizontally inside it.",
+    },
+  ],
   "horizon-chart": [
     {
       name: "data",

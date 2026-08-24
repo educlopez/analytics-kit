@@ -67,6 +67,8 @@ export function itemControls(slug: string) {
     "profit-loss-chart",
     // Horizon lanes are fixed metrics, so a single-metric switch means nothing.
     "horizon-chart",
+    // Cohorts carry their own retained counts; a metric switch would not reach them.
+    "cohort-grid",
   ];
   return {
     variant: slug !== "dashboard",

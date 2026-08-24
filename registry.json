@@ -315,6 +315,36 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "treemap-chart",
+      "type": "registry:ui",
+      "title": "Treemap",
+      "description": "Squarified treemap of share and change. Variants: heat, diverging.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/treemap-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/treemap-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "cohort-grid",
+      "type": "registry:ui",
+      "title": "Cohort grid",
+      "description": "Retention by cohort and period. Variants: triangle, counts.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/cohort-grid.tsx",
+          "type": "registry:ui",
+          "target": "@ui/cohort-grid.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",

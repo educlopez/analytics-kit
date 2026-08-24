@@ -287,6 +287,107 @@
   letter-spacing: 0.08em;
 }
 
+.ak-cohort-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.ak-cohort {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 12px;
+  width: 100%;
+}
+
+.ak-cohort th {
+  font-weight: 500;
+  color: var(--ak-muted);
+  text-align: left;
+  white-space: nowrap;
+  padding: 4px 6px;
+}
+
+.ak-cohort tbody th {
+  color: var(--ak-text);
+}
+
+.ak-cohort td {
+  position: relative;
+  padding: 6px 8px;
+  text-align: right;
+  min-width: 52px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-cohort-size {
+  color: var(--ak-muted);
+}
+
+.ak-cohort-empty {
+  background: var(--ak-surface-2);
+  opacity: 0.4;
+}
+
+.ak-cohort-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: var(--ak-chart-1, var(--chart-1));
+}
+
+.ak-cohort-value {
+  position: relative;
+  color: var(--ak-text);
+  mix-blend-mode: normal;
+}
+
+.ak-treemap {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ak-treemap-wrap {
+  position: relative;
+}
+
+/* Overlaid rather than pulled up with a negative margin: percentage margins
+   resolve against width, so the offset would drift with the container. */
+.ak-treemap-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ak-treemap-label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 6px 8px;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.ak-treemap-label b {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ak-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-treemap-label em {
+  font-size: 11px;
+  font-style: normal;
+  color: var(--ak-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .ak-horizon {
   display: grid;
   gap: 3px;
