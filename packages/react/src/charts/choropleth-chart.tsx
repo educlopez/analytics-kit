@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import { cn } from "../lib/cn.js";
 import {
   CHOROPLETH_CHART_VARIANTS,
@@ -38,7 +39,7 @@ export function ChoroplethChart({
         return (
           <li key={row.label} style={{ background: fill }} title={`${row.label}: ${row.value}`}>
             <strong>{row.code}</strong>
-            <span>{Math.round(row.value).toLocaleString()}</span>
+            <span>{formatNumber(row.value)}</span>
           </li>
         );
       })}

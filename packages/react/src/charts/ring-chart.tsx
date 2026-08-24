@@ -1,3 +1,4 @@
+import { formatNumber } from "./chart.js";
 import { cn } from "../lib/cn.js";
 import { RING_CHART_VARIANTS, type ChartDatum, type RingChartVariant } from "./variants.js";
 
@@ -73,7 +74,7 @@ export function RingChart({
           <li key={row.label}>
             <i style={{ background: PALETTE[index % PALETTE.length] }} />
             <span>{row.label}</span>
-            <strong>{Math.round(row.value).toLocaleString()}</strong>
+            <strong>{formatNumber(row.value)}</strong>
           </li>
         ))}
       </ul>
