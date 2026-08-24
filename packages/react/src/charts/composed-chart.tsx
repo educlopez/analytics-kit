@@ -89,6 +89,7 @@ export function ComposedChart({
             strokeWidth={1.6}
             strokeDasharray="3 5"
             dot={false}
+            isAnimationActive={false}
           />
         ) : null}
         {variant === "highlight" || variant === "overlay" ? (
@@ -100,6 +101,7 @@ export function ComposedChart({
             fill={`url(#${glowId}-fill)`}
             filter={`url(#${glowId})`}
             dot={false}
+            isAnimationActive={false}
           />
         ) : (
           <Line

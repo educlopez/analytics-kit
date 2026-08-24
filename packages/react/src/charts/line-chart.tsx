@@ -190,6 +190,10 @@ export function LineChart({
                   : false
           }
           connectNulls={join}
+          // Same mount-animation gap as the area: the line starts with a ~2px
+          // stroke-dasharray on a ~1000px path and never advances without a
+          // second render, so production drew a 2px stub.
+          isAnimationActive={false}
           activeDot={{ r: 4 }}
         />
         {emphasizeLast ? (
