@@ -74,7 +74,7 @@
 
 - [#13](https://github.com/educlopez/analytics-kit/pull/13) [`cfed8a4`](https://github.com/educlopez/analytics-kit/commit/cfed8a476e34443f8b37061c1c18a6f2d1bfde10) Thanks [@educlopez](https://github.com/educlopez)! - Charts gain `dither` (stipple fill) and `glow` drawing variants. Area and line accept both; bar and pie accept dither.
 
-- [#14](https://github.com/educlopez/analytics-kit/pull/14) [`ac9281e`](https://github.com/educlopez/analytics-kit/commit/ac9281e33416f2c048f873331eab379c0e817d84) Thanks [@educlopez](https://github.com/educlopez)! - Charts gain EvilCharts-inspired drawings: area `hatched` / `bars` / `solid`, line `ping` / `rainbow` / `values`, bar `glow` / `gradient` / `duotone`, pie `rounded` / `radial` / `glow`.
+- [#14](https://github.com/educlopez/analytics-kit/pull/14) [`ac9281e`](https://github.com/educlopez/analytics-kit/commit/ac9281e33416f2c048f873331eab379c0e817d84) Thanks [@educlopez](https://github.com/educlopez)! - Charts gain textured drawings: area `hatched` / `bars` / `solid`, line `ping` / `rainbow` / `values`, bar `glow` / `gradient` / `duotone`, pie `rounded` / `radial` / `glow`.
 
 - [#14](https://github.com/educlopez/analytics-kit/pull/14) [`ac9281e`](https://github.com/educlopez/analytics-kit/commit/ac9281e33416f2c048f873331eab379c0e817d84) Thanks [@educlopez](https://github.com/educlopez)! - New chart types for other questions: FunnelChart (tape / steps / vertical), RadarChart, GaugeChart (arc / ring / tick), and ComposedChart (combo / highlight / overlay).
 
