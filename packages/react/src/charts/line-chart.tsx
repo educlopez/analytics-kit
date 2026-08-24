@@ -1,7 +1,14 @@
 import { useId } from "react";
 import { CartesianGrid, Line, LineChart as RechartsLine, Tooltip, XAxis } from "recharts";
-import { ChartContainer, ChartTooltipBox, type ChartConfig } from "./chart.js";
+import { ChartContainer, ChartTooltipBox, ChartTooltipRows, type ChartConfig } from "./chart.js";
 import { GlowFilter, PingDot, RainbowGradient, ValueDot } from "./patterns.js";
+import {
+  connectNulls,
+  EndpointDot,
+  PREVIOUS_KEY,
+  withPrevious,
+  type GapMode,
+} from "./treatments.js";
 import { LINE_CHART_VARIANTS, type ChartDatum, type LineChartVariant } from "./variants.js";
 
 const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
@@ -17,11 +24,21 @@ const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   values: "monotone",
 };
 
+interface EndpointProps {
+  cx?: number;
+  cy?: number;
+  value?: number;
+  index?: number;
+}
+
 export function LineChart({
   data,
   dataKey = "value",
   labelKey = "date",
   variant = "monotone",
+  emphasizeLast = false,
+  previous,
+  gaps,
   config,
   className,
 }: {
@@ -29,6 +46,12 @@ export function LineChart({
   dataKey?: string;
   labelKey?: string;
   variant?: LineChartVariant;
+  /** Terminal dot plus a value pill on the final point. */
+  emphasizeLast?: boolean;
+  /** Previous-period rows, drawn dashed underneath and aligned by index. */
+  previous?: ChartDatum[];
+  /** How nulls are drawn. Defaults to bridging across them. */
+  gaps?: GapMode;
   config?: ChartConfig;
   className?: string;
 }) {
@@ -41,12 +64,14 @@ export function LineChart({
   const rainbowId = `ak-line-rainbow-${uid}`;
   const last = data.length - 1;
   const stroke = variant === "rainbow" ? `url(#${rainbowId})` : color;
+  const rows = withPrevious(data, previous, dataKey);
+  const join = connectNulls(gaps);
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
-      <RechartsLine data={data}>
+      <RechartsLine data={rows}>
         {variant === "glow" || variant === "rainbow" ? (
           <defs>
             {variant === "glow" ? <GlowFilter id={glowId} /> : null}
@@ -64,16 +89,53 @@ export function LineChart({
         />
         <Tooltip
           cursor={{ stroke: "var(--ak-border)" }}
-          content={({ active, payload, label }) =>
-            active && payload?.[0] ? (
-              <ChartTooltipBox
+          content={({ active, payload, label }) => {
+            if (!active || !payload?.length) return null;
+            const point = payload.find((item) => item.dataKey === dataKey) ?? payload[0];
+            if (!previous?.length) {
+              return (
+                <ChartTooltipBox
+                  label={String(label ?? "")}
+                  value={point.value as number}
+                  name={chartConfig[dataKey]?.label}
+                />
+              );
+            }
+            return (
+              <ChartTooltipRows
                 label={String(label ?? "")}
-                value={payload[0].value as number}
-                name={chartConfig[dataKey]?.label}
+                rows={[
+                  {
+                    name: chartConfig[dataKey]?.label ?? dataKey,
+                    value: Number(point.value ?? 0),
+                    color,
+                  },
+                  {
+                    name: "Previous",
+                    value: Number(point.payload?.[PREVIOUS_KEY] ?? 0),
+                    color: "var(--ak-muted)",
+                  },
+                ]}
               />
-            ) : null
-          }
+            );
+          }}
         />
+        {previous?.length ? (
+          <Line
+            type={CURVE[variant]}
+            dataKey={PREVIOUS_KEY}
+            stroke="var(--ak-muted)"
+            strokeWidth={1.4}
+            strokeOpacity={0.55}
+            strokeDasharray="5 4"
+            dot={false}
+            activeDot={false}
+            legendType="none"
+            tooltipType="none"
+            connectNulls={join}
+            isAnimationActive={false}
+          />
+        ) : null}
         {variant === "glow" ? (
           <Line
             type={CURVE[variant]}
@@ -127,8 +189,32 @@ export function LineChart({
                     )
                   : false
           }
+          connectNulls={join}
           activeDot={{ r: 4 }}
         />
+        {emphasizeLast ? (
+          // Its own strokeless layer so the endpoint composes with the
+          // variants that already render their own dots.
+          <Line
+            type={CURVE[variant]}
+            dataKey={dataKey}
+            stroke="none"
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+            activeDot={false}
+            dot={({ cx, cy, value, index }: EndpointProps) => (
+              <EndpointDot
+                cx={cx}
+                cy={cy}
+                value={value}
+                color={color}
+                show={index === last}
+                index={index}
+              />
+            )}
+          />
+        ) : null}
       </RechartsLine>
     </ChartContainer>
   );

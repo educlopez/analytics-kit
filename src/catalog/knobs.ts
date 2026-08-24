@@ -3,12 +3,18 @@ import type { CatalogItem } from "./items";
 export const PREVIEW_METRICS = ["visitors", "pageviews", "bounceRate", "events"] as const;
 export type PreviewMetric = (typeof PREVIEW_METRICS)[number];
 
+export const PREVIEW_GAPS = ["off", "bridge", "break"] as const;
+export type PreviewGaps = (typeof PREVIEW_GAPS)[number];
+
 export interface PreviewKnobs {
   variant: string;
   metric: PreviewMetric;
   height: number;
   columns: number;
   showRange: boolean;
+  emphasizeLast: boolean;
+  compare: boolean;
+  gaps: PreviewGaps;
 }
 
 export function defaultKnobs(item: CatalogItem): PreviewKnobs {
@@ -18,6 +24,9 @@ export function defaultKnobs(item: CatalogItem): PreviewKnobs {
     height: 220,
     columns: 4,
     showRange: true,
+    emphasizeLast: false,
+    compare: false,
+    gaps: "off",
   };
 }
 
@@ -27,7 +36,10 @@ export function knobsEqual(a: PreviewKnobs, b: PreviewKnobs): boolean {
     a.metric === b.metric &&
     a.height === b.height &&
     a.columns === b.columns &&
-    a.showRange === b.showRange
+    a.showRange === b.showRange &&
+    a.emphasizeLast === b.emphasizeLast &&
+    a.compare === b.compare &&
+    a.gaps === b.gaps
   );
 }
 
@@ -60,6 +72,8 @@ export function itemControls(slug: string) {
     height: sized.includes(slug),
     columns: slug === "dashboard",
     showRange: slug === "dashboard",
+    // The cross-cutting treatments only apply to the time-series charts.
+    treatments: slug === "area-chart" || slug === "line-chart",
   };
 }
 
@@ -90,7 +104,7 @@ const points = [
 <${name}
   data={points}
   dataKey="value"
-  labelKey="date"${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
+  labelKey="date"${attr("variant", knobs.variant, item.defaultVariant)}${attr("emphasizeLast", knobs.emphasizeLast, false)}${knobs.compare ? "\n  previous={lastPeriod}" : ""}${attr("gaps", knobs.gaps === "off" ? undefined : knobs.gaps)}${attr("className", heightClass)}
 />`;
   }
 

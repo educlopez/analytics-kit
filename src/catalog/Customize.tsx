@@ -1,7 +1,14 @@
 "use client";
 
 import type { CatalogItem } from "./items";
-import { PREVIEW_METRICS, itemControls, type PreviewKnobs, type PreviewMetric } from "./knobs";
+import {
+  PREVIEW_GAPS,
+  PREVIEW_METRICS,
+  itemControls,
+  type PreviewGaps,
+  type PreviewKnobs,
+  type PreviewMetric,
+} from "./knobs";
 
 function ControlHead({ title, value }: { title: string; value?: string }) {
   return (
@@ -114,7 +121,8 @@ export function Customize({
     !controls.metric &&
     !controls.height &&
     !controls.columns &&
-    !controls.showRange
+    !controls.showRange &&
+    !controls.treatments
   ) {
     return null;
   }
@@ -163,6 +171,26 @@ export function Customize({
             suffix="px"
             onChange={(value) => onChange("height", value)}
           />
+        ) : null}
+        {controls.treatments ? (
+          <>
+            <PreviewSwitch
+              title="emphasizeLast"
+              checked={knobs.emphasizeLast}
+              onChange={(value) => onChange("emphasizeLast", value)}
+            />
+            <PreviewSwitch
+              title="previous"
+              checked={knobs.compare}
+              onChange={(value) => onChange("compare", value)}
+            />
+            <PreviewEnum
+              title="gaps"
+              options={PREVIEW_GAPS}
+              value={knobs.gaps}
+              onChange={(value) => onChange("gaps", value as PreviewGaps)}
+            />
+          </>
         ) : null}
         {controls.columns ? (
           <PreviewSlider
