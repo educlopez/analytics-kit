@@ -184,6 +184,16 @@ export function Customize({
               checked={knobs.compare}
               onChange={(value) => onChange("compare", value)}
             />
+            <PreviewSwitch
+              title="annotations"
+              checked={knobs.annotations}
+              onChange={(value) => onChange("annotations", value)}
+            />
+            <PreviewSwitch
+              title="brush"
+              checked={knobs.brush}
+              onChange={(value) => onChange("brush", value)}
+            />
             <PreviewEnum
               title="gaps"
               options={PREVIEW_GAPS}
