@@ -1,5 +1,29 @@
 import type { PropRow } from "../site/PropsTable";
 
+/** Cross-cutting treatments, shared by the time-series charts. */
+const SERIES_TREATMENTS: PropRow[] = [
+  {
+    name: "emphasizeLast",
+    type: "boolean",
+    default: "false",
+    notes:
+      "Terminal dot plus a value pill on the final point. Drawn on its own layer, so it composes with any variant.",
+  },
+  {
+    name: "previous",
+    type: "ChartDatum[]",
+    notes:
+      "Previous-period rows, drawn dashed underneath and aligned by index rather than by date. Adds a Previous row to the tooltip.",
+  },
+  {
+    name: "gaps",
+    type: '"bridge" | "break"',
+    default: '"bridge"',
+    notes:
+      "How a null is drawn: joined across, or left open. Neither coerces the missing point to zero, which would draw a cliff that reads as a traffic collapse.",
+  },
+];
+
 const CHART_SHARED: PropRow[] = [
   {
     name: "data",
@@ -47,6 +71,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       notes:
         'Series to compose. Pass two or more to make variant="stacked" stack something; ignored by the other variants.',
     },
+    ...SERIES_TREATMENTS,
   ],
   "line-chart": [
     ...CHART_SHARED,
@@ -63,6 +88,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
       notes:
         "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
     },
+    ...SERIES_TREATMENTS,
   ],
   "bar-chart": [
     ...CHART_SHARED,

@@ -8,7 +8,15 @@ import {
   seriesConfig,
   type ChartConfig,
 } from "./chart.js";
+
 import { BarStripePattern, DitherDots, GlowFilter, HatchPattern } from "./patterns.js";
+import {
+  connectNulls,
+  EndpointDot,
+  PREVIOUS_KEY,
+  withPrevious,
+  type GapMode,
+} from "./treatments.js";
 import {
   AREA_CHART_VARIANTS,
   AREA_MULTI_VARIANTS,
@@ -31,12 +39,22 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   stacked: "monotone",
 };
 
+interface EndpointProps {
+  cx?: number;
+  cy?: number;
+  value?: number | number[];
+  index?: number;
+}
+
 export function AreaChart({
   data,
   dataKey = "value",
   dataKeys,
   labelKey = "date",
   variant = "gradient",
+  emphasizeLast = false,
+  previous,
+  gaps,
   config,
   className,
 }: {
@@ -46,6 +64,12 @@ export function AreaChart({
   dataKeys?: string[];
   labelKey?: string;
   variant?: AreaChartVariant;
+  /** Terminal dot plus a value pill on the final point. */
+  emphasizeLast?: boolean;
+  /** Previous-period rows, drawn dashed underneath and aligned by index. */
+  previous?: ChartDatum[];
+  /** How nulls are drawn. Defaults to bridging across them. */
+  gaps?: GapMode;
   config?: ChartConfig;
   className?: string;
 }) {
@@ -64,6 +88,9 @@ export function AreaChart({
   const hatchId = `ak-area-hatch-${uid}`;
   const barsId = `ak-area-bars-${uid}`;
   const glowId = `ak-glow-${uid}`;
+  const last = data.length - 1;
+  const rows = withPrevious(data, previous, dataKey);
+  const join = connectNulls(gaps);
   const fill =
     variant === "dither"
       ? `url(#${ditherId})`
@@ -136,7 +163,7 @@ export function AreaChart({
   return (
     <ChartContainer className={className} config={chartConfig}>
       <RechartsArea
-        data={data}
+        data={rows}
         margin={spark ? { top: 4, right: 0, left: 0, bottom: 0 } : undefined}
       >
         <defs>
@@ -167,17 +194,57 @@ export function AreaChart({
         {spark ? null : (
           <Tooltip
             cursor={{ stroke: "var(--ak-border)" }}
-            content={({ active, payload, label }) =>
-              active && payload?.[0] ? (
-                <ChartTooltipBox
+            content={({ active, payload, label }) => {
+              if (!active || !payload?.length) return null;
+              const point = payload.find((item) => item.dataKey === dataKey) ?? payload[0];
+              if (!previous?.length) {
+                return (
+                  <ChartTooltipBox
+                    label={String(label ?? "")}
+                    value={point.value as number}
+                    name={chartConfig[dataKey]?.label}
+                  />
+                );
+              }
+              return (
+                <ChartTooltipRows
                   label={String(label ?? "")}
-                  value={payload[0].value as number}
-                  name={chartConfig[dataKey]?.label}
+                  rows={[
+                    {
+                      name: chartConfig[dataKey]?.label ?? dataKey,
+                      value: Number(point.value ?? 0),
+                      color,
+                    },
+                    {
+                      name: "Previous",
+                      value: Number(point.payload?.[PREVIOUS_KEY] ?? 0),
+                      color: "var(--ak-muted)",
+                    },
+                  ]}
                 />
-              ) : null
-            }
+              );
+            }}
           />
         )}
+        {previous?.length ? (
+          // An unfilled Area, not a Line: the AreaChart container does not
+          // render Line children, so a Line here silently draws nothing.
+          <Area
+            type={CURVE[variant]}
+            dataKey={PREVIOUS_KEY}
+            stroke="var(--ak-muted)"
+            strokeWidth={1.4}
+            strokeOpacity={0.55}
+            strokeDasharray="5 4"
+            fill="none"
+            dot={false}
+            activeDot={false}
+            legendType="none"
+            tooltipType="none"
+            connectNulls={join}
+            isAnimationActive={false}
+          />
+        ) : null}
         <Area
           type={CURVE[variant]}
           dataKey={dataKey}
@@ -187,8 +254,34 @@ export function AreaChart({
           fillOpacity={variant === "solid" ? 0.22 : 1}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
           dot={variant === "dots" ? { r: 3, fill: color, strokeWidth: 0 } : false}
+          connectNulls={join}
           activeDot={spark ? false : { r: 4 }}
         />
+        {emphasizeLast ? (
+          // Its own bare layer so the endpoint composes with the variants that
+          // already render their own dots. Area, not Line, for the same reason
+          // as the ghost above.
+          <Area
+            type={CURVE[variant]}
+            dataKey={dataKey}
+            stroke="none"
+            fill="none"
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+            activeDot={false}
+            dot={({ cx, cy, value, index }: EndpointProps) => (
+              <EndpointDot
+                cx={cx}
+                cy={cy}
+                value={value}
+                color={color}
+                show={index === last}
+                index={index}
+              />
+            )}
+          />
+        ) : null}
       </RechartsArea>
     </ChartContainer>
   );

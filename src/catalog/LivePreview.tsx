@@ -142,6 +142,18 @@ function PreviewInner({
     visitors: row.values.visitors ?? 0,
     pageviews: row.values.pageviews ?? 0,
   }));
+  // The treatments need data the plain sample series doesn't carry: a previous
+  // period to compare against, and an actual hole to draw a gap across.
+  const previousSeries = composed.map((point) => ({
+    date: point.date,
+    value: Math.round(point.visitors * 0.78),
+  }));
+  const holed =
+    knobs.gaps === "off"
+      ? series
+      : series.map((point, index) =>
+          index > 11 && index < 15 ? { ...point, value: null as unknown as number } : point,
+        );
   const rows = browsers.data?.breakdown ?? [];
   const gaugeValue = totals[knobs.metric] ?? 0;
   const gaugeMax = knobs.metric === "bounceRate" ? 100 : Math.max(gaugeValue * 1.2, 1);
@@ -160,10 +172,26 @@ function PreviewInner({
         />
       );
     }
-    return <AreaChart data={series} variant={activeVariant as AreaChartVariant} />;
+    return (
+      <AreaChart
+        data={holed}
+        variant={activeVariant as AreaChartVariant}
+        emphasizeLast={knobs.emphasizeLast}
+        previous={knobs.compare ? previousSeries : undefined}
+        gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
+      />
+    );
   }
   if (slug === "line-chart") {
-    return <LineChart data={series} variant={activeVariant as LineChartVariant} />;
+    return (
+      <LineChart
+        data={holed}
+        variant={activeVariant as LineChartVariant}
+        emphasizeLast={knobs.emphasizeLast}
+        previous={knobs.compare ? previousSeries : undefined}
+        gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
+      />
+    );
   }
   if (slug === "bar-chart") {
     if (
@@ -291,6 +319,9 @@ export function LivePreview({
     height: knobs?.height ?? 220,
     columns: knobs?.columns ?? 4,
     showRange: knobs?.showRange ?? true,
+    emphasizeLast: knobs?.emphasizeLast ?? false,
+    compare: knobs?.compare ?? false,
+    gaps: knobs?.gaps ?? "off",
   };
 
   return (
