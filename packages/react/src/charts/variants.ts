@@ -109,6 +109,12 @@ export type ProfitLossChartVariant = (typeof PROFIT_LOSS_CHART_VARIANTS)[number]
 export const HORIZON_CHART_VARIANTS = ["bands", "mirror"] as const;
 export type HorizonChartVariant = (typeof HORIZON_CHART_VARIANTS)[number];
 
+export const COHORT_GRID_VARIANTS = ["triangle", "counts"] as const;
+export type CohortGridVariant = (typeof COHORT_GRID_VARIANTS)[number];
+
+export const TREEMAP_CHART_VARIANTS = ["heat", "diverging"] as const;
+export type TreemapChartVariant = (typeof TREEMAP_CHART_VARIANTS)[number];
+
 export type ChartDatum = Record<string, string | number>;
 
 export interface SankeyNode {

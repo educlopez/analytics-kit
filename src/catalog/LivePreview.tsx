@@ -7,6 +7,8 @@ import {
   AnalyticsProvider,
   AreaChart,
   HorizonChart,
+  CohortGrid,
+  TreemapChart,
   BarChart,
   CandlestickChart,
   ChoroplethChart,
@@ -32,6 +34,8 @@ import {
   type AnalyticsTheme,
   type AreaChartVariant,
   type HorizonChartVariant,
+  type CohortGridVariant,
+  type TreemapChartVariant,
   type BarChartVariant,
   type BarListVariant,
   type CandlestickChartVariant,
@@ -85,6 +89,16 @@ function PreviewInner({
   const countries = useQuery({
     metrics: [knobs.metric],
     dimensions: ["country"],
+    limit: 12,
+  });
+  // Same dimension over a wider window, so the treemap's delta is a real
+  // difference of two queries rather than an invented number. No date maths
+  // here on purpose: Date.now() in a server-rendered preview reintroduces the
+  // hydration mismatch fixed earlier.
+  const countriesWide = useQuery({
+    metrics: ["visitors"],
+    dimensions: ["country"],
+    range: "90d",
     limit: 12,
   });
   const series = (seriesQuery.data?.series ?? []).map((point) => ({
@@ -148,6 +162,34 @@ function PreviewInner({
     visitors: row.values.visitors ?? 0,
     pageviews: row.values.pageviews ?? 0,
   }));
+  const wideByKey = new Map(
+    (countriesWide.data?.breakdown ?? []).map((row) => [row.key, row.values.visitors ?? 0]),
+  );
+  const treemap = (countries.data?.breakdown ?? []).map((row) => {
+    const current = row.values[knobs.metric] ?? 0;
+    const wide = wideByKey.get(row.key) ?? 0;
+    // The 90-day window minus the current 30 leaves the preceding 60, so half
+    // of that is the comparable prior month.
+    const prior = Math.max(0, wide - current) / 2;
+    return {
+      label: row.label ?? row.key,
+      value: current,
+      delta: Math.round(current - prior),
+    };
+  });
+  // Cohorts are the retained counts the mock reports for successive windows,
+  // each cohort seeing one fewer period than the one before it.
+  const cohorts = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map((label, index) => {
+    const size = Math.max(1, Math.round((totals.visitors ?? 400) / (4 + index)));
+    const periods = 5 - index;
+    return {
+      label,
+      size,
+      values: Array.from({ length: periods }, (_, step) =>
+        Math.round(size * Math.max(0.08, 1 - step * (0.22 + index * 0.02))),
+      ),
+    };
+  });
   // Horizon lanes come from the metrics that actually vary over time, rather
   // than from invented per-page series.
   const horizonKeys = ["visitors", "pageviews", "visits", "events"];
@@ -177,6 +219,14 @@ function PreviewInner({
   // chart's own default parameter and leave the preview blank.
   const activeVariant = knobs.variant || undefined;
 
+  if (slug === "treemap-chart") {
+    return <TreemapChart data={treemap} variant={activeVariant as TreemapChartVariant} />;
+  }
+  if (slug === "cohort-grid") {
+    return (
+      <CohortGrid data={cohorts} periodLabel="Week" variant={activeVariant as CohortGridVariant} />
+    );
+  }
   if (slug === "horizon-chart") {
     return (
       <HorizonChart

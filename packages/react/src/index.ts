@@ -24,6 +24,8 @@ export {
   SCATTER_CHART_VARIANTS,
   SUNBURST_CHART_VARIANTS,
   HORIZON_CHART_VARIANTS,
+  COHORT_GRID_VARIANTS,
+  TREEMAP_CHART_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
@@ -37,6 +39,8 @@ export type {
   GaugeChartVariant,
   HeatmapChartVariant,
   HorizonChartVariant,
+  CohortGridVariant,
+  TreemapChartVariant,
   LineChartVariant,
   LiveLineChartVariant,
   MetricCardVariant,
@@ -71,6 +75,9 @@ export { HeatmapChart } from "./charts/heatmap-chart.js";
 export { SunburstChart } from "./charts/sunburst-chart.js";
 export { ProfitLossChart } from "./charts/profit-loss-chart.js";
 export { HorizonChart } from "./charts/horizon-chart.js";
+export { CohortGrid } from "./charts/cohort-grid.js";
+export type { CohortRow } from "./charts/cohort-grid.js";
+export { TreemapChart } from "./charts/treemap-chart.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,
