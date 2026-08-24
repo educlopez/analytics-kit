@@ -1,5 +1,12 @@
 # @analytics-kit/connector-plausible
 
+## 0.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`d22f48a`](https://github.com/educlopez/analytics-kit/commit/d22f48a4fcbcceae3fb470ce88048aee526df80b)]:
+  - @analytics-kit/core@0.4.0
+
 ## 0.3.0
 
 ### Patch Changes
