@@ -15,6 +15,8 @@ export interface PreviewKnobs {
   emphasizeLast: boolean;
   compare: boolean;
   gaps: PreviewGaps;
+  annotations: boolean;
+  brush: boolean;
 }
 
 export function defaultKnobs(item: CatalogItem): PreviewKnobs {
@@ -27,6 +29,8 @@ export function defaultKnobs(item: CatalogItem): PreviewKnobs {
     emphasizeLast: false,
     compare: false,
     gaps: "off",
+    annotations: false,
+    brush: false,
   };
 }
 
@@ -39,7 +43,9 @@ export function knobsEqual(a: PreviewKnobs, b: PreviewKnobs): boolean {
     a.showRange === b.showRange &&
     a.emphasizeLast === b.emphasizeLast &&
     a.compare === b.compare &&
-    a.gaps === b.gaps
+    a.gaps === b.gaps &&
+    a.annotations === b.annotations &&
+    a.brush === b.brush
   );
 }
 

@@ -16,6 +16,18 @@ const SERIES_TREATMENTS: PropRow[] = [
       "Previous-period rows, drawn dashed underneath and aligned by index rather than by date. Adds a Previous row to the tooltip.",
   },
   {
+    name: "annotations",
+    type: "Annotation[]",
+    notes:
+      '{ at, label, kind? } per marker, where at matches a labelKey value. kind is "deploy" | "release" | "incident" | "note" and only sets the colour.',
+  },
+  {
+    name: "brush",
+    type: "boolean",
+    default: "false",
+    notes: "Drag-to-zoom strip under the chart.",
+  },
+  {
     name: "gaps",
     type: '"bridge" | "break"',
     default: '"bridge"',

@@ -200,6 +200,12 @@ function PreviewInner({
     visits: point.values.visits ?? 0,
     events: point.values.events ?? 0,
   }));
+  // Annotations are pinned to real dates from the series so the markers land
+  // on points that exist rather than floating off the axis.
+  const sampleAnnotations = [
+    series[8] && { at: String(series[8].date), label: "v0.3.0", kind: "release" as const },
+    series[18] && { at: String(series[18].date), label: "Deploy", kind: "deploy" as const },
+  ].filter(Boolean) as { at: string; label: string; kind: "release" | "deploy" }[];
   // The treatments need data the plain sample series doesn't carry: a previous
   // period to compare against, and an actual hole to draw a gap across.
   const previousSeries = composed.map((point) => ({
@@ -254,6 +260,8 @@ function PreviewInner({
         emphasizeLast={knobs.emphasizeLast}
         previous={knobs.compare ? previousSeries : undefined}
         gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
+        annotations={knobs.annotations ? sampleAnnotations : undefined}
+        brush={knobs.brush}
       />
     );
   }
@@ -265,6 +273,8 @@ function PreviewInner({
         emphasizeLast={knobs.emphasizeLast}
         previous={knobs.compare ? previousSeries : undefined}
         gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
+        annotations={knobs.annotations ? sampleAnnotations : undefined}
+        brush={knobs.brush}
       />
     );
   }
@@ -397,6 +407,8 @@ export function LivePreview({
     emphasizeLast: knobs?.emphasizeLast ?? false,
     compare: knobs?.compare ?? false,
     gaps: knobs?.gaps ?? "off",
+    annotations: knobs?.annotations ?? false,
+    brush: knobs?.brush ?? false,
   };
 
   return (

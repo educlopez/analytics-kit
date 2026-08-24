@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Area, AreaChart as RechartsArea, CartesianGrid, Tooltip, XAxis } from "recharts";
+import { Area, AreaChart as RechartsArea, Brush, CartesianGrid, Tooltip, XAxis } from "recharts";
 import {
   ChartContainer,
   ChartLegend,
@@ -10,6 +10,8 @@ import {
 } from "./chart.js";
 
 import { BarStripePattern, DitherDots, GlowFilter, HatchPattern } from "./patterns.js";
+import { annotationLines, type Annotation } from "./annotations.js";
+import { useSyncGroup } from "./sync.js";
 import {
   connectNulls,
   EndpointDot,
@@ -56,6 +58,8 @@ export function AreaChart({
   emphasizeLast = false,
   previous,
   gaps,
+  annotations,
+  brush = false,
   config,
   className,
 }: {
@@ -71,6 +75,10 @@ export function AreaChart({
   previous?: ChartDatum[];
   /** How nulls are drawn. Defaults to bridging across them. */
   gaps?: GapMode;
+  /** Dated markers drawn over the chart — deploys, releases, incidents. */
+  annotations?: Annotation[];
+  /** Drag-to-zoom strip under the chart. */
+  brush?: boolean;
   config?: ChartConfig;
   className?: string;
 }) {
@@ -92,6 +100,7 @@ export function AreaChart({
   const last = data.length - 1;
   const rows = withPrevious(data, previous, dataKey);
   const join = connectNulls(gaps);
+  const sync = useSyncGroup();
   const fill =
     variant === "dither"
       ? `url(#${ditherId})`
@@ -172,7 +181,16 @@ export function AreaChart({
     <ChartContainer className={className} config={chartConfig}>
       <RechartsArea
         data={rows}
-        margin={spark ? { top: 4, right: 0, left: 0, bottom: 0 } : undefined}
+        syncId={sync?.syncId}
+        // Annotation labels sit above the plot area, which has no headroom by
+        // default, so they get clipped by the top edge without this.
+        margin={
+          spark
+            ? { top: 4, right: 0, left: 0, bottom: 0 }
+            : annotations?.length
+              ? { top: 20, right: 4, left: 0, bottom: 0 }
+              : undefined
+        }
       >
         <defs>
           {faded ? (
@@ -293,6 +311,16 @@ export function AreaChart({
                 index={index}
               />
             )}
+          />
+        ) : null}
+        {spark ? null : annotationLines(annotations)}
+        {brush && !spark ? (
+          <Brush
+            dataKey={labelKey}
+            height={22}
+            travellerWidth={8}
+            stroke="var(--ak-border)"
+            fill="var(--ak-surface-2)"
           />
         ) : null}
       </RechartsArea>
