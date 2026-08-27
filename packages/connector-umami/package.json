@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/connector-umami",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Umami Analytics connector for Analytics Kit.",
   "type": "module",
   "main": "./dist/index.cjs",

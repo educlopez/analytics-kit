@@ -1,5 +1,54 @@
 # @analytics-kit/react
 
+## 0.5.0
+
+### Minor Changes
+
+- [#33](https://github.com/educlopez/analytics-kit/pull/33) [`8474d4e`](https://github.com/educlopez/analytics-kit/commit/8474d4e3aa298a757e7451e04ccc3b63cc25f462) Thanks [@educlopez](https://github.com/educlopez)! - Add `PieChart variant="callout"`, `RadarChart variant="polygon"`, `ScatterChart variant="field"`, `CandlestickChart variant="volume"`, `FunnelChart variant="flow"` and `BarChart variant="bullet"`.
+
+  `callout` runs leader lines to labels outside the ring so the legend disappears. `polygon` swaps the concentric circles for a straight web and appends each axis's count to its label. `field` puts a soft density glow behind each point, turning a scatter into a map you can name places on. `volume` adds a second pane on the same x-scale, since an OHLC move means something different on light volume than on heavy. `flow` shows converted and dropped as separate shapes between steps, because a tapering ribbon never says where the missing people went. `bullet` puts actual, target and qualitative bands in a 24px row, via a new `targetKey`.
+
+  `flow` clamps its continued share to 100%: a stage reporting more people than the one before it is not a funnel, and the honest reading is a flat 100% rather than an impossible number.
+
+- [#37](https://github.com/educlopez/analytics-kit/pull/37) [`07116b0`](https://github.com/educlopez/analytics-kit/commit/07116b027a0396dbb374a5a61658739e3ec12a19) Thanks [@educlopez](https://github.com/educlopez)! - Add `StripChart`, `RadialTimeChart`, `Odometer` and `SmallMultiples`.
+
+  `StripChart` puts one tick per event in a lane per event name, with no aggregation — bursts, gaps and correlated spikes disappear the moment you bucket, which is what every other time mark here does. `RadialTimeChart` wraps hours around a circle with weekdays as rings, so a burst straddling midnight reads as one burst rather than two at opposite ends of a rectangle.
+
+  `Odometer` rolls a number to its new value instead of replacing it, animating from what is on screen so a change arriving mid-roll continues from where the digits actually are, and honouring `prefers-reduced-motion`. `SmallMultiples` lays out one miniature per category on a locked shared domain — without it the eye compares shapes drawn to different rulers and concludes things that are not true.
+
+- [#33](https://github.com/educlopez/analytics-kit/pull/33) [`ce7b32b`](https://github.com/educlopez/analytics-kit/commit/ce7b32b35e8e0ac0a694f2f4937a73ea0a051af5) Thanks [@educlopez](https://github.com/educlopez)! - Add `LineChart variant="focus" | "anomaly"` and `AreaChart variant="band" | "ridge"`.
+
+  `focus` draws every series faint and promotes the hovered one, so twenty lines stay legible — the interaction is the variant, with no extra state. `anomaly` rings points that sit far from a rolling median, using MAD computed client-side with no model or service; the strictness is tunable through `anomalyThreshold`, and defaults high because a chart that rings every wobble trains people to ignore the rings.
+
+  `band` draws a ribbon between the current and previous series with the line inside it, rendering `previous` as a shape instead of a second line. `ridge` gives each series its own baseline, offset upward and overlapping the one behind with an opaque fill, so the occlusion reads as depth.
+
+- [#35](https://github.com/educlopez/analytics-kit/pull/35) [`edab950`](https://github.com/educlopez/analytics-kit/commit/edab950dd376ab748fb38c3e9f0eb5537f983849) Thanks [@educlopez](https://github.com/educlopez)! - Add `WaterfallChart`, `ShareBand`, `SlopeChart` and `QuotaBar`.
+
+  `WaterfallChart` bridges a start total to an end total with floating signed bars and connectors carrying the running total, answering "where did the change come from" — a question a time series never answers, since it only shows that a number moved. `ShareBand` is a single 100% band that says in 20px what a donut needs 200px to say, and doubles as a table header. `SlopeChart` joins two dated axes with one line per item, so the slope _is_ the change and crossings are the story. `QuotaBar` draws usage against a ceiling with a limit marker and an optional projection — none of the cartesian marks express a _limit_, only a quantity.
+
+  All four are hand-drawn, so none adds a dependency.
+
+- [#33](https://github.com/educlopez/analytics-kit/pull/33) [`b16c4c9`](https://github.com/educlopez/analytics-kit/commit/b16c4c91d2acbb5d7a4507560ae5061d4a5f4c8a) Thanks [@educlopez](https://github.com/educlopez)! - Add `RankedList variant="inset" | "dual"`, `MetricCard variant="bleed" | "histogram"` and `HeatmapChart variant="month"`.
+
+  `inset` makes the bar the row's own background rather than a separate track below it, halving the row height and keeping the label attached to its magnitude. `dual` adds a share column beside the count, because a percentage on its own is the classic dashboard ambiguity. `bleed` runs the sparkline edge to edge above the number instead of beside it. `histogram` puts twelve inline micro-bars in the text as a typographic element rather than a chart. `month` draws a real weekday calendar grid — the existing `calendar` variant is a year strip.
+
+- [#38](https://github.com/educlopez/analytics-kit/pull/38) [`a81cc46`](https://github.com/educlopez/analytics-kit/commit/a81cc4693dd379cee5ffd78ab7b6b85e6524cf48) Thanks [@educlopez](https://github.com/educlopez)! - Add the texture variants (`riso`, `screentone`, `grain`) and a `scale` prop for log axes.
+
+  `screentone` is a halftone dot screen where density carries the value, so it still reads in print, in a photocopy, or to someone who cannot separate the palette's hues. `riso` prints the shape twice slightly out of register — the misalignment is the effect. `grain` lays fine film noise over the fill.
+
+  `scale="log"` makes long-tail data readable; on a linear axis the tail is simply invisible. There is no `symlog`: recharts' `ScaleType` does not include it, and shipping an option that silently does nothing is worse than not shipping it. A log axis cannot represent zero either, so its floor is pinned to 1 rather than dropping the point without saying so.
+
+- [#36](https://github.com/educlopez/analytics-kit/pull/36) [`6184f62`](https://github.com/educlopez/analytics-kit/commit/6184f629b719be01c6ebc042d4e8a741f3e77fcd) Thanks [@educlopez](https://github.com/educlopez)! - Add `BumpChart`, `MarimekkoChart`, `SparkTable` and `TimelineChart`.
+
+  `BumpChart` plots rank over time — "which pages are climbing" is a rank question, and absolute-value lines hide it behind scale differences. Rank is derived from the values rather than supplied, so it can never disagree with the row it came from. `MarimekkoChart` gives each column a width proportional to its volume and each segment a height proportional to its share, so area is the absolute number and a 60% slice of a sliver stays a sliver. `SparkTable` is a real table — selectable, searchable — with a trailing sparkline and signed delta per row. `TimelineChart` is the standalone twin of the annotations layer, taking the same `{ at, label, kind }` shape.
+
+  `SparkTable` introduces a `SparkRow` type, since rows carry a series alongside scalars and `ChartDatum` is `Record<string, string | number>`. Widening `ChartDatum` would have loosened every chart's contract for one component.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @analytics-kit/core@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes
