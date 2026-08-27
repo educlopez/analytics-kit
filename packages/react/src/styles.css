@@ -442,6 +442,142 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-bump {
+  display: block;
+  width: 100%;
+}
+
+.ak-mekko {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ak-mekko-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 2px;
+}
+
+.ak-mekko-cell {
+  display: block;
+  width: 100%;
+}
+
+.ak-mekko-axis {
+  display: flex;
+  gap: 2px;
+  padding-top: 6px;
+  font-size: 11px;
+  color: var(--ak-muted);
+}
+
+.ak-mekko-axis span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 0;
+}
+
+.ak-sparktable-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.ak-sparktable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ak-sparktable th,
+.ak-sparktable td {
+  padding: 7px 10px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--ak-border);
+}
+
+.ak-sparktable thead th {
+  font-weight: 500;
+  color: var(--ak-muted);
+  font-size: 12px;
+}
+
+.ak-sparktable th:first-child,
+.ak-sparktable tbody th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ak-text);
+}
+
+.ak-sparktable-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--ak-text);
+}
+
+.ak-sparktable-trend {
+  width: 90px;
+  line-height: 0;
+}
+
+.ak-timeline {
+  position: relative;
+  width: 100%;
+}
+
+.ak-timeline-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--ak-surface-2);
+}
+
+.ak-timeline-pin {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transform: translate(-50%, 0);
+  font-size: 11px;
+  text-align: center;
+  max-width: 108px;
+}
+
+.ak-timeline-pin.is-above {
+  flex-direction: column-reverse;
+  transform: translate(-50%, -100%);
+}
+
+.ak-timeline-pin b {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  box-shadow: 0 0 0 3px var(--ak-surface);
+}
+
+.ak-timeline-pin em {
+  font-style: normal;
+  color: var(--ak-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.ak-timeline-pin small {
+  color: var(--ak-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .ak-waterfall {
   display: block;
   width: 100%;

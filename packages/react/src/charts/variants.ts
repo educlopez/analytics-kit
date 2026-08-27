@@ -131,6 +131,9 @@ export type HorizonChartVariant = (typeof HORIZON_CHART_VARIANTS)[number];
 export const COHORT_GRID_VARIANTS = ["triangle", "counts"] as const;
 export type CohortGridVariant = (typeof COHORT_GRID_VARIANTS)[number];
 
+export const BUMP_CHART_VARIANTS = ["ribbon", "line"] as const;
+export type BumpChartVariant = (typeof BUMP_CHART_VARIANTS)[number];
+
 export const WATERFALL_CHART_VARIANTS = ["bridge", "bars"] as const;
 export type WaterfallChartVariant = (typeof WATERFALL_CHART_VARIANTS)[number];
 

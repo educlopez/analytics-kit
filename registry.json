@@ -405,6 +405,66 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "bump-chart",
+      "type": "registry:ui",
+      "title": "Bump chart",
+      "description": "Rank over time. Variants: ribbon, line.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/bump-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/bump-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "marimekko-chart",
+      "type": "registry:ui",
+      "title": "Marimekko",
+      "description": "Variable-width stacked bars: width is volume, height is share.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/marimekko-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/marimekko-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "spark-table",
+      "type": "registry:ui",
+      "title": "Spark table",
+      "description": "Table with trailing sparklines and signed deltas.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/spark-table.tsx",
+          "type": "registry:ui",
+          "target": "@ui/spark-table.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "timeline-chart",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "Dated rail with alternating pins.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/timeline-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/timeline-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",

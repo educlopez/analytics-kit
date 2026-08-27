@@ -27,6 +27,7 @@ export {
   COHORT_GRID_VARIANTS,
   TREEMAP_CHART_VARIANTS,
   WATERFALL_CHART_VARIANTS,
+  BUMP_CHART_VARIANTS,
   SHARE_BAND_VARIANTS,
   SLOPE_CHART_VARIANTS,
 } from "./charts/variants.js";
@@ -45,6 +46,7 @@ export type {
   CohortGridVariant,
   TreemapChartVariant,
   WaterfallChartVariant,
+  BumpChartVariant,
   ShareBandVariant,
   SlopeChartVariant,
   LineChartVariant,
@@ -91,6 +93,11 @@ export { WaterfallChart } from "./charts/waterfall-chart.js";
 export { ShareBand } from "./charts/share-band.js";
 export { SlopeChart } from "./charts/slope-chart.js";
 export { QuotaBar } from "./charts/quota-bar.js";
+export { BumpChart } from "./charts/bump-chart.js";
+export { MarimekkoChart } from "./charts/marimekko-chart.js";
+export { SparkTable } from "./charts/spark-table.js";
+export type { SparkRow } from "./charts/spark-table.js";
+export { TimelineChart } from "./charts/timeline-chart.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,

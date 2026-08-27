@@ -78,6 +78,10 @@ export function itemControls(slug: string) {
     "waterfall-chart",
     "slope-chart",
     "quota-bar",
+    "bump-chart",
+    "marimekko-chart",
+    "spark-table",
+    "timeline-chart",
   ];
   return {
     variant: slug !== "dashboard",
