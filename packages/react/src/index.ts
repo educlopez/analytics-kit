@@ -98,6 +98,12 @@ export { MarimekkoChart } from "./charts/marimekko-chart.js";
 export { SparkTable } from "./charts/spark-table.js";
 export type { SparkRow } from "./charts/spark-table.js";
 export { TimelineChart } from "./charts/timeline-chart.js";
+export { StripChart } from "./charts/strip-chart.js";
+export type { StripLane } from "./charts/strip-chart.js";
+export { RadialTimeChart } from "./charts/radial-time-chart.js";
+export type { RadialTimeCell } from "./charts/radial-time-chart.js";
+export { Odometer } from "./charts/odometer.js";
+export { SmallMultiples } from "./charts/small-multiples.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,

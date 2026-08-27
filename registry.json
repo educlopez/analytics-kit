@@ -465,6 +465,66 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "strip-chart",
+      "type": "registry:ui",
+      "title": "Strip chart",
+      "description": "Raw event ticks per lane, no bucketing.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/strip-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/strip-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "radial-time-chart",
+      "type": "registry:ui",
+      "title": "Radial time",
+      "description": "Hours around the circle, weekdays as rings.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/radial-time-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/radial-time-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "odometer",
+      "type": "registry:ui",
+      "title": "Odometer",
+      "description": "A number that rolls to its new value.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/odometer.tsx",
+          "type": "registry:ui",
+          "target": "@ui/odometer.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "small-multiples",
+      "type": "registry:ui",
+      "title": "Small multiples",
+      "description": "Grid of miniatures on a locked shared scale.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/small-multiples.tsx",
+          "type": "registry:ui",
+          "target": "@ui/small-multiples.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",
