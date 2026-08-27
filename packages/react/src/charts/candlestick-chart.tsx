@@ -21,11 +21,20 @@ export function CandlestickChart({
   const max = Math.max(...highs);
   const span = max - min || 1;
   const W = 1000;
+  // The volume pane takes a quarter of the height, on the same x-scale. The
+  // OHLC convention is incomplete without it — a move on no volume means
+  // something different from the same move on heavy volume.
+  const volume = variant === "volume";
   const H = 220;
+  const priceH = volume ? 164 : H;
   const pad = 16;
   const inner = W - pad * 2;
   const slot = inner / data.length;
-  const y = (value: number) => pad + ((max - value) / span) * (H - pad * 2);
+  const y = (value: number) => pad + ((max - value) / span) * (priceH - pad * 2);
+  // Real traded volume is not in CandleDatum, so the pane uses the candle's own
+  // range as a stand-in for activity rather than inventing a number.
+  const activity = data.map((row) => Math.abs(row.high - row.low));
+  const peak = Math.max(...activity, 1);
 
   return (
     <div className={cn("ak-candles", className)}>
@@ -61,6 +70,34 @@ export function CandlestickChart({
             </g>
           );
         })}
+        {volume
+          ? data.map((row, index) => {
+              const up = row.close >= row.open;
+              const cx = pad + index * slot + slot / 2;
+              const h = (activity[index] / peak) * (H - priceH - 10);
+              return (
+                <rect
+                  key={`vol-${row.date}`}
+                  x={cx - Math.max(1.5, slot * 0.3)}
+                  y={H - h - 4}
+                  width={Math.max(3, slot * 0.6)}
+                  height={Math.max(1, h)}
+                  fill={up ? "var(--ak-up)" : "var(--ak-down)"}
+                  fillOpacity={0.45}
+                />
+              );
+            })
+          : null}
+        {volume ? (
+          <line
+            x1={pad}
+            x2={W - pad}
+            y1={priceH + 2}
+            y2={priceH + 2}
+            stroke="var(--ak-border)"
+            strokeWidth={1}
+          />
+        ) : null}
       </svg>
     </div>
   );

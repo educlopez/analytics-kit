@@ -42,7 +42,71 @@ export function FunnelChart({
     return <VerticalFunnel stages={stages} head={head} className={className} />;
   }
 
+  if (variant === "flow") {
+    return <FlowFunnel stages={stages} head={head} className={className} />;
+  }
+
   return <RibbonFunnel stages={stages} head={head} variant={variant} className={className} />;
+}
+
+/**
+ * Converted and dropped as separate paths between each pair of steps.
+ *
+ * A tape funnel narrows without saying where the missing people went; this
+ * shows the leak as its own shape, which is the question people actually ask.
+ */
+function FlowFunnel({
+  stages,
+  head,
+  className,
+}: {
+  stages: Stage[];
+  head: number;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <ol className="ak-flow">
+        {stages.map((stage, index) => {
+          const next = stages[index + 1];
+          const kept = next ? next.value : stage.value;
+          const dropped = next ? Math.max(0, stage.value - next.value) : 0;
+          // Clamped: a stage that reports more people than the one before it is
+          // not a funnel, and "242% continued" is worse than a flat 100%.
+          const keptShare = stage.value > 0 ? Math.min(1, Math.max(0, kept / stage.value)) : 0;
+          return (
+            <li className="ak-flow-step" key={stage.label}>
+              <div className="ak-flow-head">
+                <span className="ak-flow-label">{stage.label}</span>
+                <span className="ak-flow-value">{formatNumber(stage.value)}</span>
+                <span className="ak-flow-share">
+                  {Math.round((stage.value / head) * 100)}% of entry
+                </span>
+              </div>
+              {next ? (
+                <div className="ak-flow-split">
+                  <div
+                    className="ak-flow-kept"
+                    style={{ flexGrow: Math.max(keptShare, 0.02) }}
+                    title={`Continued: ${formatNumber(kept)}`}
+                  >
+                    <span>{Math.round(keptShare * 100)}% continued</span>
+                  </div>
+                  <div
+                    className="ak-flow-dropped"
+                    style={{ flexGrow: Math.max(1 - keptShare, 0.02) }}
+                    title={`Dropped: ${formatNumber(dropped)}`}
+                  >
+                    <span>{formatNumber(dropped)} dropped</span>
+                  </div>
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
 }
 
 function RibbonFunnel({

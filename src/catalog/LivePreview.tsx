@@ -116,10 +116,13 @@ function PreviewInner({
     z: Math.abs(row.pageviews - row.visitors),
   }));
   const totals = totalsQuery.data?.totals ?? {};
+  // Ordered so the stages actually nest: every visitor made a visit, every
+  // visit made a view. Listing visitors before views produces a "funnel" that
+  // widens, which is not a funnel.
   const funnel = [
-    { label: "Visitors", value: totals.visitors ?? 0 },
     { label: "Views", value: totals.pageviews ?? 0 },
     { label: "Visits", value: totals.visits ?? 0 },
+    { label: "Visitors", value: totals.visitors ?? 0 },
     { label: "Events", value: totals.events ?? 0 },
   ];
   const sankeyNodes = funnel.map((row) => ({ name: row.label }));
@@ -321,6 +324,17 @@ function PreviewInner({
         <BarChart
           data={breakdownDual}
           dataKeys={["visitors", "pageviews"]}
+          variant={activeVariant as BarChartVariant}
+        />
+      );
+    }
+    if (activeVariant === "bullet") {
+      // Target is the period's mean, a real derived number rather than an
+      // invented goal.
+      const mean = breakdown.reduce((sum, row) => sum + row.value, 0) / (breakdown.length || 1);
+      return (
+        <BarChart
+          data={breakdown.map((row) => ({ ...row, target: Math.round(mean) }))}
           variant={activeVariant as BarChartVariant}
         />
       );

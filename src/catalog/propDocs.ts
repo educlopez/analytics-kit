@@ -234,7 +234,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100" | "diverging" | "editorial"',
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100" | "diverging" | "editorial" | "bullet"',
       default: '"vertical"',
       notes:
         "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
@@ -267,7 +267,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow" | "half"',
+      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow" | "half" | "callout"',
       default: '"donut"',
       notes: "Ring vs full pie, rounded gaps, radial bars, or a bloom on the slices.",
     },
@@ -297,7 +297,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"tape" | "steps" | "vertical"',
+      type: '"tape" | "steps" | "vertical" | "flow"',
       default: '"tape"',
       notes: "Tapering ribbon, discrete blocks, or stacked drop-off bars.",
     },
@@ -327,7 +327,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"stroke" | "fill" | "glow" | "dither"',
+      type: '"stroke" | "fill" | "glow" | "dither" | "polygon"',
       default: '"fill"',
       notes: "Outline only, translucent fill, bloom, or a stipple fill.",
     },
@@ -409,7 +409,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"dots" | "bubble" | "glow"',
+      type: '"dots" | "bubble" | "glow" | "field"',
       default: '"dots"',
       notes: "Equal dots, sized bubbles, or a bloom on each point.",
     },
@@ -460,7 +460,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"ohlc" | "hollow" | "wick"',
+      type: '"ohlc" | "hollow" | "wick" | "volume"',
       default: '"ohlc"',
       notes: "Solid bodies, hollow up-days, or a thin wick.",
     },
