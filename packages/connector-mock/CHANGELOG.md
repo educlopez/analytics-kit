@@ -1,5 +1,12 @@
 # @analytics-kit/connector-mock
 
+## 0.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @analytics-kit/core@0.5.0
+
 ## 0.4.0
 
 ### Patch Changes
