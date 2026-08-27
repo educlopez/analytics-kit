@@ -442,6 +442,100 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-rank-inset {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ak-surface-2);
+  font-size: 13px;
+}
+
+.ak-rank-inset-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.28;
+}
+
+.ak-rank-inset .ak-rank-label {
+  position: relative;
+  flex: 1;
+  color: var(--ak-text);
+}
+
+.ak-rank-inset .ak-rank-value,
+.ak-rank-inset .ak-rank-share {
+  position: relative;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ak-rank-inset .ak-rank-share {
+  color: var(--ak-muted);
+  min-width: 42px;
+}
+
+.ak-rank-inset .ak-rank-value {
+  min-width: 56px;
+  color: var(--ak-text);
+}
+
+.ak-metric-bleed {
+  margin: -4px -14px 8px;
+}
+
+.ak-micro-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+  margin-left: 10px;
+  vertical-align: baseline;
+}
+
+.ak-micro-bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.75;
+}
+
+.ak-heat-month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  /* Capped and centred: stretched across a full-width card the square cells
+     become tiles, and it stops reading as a calendar. */
+  max-width: 340px;
+  margin-inline: auto;
+}
+
+.ak-heat-weekday {
+  font-size: 11px;
+  color: var(--ak-muted);
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.ak-heat-day {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--ak-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-heat-blank {
+  aspect-ratio: 1;
+}
+
 .ak-bar-editorial-label {
   fill: var(--ak-surface);
   font-size: 13px;

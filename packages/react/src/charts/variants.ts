@@ -64,10 +64,17 @@ export const PIE_CHART_VARIANTS = [
 ] as const;
 export type PieChartVariant = (typeof PIE_CHART_VARIANTS)[number];
 
-export const METRIC_CARD_VARIANTS = ["default", "spark", "compact", "hero"] as const;
+export const METRIC_CARD_VARIANTS = [
+  "default",
+  "spark",
+  "compact",
+  "hero",
+  "bleed",
+  "histogram",
+] as const;
 export type MetricCardVariant = (typeof METRIC_CARD_VARIANTS)[number];
 
-export const BAR_LIST_VARIANTS = ["bar", "compact", "table"] as const;
+export const BAR_LIST_VARIANTS = ["bar", "compact", "table", "inset", "dual"] as const;
 export type BarListVariant = (typeof BAR_LIST_VARIANTS)[number];
 
 export const FUNNEL_CHART_VARIANTS = ["tape", "steps", "vertical"] as const;
@@ -100,7 +107,7 @@ export type LiveLineChartVariant = (typeof LIVE_LINE_CHART_VARIANTS)[number];
 export const RING_CHART_VARIANTS = ["stack", "nested", "track"] as const;
 export type RingChartVariant = (typeof RING_CHART_VARIANTS)[number];
 
-export const HEATMAP_CHART_VARIANTS = ["calendar", "matrix", "dither"] as const;
+export const HEATMAP_CHART_VARIANTS = ["calendar", "matrix", "dither", "month"] as const;
 export type HeatmapChartVariant = (typeof HEATMAP_CHART_VARIANTS)[number];
 
 export const SUNBURST_CHART_VARIANTS = ["nest", "burst"] as const;

@@ -579,7 +579,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"calendar" | "matrix" | "dither"',
+      type: '"calendar" | "matrix" | "dither" | "month"',
       default: '"calendar"',
       notes: "Seven-column week, a 10-column matrix, or a wash.",
     },
@@ -691,7 +691,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"default" | "spark" | "compact" | "hero"',
+      type: '"default" | "spark" | "compact" | "hero" | "bleed" | "histogram"',
       default: '"default"',
       notes: "Size and whether a sparkline trails the number.",
     },
@@ -719,7 +719,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"bar" | "compact" | "table"',
+      type: '"bar" | "compact" | "table" | "inset" | "dual"',
       default: '"bar"',
       notes: "Bars, a tight list, or a share table.",
     },
