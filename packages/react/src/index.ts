@@ -26,6 +26,9 @@ export {
   HORIZON_CHART_VARIANTS,
   COHORT_GRID_VARIANTS,
   TREEMAP_CHART_VARIANTS,
+  WATERFALL_CHART_VARIANTS,
+  SHARE_BAND_VARIANTS,
+  SLOPE_CHART_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
@@ -41,6 +44,9 @@ export type {
   HorizonChartVariant,
   CohortGridVariant,
   TreemapChartVariant,
+  WaterfallChartVariant,
+  ShareBandVariant,
+  SlopeChartVariant,
   LineChartVariant,
   LiveLineChartVariant,
   MetricCardVariant,
@@ -81,6 +87,10 @@ export { annotationLines } from "./charts/annotations.js";
 export type { Annotation } from "./charts/annotations.js";
 export type { CohortRow } from "./charts/cohort-grid.js";
 export { TreemapChart } from "./charts/treemap-chart.js";
+export { WaterfallChart } from "./charts/waterfall-chart.js";
+export { ShareBand } from "./charts/share-band.js";
+export { SlopeChart } from "./charts/slope-chart.js";
+export { QuotaBar } from "./charts/quota-bar.js";
 export { cn } from "./lib/cn.js";
 export {
   clearWidgets,
