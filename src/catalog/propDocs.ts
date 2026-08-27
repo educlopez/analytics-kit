@@ -28,6 +28,13 @@ const SERIES_TREATMENTS: PropRow[] = [
     notes: "Drag-to-zoom strip under the chart.",
   },
   {
+    name: "scale",
+    type: '"linear" | "log"',
+    default: '"linear"',
+    notes:
+      "Y-axis scale. Long-tail data is unreadable on a linear axis. No symlog: recharts does not support it, and a log axis cannot represent zero, so its floor is pinned to 1.",
+  },
+  {
     name: "gaps",
     type: '"bridge" | "break"',
     default: '"bridge"',
@@ -180,7 +187,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream" | "band" | "ridge"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream" | "band" | "ridge" | "riso" | "screentone" | "grain"',
       default: '"gradient"',
       notes:
         "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
@@ -204,7 +211,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly"',
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly" | "riso"',
       default: '"monotone"',
       notes:
         "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",

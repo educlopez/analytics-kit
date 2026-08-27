@@ -28,6 +28,7 @@ export {
   TREEMAP_CHART_VARIANTS,
   WATERFALL_CHART_VARIANTS,
   BUMP_CHART_VARIANTS,
+  AXIS_SCALES,
   SHARE_BAND_VARIANTS,
   SLOPE_CHART_VARIANTS,
 } from "./charts/variants.js";
@@ -47,6 +48,7 @@ export type {
   TreemapChartVariant,
   WaterfallChartVariant,
   BumpChartVariant,
+  AxisScale,
   ShareBandVariant,
   SlopeChartVariant,
   LineChartVariant,

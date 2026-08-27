@@ -58,6 +58,7 @@ const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   values: "monotone",
   focus: "monotone",
   anomaly: "monotone",
+  riso: "monotone",
 };
 
 /** Ring plus a solid centre on the points the rolling MAD flagged. */
