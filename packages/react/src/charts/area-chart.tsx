@@ -40,7 +40,46 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   solid: "monotone",
   stacked: "monotone",
   stream: "natural",
+  band: "monotone",
+  ridge: "natural",
 };
+
+/** One ridgeline: an opaque filled curve on its own baseline. */
+function RidgeLane({ values, color, offset }: { values: number[]; color: string; offset: number }) {
+  const width = 100;
+  const height = 46;
+  const max = Math.max(...values, 1);
+  const points = values
+    .map((value, index) => {
+      const x = (index / Math.max(values.length - 1, 1)) * width;
+      const y = height - (value / max) * height;
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      className="ak-ridge-svg"
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      style={{ marginTop: offset === 0 ? 0 : -18 }}
+    >
+      <polygon points={`0,${height} ${points} ${width},${height}`} fill="var(--ak-surface)" />
+      <polygon
+        points={`0,${height} ${points} ${width},${height}`}
+        fill={color}
+        fillOpacity={0.42}
+      />
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.4}
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
 
 interface EndpointProps {
   cx?: number;
@@ -116,9 +155,120 @@ export function AreaChart({
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
 
+  if (variant === "band") {
+    if (!previous?.length) {
+      return <p className="ak-muted">The band variant needs a previous series.</p>;
+    }
+    // A ribbon between the two bounds: recharts stacks an invisible floor with
+    // a visible span, which is how you draw a band without a range mark.
+    const bandRows = data.map((row, index) => {
+      const current = Number(row[dataKey] ?? 0);
+      const before = Number(previous[index]?.[dataKey] ?? current);
+      return {
+        ...row,
+        __ak_floor: Math.min(current, before),
+        __ak_span: Math.abs(current - before),
+      };
+    });
+    return (
+      <ChartContainer className={className} config={chartConfig}>
+        <RechartsArea data={bandRows} syncId={sync?.syncId}>
+          <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+          <XAxis
+            dataKey={labelKey}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            minTickGap={24}
+            tickFormatter={(value: string) => String(value).slice(0, 10)}
+          />
+          <Tooltip
+            cursor={{ stroke: "var(--ak-border)" }}
+            content={({ active, payload, label }) =>
+              active && payload?.length ? (
+                <ChartTooltipRows
+                  label={String(label ?? "")}
+                  rows={[
+                    {
+                      name: chartConfig[dataKey]?.label ?? dataKey,
+                      value: Number(payload[0]?.payload?.[dataKey] ?? 0),
+                      color,
+                    },
+                    {
+                      name: "Previous",
+                      value: Number(previous[payload[0]?.payload?.__ak_index ?? 0]?.[dataKey] ?? 0),
+                      color: "var(--ak-muted)",
+                    },
+                  ]}
+                />
+              ) : null
+            }
+          />
+          <Area
+            dataKey="__ak_floor"
+            stackId="ak-band"
+            stroke="none"
+            fill="none"
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+            activeDot={false}
+          />
+          <Area
+            dataKey="__ak_span"
+            stackId="ak-band"
+            stroke="none"
+            fill={color}
+            fillOpacity={0.2}
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+            activeDot={false}
+          />
+          <Area
+            type={CURVE[variant]}
+            dataKey={dataKey}
+            stroke={color}
+            strokeWidth={2}
+            fill="none"
+            dot={false}
+            isAnimationActive={false}
+            activeDot={{ r: 4 }}
+          />
+        </RechartsArea>
+      </ChartContainer>
+    );
+  }
+
   if (multi) {
     const stackConfig = seriesConfig(keys, config);
     const stream = variant === "stream";
+    const ridge = variant === "ridge";
+    if (ridge) {
+      // Each series gets its own baseline, offset upward and allowed to overlap
+      // the one behind. Drawn back to front with an opaque fill so the overlap
+      // occludes rather than blends — that occlusion is the whole effect.
+      return (
+        <div className="ak-ridge">
+          {[...keys].reverse().map((key, position) => {
+            return (
+              <div className="ak-ridge-lane" key={key} style={{ zIndex: position }}>
+                <span className="ak-ridge-label">{stackConfig[key]?.label ?? key}</span>
+                <RidgeLane
+                  values={data.map((row) => Number(row[key] ?? 0))}
+                  color={stackConfig[key]?.color ?? ""}
+                  // position, not index: the pull-up applies to every lane
+                  // after the first one *drawn*, and lanes are drawn back to
+                  // front so the overlap occludes correctly.
+                  offset={position}
+                />
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="grid gap-3">
         <ChartContainer className={className} config={stackConfig}>

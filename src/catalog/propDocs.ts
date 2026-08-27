@@ -180,7 +180,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream" | "band" | "ridge"',
       default: '"gradient"',
       notes:
         "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
@@ -204,10 +204,23 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values"',
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly"',
       default: '"monotone"',
       notes:
         "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      default: "[dataKey]",
+      notes: 'Series to draw. Pass several for variant="focus"; ignored by the other variants.',
+    },
+    {
+      name: "anomalyThreshold",
+      type: "number",
+      default: "3.5",
+      notes:
+        'How far from the rolling median a point must sit to be ringed by variant="anomaly", in MAD-derived standard deviations. Strict by default: ringing every wobble trains people to ignore the rings.',
     },
     ...SERIES_TREATMENTS,
   ],
@@ -221,7 +234,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100" | "diverging" | "editorial"',
+      type: '"vertical" | "horizontal" | "rounded" | "hatched" | "dither" | "glow" | "gradient" | "duotone" | "grouped" | "stacked" | "stacked-100" | "diverging" | "editorial" | "bullet"',
       default: '"vertical"',
       notes:
         "Orientation and bar fill. horizontal flips the axes. duotone is a hard two-band fill.",
@@ -254,7 +267,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow" | "half"',
+      type: '"donut" | "pie" | "legend" | "dither" | "rounded" | "radial" | "glow" | "half" | "callout"',
       default: '"donut"',
       notes: "Ring vs full pie, rounded gaps, radial bars, or a bloom on the slices.",
     },
@@ -284,7 +297,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"tape" | "steps" | "vertical"',
+      type: '"tape" | "steps" | "vertical" | "flow"',
       default: '"tape"',
       notes: "Tapering ribbon, discrete blocks, or stacked drop-off bars.",
     },
@@ -314,7 +327,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"stroke" | "fill" | "glow" | "dither"',
+      type: '"stroke" | "fill" | "glow" | "dither" | "polygon"',
       default: '"fill"',
       notes: "Outline only, translucent fill, bloom, or a stipple fill.",
     },
@@ -396,7 +409,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"dots" | "bubble" | "glow"',
+      type: '"dots" | "bubble" | "glow" | "field"',
       default: '"dots"',
       notes: "Equal dots, sized bubbles, or a bloom on each point.",
     },
@@ -447,7 +460,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"ohlc" | "hollow" | "wick"',
+      type: '"ohlc" | "hollow" | "wick" | "volume"',
       default: '"ohlc"',
       notes: "Solid bodies, hollow up-days, or a thin wick.",
     },
@@ -579,7 +592,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"calendar" | "matrix" | "dither"',
+      type: '"calendar" | "matrix" | "dither" | "month"',
       default: '"calendar"',
       notes: "Seven-column week, a 10-column matrix, or a wash.",
     },
@@ -691,7 +704,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"default" | "spark" | "compact" | "hero"',
+      type: '"default" | "spark" | "compact" | "hero" | "bleed" | "histogram"',
       default: '"default"',
       notes: "Size and whether a sparkline trails the number.",
     },
@@ -719,7 +732,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"bar" | "compact" | "table"',
+      type: '"bar" | "compact" | "table" | "inset" | "dual"',
       default: '"bar"',
       notes: "Bars, a tight list, or a share table.",
     },

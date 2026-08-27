@@ -42,6 +42,37 @@ export function RankedList({
   if (variant === "table") {
     return <BreakdownTable rows={rows} metric={metric} />;
   }
+
+  if (variant === "inset" || variant === "dual") {
+    const total = rows.reduce((sum, row) => sum + (row.values[metric] ?? 0), 0);
+    return (
+      <ul className={`ak-rank ak-rank-${variant}`}>
+        {rows.map((row) => {
+          const value = row.values[metric] ?? 0;
+          return (
+            <li key={row.key} className="ak-rank-row">
+              {/* inset uses the bar as the row's own background rather than a
+                  separate track below it, which halves the row height and stops
+                  the label being detached from its magnitude. */}
+              <div className="ak-rank-inset">
+                <div className="ak-rank-inset-fill" style={{ width: `${(value / max) * 100}%` }} />
+                <span className="ak-rank-label">{row.label ?? row.key}</span>
+                {variant === "dual" ? (
+                  // Share and volume at once: a percentage alone is the classic
+                  // dashboard ambiguity.
+                  <span className="ak-rank-share">
+                    {total > 0 ? `${Math.round((value / total) * 100)}%` : "—"}
+                  </span>
+                ) : null}
+                <span className="ak-rank-value">{formatNumber(value)}</span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
   return (
     <ul className={variant === "compact" ? "ak-rank ak-rank-compact" : "ak-rank"}>
       {rows.map((row) => {

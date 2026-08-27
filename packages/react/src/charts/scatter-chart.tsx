@@ -61,12 +61,32 @@ export function ScatterChart({
             ) : null
           }
         />
+        {variant === "field" ? (
+          // A soft density field behind the points turns a scatter into a map
+          // you can name places on, rather than a cloud.
+          <defs>
+            <radialGradient id={`${glowId}-field`}>
+              <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={color} stopOpacity="0" />
+            </radialGradient>
+          </defs>
+        ) : null}
         <Scatter
           data={data}
           fill={color}
           fillOpacity={variant === "glow" ? 0.85 : 0.75}
           filter={variant === "glow" ? `url(#${glowId})` : undefined}
           isAnimationActive={false}
+          shape={
+            variant === "field"
+              ? ({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) => (
+                  <g key={index}>
+                    <circle cx={cx} cy={cy} r={22} fill={`url(#${glowId}-field)`} />
+                    <circle cx={cx} cy={cy} r={3.4} fill={color} fillOpacity={0.9} />
+                  </g>
+                )
+              : undefined
+          }
         />
       </RechartsScatter>
     </ChartContainer>

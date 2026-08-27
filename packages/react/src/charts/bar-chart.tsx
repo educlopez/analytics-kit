@@ -32,6 +32,7 @@ export function BarChart({
   dataKey = "value",
   dataKeys,
   labelKey = "label",
+  targetKey = "target",
   variant = "vertical",
   config,
   className,
@@ -41,6 +42,8 @@ export function BarChart({
   /** Series keys for the multi-series variants. Falls back to `[dataKey]`. */
   dataKeys?: string[];
   labelKey?: string;
+  /** Goal value per row. Only read by the bullet variant. */
+  targetKey?: string;
   variant?: BarChartVariant;
   config?: ChartConfig;
   className?: string;
@@ -81,6 +84,44 @@ export function BarChart({
     variant === "glow";
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
+
+  if (variant === "bullet") {
+    // Four numbers per 24px row: actual over graded bands, with the target
+    // crossing it. A gauge needs ten times the space to say less.
+    const ceiling = Math.max(
+      ...data.map((row) => Math.max(Number(row[dataKey] ?? 0), Number(row[targetKey] ?? 0))),
+      1,
+    );
+    return (
+      <ul className={`ak-bullet ${className ?? ""}`.trim()}>
+        {data.map((row) => {
+          const actual = Number(row[dataKey] ?? 0);
+          const target = Number(row[targetKey] ?? 0);
+          return (
+            <li className="ak-bullet-row" key={String(row[labelKey])}>
+              <span className="ak-bullet-label">{String(row[labelKey] ?? "")}</span>
+              <span className="ak-bullet-track">
+                <span className="ak-bullet-band" style={{ width: "60%" }} />
+                <span className="ak-bullet-band" style={{ width: "85%" }} />
+                <span
+                  className="ak-bullet-actual"
+                  style={{ width: `${(actual / ceiling) * 100}%` }}
+                />
+                {target > 0 ? (
+                  <span
+                    className="ak-bullet-target"
+                    style={{ left: `${(target / ceiling) * 100}%` }}
+                    title={`Target ${formatNumber(target)}`}
+                  />
+                ) : null}
+              </span>
+              <span className="ak-bullet-value">{formatNumber(actual)}</span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
 
   if (multi) {
     const multiConfig = seriesConfig(keys, config);

@@ -31,6 +31,10 @@ export function MetricCard({ metric, title, range, span, variant = "default" }: 
   const value = data?.totals[metric] ?? 0;
   const previous = data?.previous?.totals[metric];
   const delta = previous == null ? null : percentDelta(value, previous);
+  const series = (data?.series ?? []).map((point) => point.values[metric] ?? 0);
+  // bleed puts the curve above the number instead of beside it, so a grid of
+  // metrics reads as a wall of curves.
+  const bleed = variant === "bleed";
 
   return (
     <WidgetFrame
@@ -43,15 +47,21 @@ export function MetricCard({ metric, title, range, span, variant = "default" }: 
       sample={sample}
       onRetry={reload}
       trailing={
-        variant === "compact" ? null : (
-          <Sparkline fill values={(data?.series ?? []).map((point) => point.values[metric] ?? 0)} />
+        variant === "compact" || bleed || variant === "histogram" ? null : (
+          <Sparkline fill values={series} />
         )
       }
     >
+      {bleed ? (
+        <div className="ak-metric-bleed">
+          <Sparkline fill values={series} />
+        </div>
+      ) : null}
       <MetricValueBlock
         variant={variant}
         value={formatMetric(metric, value)}
         delta={delta == null ? null : { text: formatDelta(delta), positive: delta >= 0 }}
+        micro={variant === "histogram" ? series : null}
       />
     </WidgetFrame>
   );
@@ -61,18 +71,43 @@ function MetricValueBlock({
   value,
   delta,
   variant,
+  micro,
 }: {
   value: string;
   delta: { text: string; positive: boolean } | null;
   variant: MetricCardVariant;
+  /** Raw series for the histogram variant's inline bars. */
+  micro?: number[] | null;
 }) {
   return (
     <div className={variant === "hero" ? "ak-metric ak-metric-hero" : "ak-metric"}>
       <div className="ak-metric-value">{value}</div>
+      {micro?.length ? <MicroBars values={micro} /> : null}
       {variant === "compact" && !delta ? null : delta ? (
         <span className={delta.positive ? "ak-delta-up" : "ak-delta-down"}>{delta.text}</span>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * Twelve ~2px bars sitting inline with the text as a typographic element, not
+ * a chart. The smallest possible mark: trend inside a summary line, where a
+ * sparkline would be too heavy.
+ */
+function MicroBars({ values }: { values: number[] }) {
+  const tail = values.slice(-12);
+  const max = Math.max(...tail, 1);
+  return (
+    <span className="ak-micro-bars" aria-hidden="true">
+      {tail.map((value, index) => (
+        <span
+          key={index}
+          className="ak-micro-bar"
+          style={{ height: `${Math.max(8, (value / max) * 100)}%` }}
+        />
+      ))}
+    </span>
   );
 }
 

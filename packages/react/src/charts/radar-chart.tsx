@@ -29,16 +29,27 @@ export function RadarChart({
   const fill = variant === "dither" ? `url(#${ditherId})` : variant === "stroke" ? "none" : color;
   const fillOpacity = variant === "fill" || variant === "glow" ? 0.28 : 1;
 
+  // Straight polygonal web instead of concentric circles: the grid reads as
+  // deliberate rather than as the library default, and the per-axis count
+  // removes the dependency on a tooltip to learn anything.
+  const polygon = variant === "polygon";
+  const axisData = polygon
+    ? data.map((row) => ({
+        ...row,
+        [labelKey]: `${String(row[labelKey] ?? "")} (${Math.round(Number(row[dataKey] ?? 0))})`,
+      }))
+    : data;
+
   if (!data.length) return <p className="ak-muted">No radar data.</p>;
 
   return (
     <ChartContainer className={className} config={chartConfig}>
-      <RechartsRadar data={data} cx="50%" cy="50%" outerRadius="72%">
+      <RechartsRadar data={axisData} cx="50%" cy="50%" outerRadius={polygon ? "66%" : "72%"}>
         <defs>
           {variant === "dither" ? <DitherDots id={ditherId} color={color} /> : null}
           {variant === "glow" ? <GlowFilter id={glowId} /> : null}
         </defs>
-        <PolarGrid stroke="var(--ak-border)" />
+        <PolarGrid gridType={polygon ? "polygon" : "circle"} stroke="var(--ak-border)" />
         <PolarAngleAxis dataKey={labelKey} tick={{ fill: "var(--ak-muted)", fontSize: 11 }} />
         <Tooltip
           content={({ active, payload }) =>

@@ -38,7 +38,10 @@ export function PieChart({
   const inner = variant === "pie" ? 0 : variant === "rounded" ? 52 : variant === "half" ? 104 : 58;
   const total = data.reduce((sum, row) => sum + Number(row[dataKey] ?? 0), 0);
   const half = variant === "half";
-  const showLegend = variant !== "pie" && !half;
+  // Leader lines to labels outside the ring, so the eye stops shuttling
+  // between a swatch and an arc.
+  const callout = variant === "callout";
+  const showLegend = variant !== "pie" && !half && !callout;
 
   if (!data.length) return <p className="ak-muted">No breakdown data.</p>;
 
@@ -99,12 +102,19 @@ export function PieChart({
               // something forces a re-render. Drawing straight away is the fix.
               isAnimationActive={false}
               innerRadius={inner}
-              outerRadius={half ? 140 : 80}
               paddingAngle={variant === "rounded" ? 4 : 0}
               cornerRadius={variant === "rounded" ? 10 : 0}
               stroke="var(--ak-surface)"
               strokeWidth={2}
               filter={variant === "glow" ? `url(#${glowId})` : undefined}
+              outerRadius={half ? 140 : callout ? 66 : 80}
+              label={
+                callout
+                  ? ({ name, percent }: { name?: string; percent?: number }) =>
+                      `${name} ${Math.round((percent ?? 0) * 100)}%`
+                  : undefined
+              }
+              labelLine={callout ? { stroke: "var(--ak-border)" } : false}
             >
               {data.map((row, index) => (
                 <Cell

@@ -116,10 +116,13 @@ function PreviewInner({
     z: Math.abs(row.pageviews - row.visitors),
   }));
   const totals = totalsQuery.data?.totals ?? {};
+  // Ordered so the stages actually nest: every visitor made a visit, every
+  // visit made a view. Listing visitors before views produces a "funnel" that
+  // widens, which is not a funnel.
   const funnel = [
-    { label: "Visitors", value: totals.visitors ?? 0 },
     { label: "Views", value: totals.pageviews ?? 0 },
     { label: "Visits", value: totals.visits ?? 0 },
+    { label: "Visitors", value: totals.visitors ?? 0 },
     { label: "Events", value: totals.events ?? 0 },
   ];
   const sankeyNodes = funnel.map((row) => ({ name: row.label }));
@@ -212,6 +215,16 @@ function PreviewInner({
     date: point.date,
     value: Math.round(point.visitors * 0.78),
   }));
+  // The anomaly variant needs an actual outlier to find. The sample series is
+  // too well-behaved, so the preview plants two — same honesty as the gaps
+  // control punching a real hole.
+  const spiked = series.map((point, index) =>
+    index === 9
+      ? { ...point, value: Math.round(point.value * 3.2) }
+      : index === 21
+        ? { ...point, value: Math.round(point.value * 0.18) }
+        : point,
+  );
   const holed =
     knobs.gaps === "off"
       ? series
@@ -244,6 +257,17 @@ function PreviewInner({
   }
   if (slug === "area-chart") {
     // The composition variants need a second series to compose.
+    if (activeVariant === "ridge") {
+      // Four lanes rather than two: the overlap that makes a ridgeline read
+      // needs more than one neighbour.
+      return (
+        <AreaChart
+          data={horizon}
+          dataKeys={horizonKeys}
+          variant={activeVariant as AreaChartVariant}
+        />
+      );
+    }
     if (activeVariant === "stacked" || activeVariant === "stream") {
       return (
         <AreaChart
@@ -258,7 +282,7 @@ function PreviewInner({
         data={holed}
         variant={activeVariant as AreaChartVariant}
         emphasizeLast={knobs.emphasizeLast}
-        previous={knobs.compare ? previousSeries : undefined}
+        previous={knobs.compare || activeVariant === "band" ? previousSeries : undefined}
         gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
         annotations={knobs.annotations ? sampleAnnotations : undefined}
         brush={knobs.brush}
@@ -266,6 +290,18 @@ function PreviewInner({
     );
   }
   if (slug === "line-chart") {
+    if (activeVariant === "anomaly") {
+      return <LineChart data={spiked} variant={activeVariant as LineChartVariant} />;
+    }
+    if (activeVariant === "focus") {
+      return (
+        <LineChart
+          data={horizon}
+          dataKeys={horizonKeys}
+          variant={activeVariant as LineChartVariant}
+        />
+      );
+    }
     return (
       <LineChart
         data={holed}
@@ -288,6 +324,17 @@ function PreviewInner({
         <BarChart
           data={breakdownDual}
           dataKeys={["visitors", "pageviews"]}
+          variant={activeVariant as BarChartVariant}
+        />
+      );
+    }
+    if (activeVariant === "bullet") {
+      // Target is the period's mean, a real derived number rather than an
+      // invented goal.
+      const mean = breakdown.reduce((sum, row) => sum + row.value, 0) / (breakdown.length || 1);
+      return (
+        <BarChart
+          data={breakdown.map((row) => ({ ...row, target: Math.round(mean) }))}
           variant={activeVariant as BarChartVariant}
         />
       );

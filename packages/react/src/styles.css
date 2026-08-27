@@ -442,6 +442,270 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-bullet {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.ak-bullet-row {
+  display: grid;
+  grid-template-columns: minmax(64px, 110px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.ak-bullet-label {
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-bullet-track {
+  position: relative;
+  display: block;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--ak-surface-2);
+  overflow: hidden;
+}
+
+.ak-bullet-band {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ak-text);
+  opacity: 0.06;
+}
+
+.ak-bullet-actual {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  background: var(--ak-chart-1, var(--chart-1));
+  border-radius: 2px;
+}
+
+.ak-bullet-target {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--ak-chart-3, var(--chart-3));
+}
+
+.ak-bullet-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--ak-text);
+}
+
+.ak-flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ak-flow-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.ak-flow-label {
+  flex: 1;
+  color: var(--ak-text);
+}
+
+.ak-flow-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--ak-text);
+}
+
+.ak-flow-share {
+  font-size: 12px;
+  color: var(--ak-muted);
+}
+
+.ak-flow-split {
+  display: flex;
+  gap: 3px;
+  margin: 6px 0 10px;
+  height: 26px;
+}
+
+.ak-flow-kept,
+.ak-flow-dropped {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ak-flow-kept {
+  background: color-mix(in srgb, var(--ak-chart-1) 32%, transparent);
+  color: var(--ak-text);
+}
+
+.ak-flow-dropped {
+  background: color-mix(in srgb, var(--ak-chart-3) 26%, transparent);
+  color: var(--ak-muted);
+}
+
+.ak-ridge {
+  display: flex;
+  flex-direction: column;
+}
+
+.ak-ridge-lane {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.ak-ridge-label {
+  flex: 0 0 auto;
+  width: 84px;
+  font-size: 12px;
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.ak-ridge-svg {
+  flex: 1;
+  height: 46px;
+  display: block;
+}
+
+/* Every series faint until one is hovered. Interaction is the variant: no
+   extra state, no second render. */
+.ak-focus-line {
+  opacity: 0.24;
+  transition: opacity 140ms ease-out;
+}
+
+.recharts-wrapper:hover .ak-focus-line {
+  opacity: 0.12;
+}
+
+.recharts-wrapper .ak-focus-line:hover,
+.ak-focus-line:hover {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-focus-line {
+    transition: none;
+  }
+}
+
+.ak-rank-inset {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ak-surface-2);
+  font-size: 13px;
+}
+
+.ak-rank-inset-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.28;
+}
+
+.ak-rank-inset .ak-rank-label {
+  position: relative;
+  flex: 1;
+  color: var(--ak-text);
+}
+
+.ak-rank-inset .ak-rank-value,
+.ak-rank-inset .ak-rank-share {
+  position: relative;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ak-rank-inset .ak-rank-share {
+  color: var(--ak-muted);
+  min-width: 42px;
+}
+
+.ak-rank-inset .ak-rank-value {
+  min-width: 56px;
+  color: var(--ak-text);
+}
+
+.ak-metric-bleed {
+  margin: -4px -14px 8px;
+}
+
+.ak-micro-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+  margin-left: 10px;
+  vertical-align: baseline;
+}
+
+.ak-micro-bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.75;
+}
+
+.ak-heat-month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  /* Capped and centred: stretched across a full-width card the square cells
+     become tiles, and it stops reading as a calendar. */
+  max-width: 340px;
+  margin-inline: auto;
+}
+
+.ak-heat-weekday {
+  font-size: 11px;
+  color: var(--ak-muted);
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.ak-heat-day {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--ak-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-heat-blank {
+  aspect-ratio: 1;
+}
+
 .ak-bar-editorial-label {
   fill: var(--ak-surface);
   font-size: 13px;
