@@ -131,6 +131,15 @@ export type HorizonChartVariant = (typeof HORIZON_CHART_VARIANTS)[number];
 export const COHORT_GRID_VARIANTS = ["triangle", "counts"] as const;
 export type CohortGridVariant = (typeof COHORT_GRID_VARIANTS)[number];
 
+export const WATERFALL_CHART_VARIANTS = ["bridge", "bars"] as const;
+export type WaterfallChartVariant = (typeof WATERFALL_CHART_VARIANTS)[number];
+
+export const SHARE_BAND_VARIANTS = ["segments", "legend"] as const;
+export type ShareBandVariant = (typeof SHARE_BAND_VARIANTS)[number];
+
+export const SLOPE_CHART_VARIANTS = ["paired", "change"] as const;
+export type SlopeChartVariant = (typeof SLOPE_CHART_VARIANTS)[number];
+
 export const TREEMAP_CHART_VARIANTS = ["heat", "diverging"] as const;
 export type TreemapChartVariant = (typeof TREEMAP_CHART_VARIANTS)[number];
 

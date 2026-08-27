@@ -345,6 +345,66 @@
       "categories": ["analytics", "charts"]
     },
     {
+      "name": "waterfall-chart",
+      "type": "registry:ui",
+      "title": "Waterfall",
+      "description": "Floating bars bridging start to end. Variants: bridge, bars.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/waterfall-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/waterfall-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "share-band",
+      "type": "registry:ui",
+      "title": "Share band",
+      "description": "One 100% band, optionally with a legend. Variants: segments, legend.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/share-band.tsx",
+          "type": "registry:ui",
+          "target": "@ui/share-band.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "slope-chart",
+      "type": "registry:ui",
+      "title": "Slope chart",
+      "description": "Two dated axes joined per item. Variants: paired, change.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/slope-chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/slope-chart.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
+      "name": "quota-bar",
+      "type": "registry:ui",
+      "title": "Quota bar",
+      "description": "Usage against a ceiling, with limit and projection.",
+      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "files": [
+        {
+          "path": "packages/react/src/charts/quota-bar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/quota-bar.tsx"
+        }
+      ],
+      "categories": ["analytics", "charts"]
+    },
+    {
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",

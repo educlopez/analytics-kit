@@ -75,6 +75,9 @@ export function itemControls(slug: string) {
     "horizon-chart",
     // Cohorts carry their own retained counts; a metric switch would not reach them.
     "cohort-grid",
+    "waterfall-chart",
+    "slope-chart",
+    "quota-bar",
   ];
   return {
     variant: slug !== "dashboard",

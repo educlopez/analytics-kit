@@ -7,6 +7,10 @@ import {
   AnalyticsProvider,
   AreaChart,
   HorizonChart,
+  WaterfallChart,
+  ShareBand,
+  SlopeChart,
+  QuotaBar,
   CohortGrid,
   TreemapChart,
   BarChart,
@@ -34,6 +38,9 @@ import {
   type AnalyticsTheme,
   type AreaChartVariant,
   type HorizonChartVariant,
+  type WaterfallChartVariant,
+  type ShareBandVariant,
+  type SlopeChartVariant,
   type CohortGridVariant,
   type TreemapChartVariant,
   type BarChartVariant,
@@ -238,6 +245,45 @@ function PreviewInner({
   // chart's own default parameter and leave the preview blank.
   const activeVariant = knobs.variant || undefined;
 
+  if (slug === "waterfall-chart") {
+    // Real day-over-day deltas from the series, not invented steps.
+    const steps = deltas
+      .slice(-6)
+      .map((row) => ({ label: String(row.date).slice(5), value: row.value }));
+    return <WaterfallChart data={steps} variant={activeVariant as WaterfallChartVariant} />;
+  }
+  if (slug === "share-band") {
+    return <ShareBand data={breakdown} variant={activeVariant as ShareBandVariant} />;
+  }
+  if (slug === "slope-chart") {
+    // Current window against the comparable prior month, the same real
+    // difference the treemap's diverging variant uses.
+    const rows = treemap.slice(0, 6).map((row) => ({
+      label: row.label,
+      from: Math.max(0, row.value - row.delta),
+      to: row.value,
+    }));
+    return (
+      <SlopeChart
+        data={rows}
+        fromLabel="Prev 30d"
+        toLabel="Last 30d"
+        variant={activeVariant as SlopeChartVariant}
+      />
+    );
+  }
+  if (slug === "quota-bar") {
+    const used = Math.round(totals.events ?? 0);
+    return (
+      <QuotaBar
+        used={used}
+        limit={Math.max(1, Math.round(used * 1.35))}
+        projected={Math.round(used * 1.18)}
+        label="Events this cycle"
+        resetsIn="12 days"
+      />
+    );
+  }
   if (slug === "treemap-chart") {
     return <TreemapChart data={treemap} variant={activeVariant as TreemapChartVariant} />;
   }

@@ -442,6 +442,135 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-waterfall {
+  display: block;
+  width: 100%;
+}
+
+.ak-waterfall-axis,
+.ak-slope-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  font-size: 12px;
+}
+
+.ak-waterfall-axis span {
+  display: grid;
+  gap: 1px;
+  text-align: center;
+  min-width: 0;
+}
+
+.ak-waterfall-axis b {
+  font-weight: 500;
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-waterfall-axis em {
+  font-style: normal;
+  color: var(--ak-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-band {
+  display: flex;
+  height: 22px;
+  border-radius: 5px;
+  overflow: hidden;
+  gap: 1px;
+}
+
+.ak-band-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2px;
+  overflow: hidden;
+}
+
+.ak-band-segment em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ak-surface);
+}
+
+.ak-slope {
+  display: block;
+  width: 100%;
+}
+
+.ak-slope-head {
+  color: var(--ak-muted);
+}
+
+.ak-quota-head,
+.ak-quota-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.ak-quota-head {
+  padding-bottom: 8px;
+}
+
+.ak-quota-foot {
+  padding-top: 8px;
+  font-size: 12px;
+  color: var(--ak-muted);
+}
+
+.ak-quota-label {
+  color: var(--ak-text);
+}
+
+.ak-quota-count {
+  color: var(--ak-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-quota-track {
+  position: relative;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--ak-surface-2);
+  overflow: hidden;
+}
+
+.ak-quota-ghost {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.22;
+}
+
+.ak-quota-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ak-chart-1, var(--chart-1));
+  border-radius: 11px;
+}
+
+.ak-quota-over {
+  background: var(--ak-chart-3, var(--chart-3));
+}
+
+.ak-quota-limit {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--ak-text);
+  opacity: 0.55;
+}
+
 .ak-bullet {
   list-style: none;
   margin: 0;
