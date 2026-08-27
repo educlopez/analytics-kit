@@ -11,6 +11,10 @@ import {
   ShareBand,
   SlopeChart,
   QuotaBar,
+  BumpChart,
+  MarimekkoChart,
+  SparkTable,
+  TimelineChart,
   CohortGrid,
   TreemapChart,
   BarChart,
@@ -41,6 +45,7 @@ import {
   type WaterfallChartVariant,
   type ShareBandVariant,
   type SlopeChartVariant,
+  type BumpChartVariant,
   type CohortGridVariant,
   type TreemapChartVariant,
   type BarChartVariant,
@@ -102,6 +107,22 @@ function PreviewInner({
   // difference of two queries rather than an invented number. No date maths
   // here on purpose: Date.now() in a server-rendered preview reintroduces the
   // hydration mismatch fixed earlier.
+  // Four separate real windows. The mock has no time-series-by-dimension, and
+  // ranking the four metrics against each other never changes order — a bump
+  // chart with no bumps demonstrates nothing.
+  const rank7 = useQuery({ metrics: ["visitors"], dimensions: ["browser"], range: "7d", limit: 5 });
+  const rank28 = useQuery({
+    metrics: ["visitors"],
+    dimensions: ["browser"],
+    range: "28d",
+    limit: 5,
+  });
+  const rank90 = useQuery({
+    metrics: ["visitors"],
+    dimensions: ["browser"],
+    range: "90d",
+    limit: 5,
+  });
   const countriesWide = useQuery({
     metrics: ["visitors"],
     dimensions: ["country"],
@@ -245,6 +266,44 @@ function PreviewInner({
   // chart's own default parameter and leave the preview blank.
   const activeVariant = knobs.variant || undefined;
 
+  if (slug === "bump-chart") {
+    // Ranking the four metrics against each other never changes order, and a
+    // bump chart with no bumps demonstrates nothing. These are three real
+    // windows of the same dimension, where the ordering genuinely moves.
+    const windows = [rank7, rank28, rank90];
+    const names = (rank90.data?.breakdown ?? []).map((row) => row.label ?? row.key);
+    const rankRows = ["7d", "28d", "90d"].map((label, index) => {
+      const row: Record<string, string | number> = { date: label };
+      for (const name of names) {
+        const match = (windows[index].data?.breakdown ?? []).find(
+          (entry) => (entry.label ?? entry.key) === name,
+        );
+        row[name] = match?.values.visitors ?? 0;
+      }
+      return row;
+    });
+    return (
+      <BumpChart data={rankRows} dataKeys={names} variant={activeVariant as BumpChartVariant} />
+    );
+  }
+  if (slug === "marimekko-chart") {
+    return <MarimekkoChart data={breakdownDual} dataKeys={["visitors", "pageviews"]} />;
+  }
+  if (slug === "spark-table") {
+    const bySeries = horizonKeys.map((key) => ({
+      label: key,
+      value: horizon.reduce((sum, point) => sum + Number(point[key as keyof typeof point] ?? 0), 0),
+      trend: horizon.map((point) => Number(point[key as keyof typeof point] ?? 0)),
+      delta: Math.round(
+        Number(horizon[horizon.length - 1]?.[key as keyof (typeof horizon)[number]] ?? 0) -
+          Number(horizon[0]?.[key as keyof (typeof horizon)[number]] ?? 0),
+      ),
+    }));
+    return <SparkTable data={bySeries} label="Metric" />;
+  }
+  if (slug === "timeline-chart") {
+    return <TimelineChart items={sampleAnnotations} />;
+  }
   if (slug === "waterfall-chart") {
     // Real day-over-day deltas from the series, not invented steps.
     const steps = deltas
