@@ -82,6 +82,8 @@ export function itemControls(slug: string) {
     "marimekko-chart",
     "spark-table",
     "timeline-chart",
+    "strip-chart",
+    "radial-time-chart",
   ];
   return {
     variant: slug !== "dashboard",

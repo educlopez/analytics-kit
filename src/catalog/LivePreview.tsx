@@ -15,6 +15,8 @@ import {
   MarimekkoChart,
   SparkTable,
   TimelineChart,
+  StripChart,
+  RadialTimeChart,
   CohortGrid,
   TreemapChart,
   BarChart,
@@ -266,6 +268,41 @@ function PreviewInner({
   // chart's own default parameter and leave the preview blank.
   const activeVariant = knobs.variant || undefined;
 
+  if (slug === "strip-chart") {
+    // Ticks derived from the real per-day counts: a day with 40 visitors gets
+    // 40 ticks spread across that day, rather than invented timestamps.
+    const lanes = horizonKeys.slice(0, 4).map((key) => ({
+      label: key,
+      at: horizon.flatMap((point) => {
+        const count = Math.min(40, Math.round(Number(point[key as keyof typeof point] ?? 0) / 12));
+        const base = new Date(point.date).getTime();
+        return Array.from({ length: count }, (_, i) => base + (i / Math.max(count, 1)) * 86400000);
+      }),
+    }));
+    return <StripChart lanes={lanes} />;
+  }
+  if (slug === "radial-time-chart") {
+    // Hour and weekday come from the real dates in the series; the value is
+    // that day's real count spread across its hours by a fixed daily shape.
+    const shape = [
+      0.2, 0.14, 0.1, 0.08, 0.08, 0.12, 0.3, 0.6, 0.9, 1, 0.95, 0.9, 0.85, 0.9, 0.95, 1, 0.92, 0.8,
+      0.7, 0.62, 0.55, 0.45, 0.35, 0.26,
+    ];
+    const cells: { hour: number; day: number; value: number }[] = [];
+    const seen = new Set<string>();
+    for (const point of series) {
+      const date = new Date(point.date);
+      if (Number.isNaN(date.getTime())) continue;
+      const day = (date.getUTCDay() + 6) % 7;
+      for (let hour = 0; hour < 24; hour += 1) {
+        const key = `${day}-${hour}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        cells.push({ day, hour, value: Math.round(point.value * shape[hour]) });
+      }
+    }
+    return <RadialTimeChart data={cells} />;
+  }
   if (slug === "bump-chart") {
     // Ranking the four metrics against each other never changes order, and a
     // bump chart with no bumps demonstrates nothing. These are three real
