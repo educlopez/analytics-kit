@@ -134,3 +134,68 @@ export function ValueDot({
     </g>
   );
 }
+
+/**
+ * Halftone dot screen. Density carries the value, so it still reads when the
+ * chart is printed, photocopied, or seen by someone who cannot separate the
+ * palette's hues.
+ */
+export function ScreentonePattern({
+  id,
+  color,
+  density = 0.5,
+}: {
+  id: string;
+  color: string;
+  /** 0–1. Drives dot radius, which is what a halftone screen actually varies. */
+  density?: number;
+}) {
+  const r = 0.6 + Math.min(1, Math.max(0, density)) * 2.1;
+  return (
+    <pattern id={id} patternUnits="userSpaceOnUse" width="7" height="7">
+      <circle cx="1.75" cy="1.75" r={r} fill={color} />
+      <circle cx="5.25" cy="5.25" r={r} fill={color} />
+    </pattern>
+  );
+}
+
+/**
+ * Misregistered two-colour risograph: the same shape printed twice, slightly
+ * out of alignment. The offset is the whole effect — a riso print that lines
+ * up perfectly just looks like flat ink.
+ */
+export function RisoFilter({ id, offset = 2 }: { id: string; offset?: number }) {
+  return (
+    <filter id={id} x="-10%" y="-10%" width="120%" height="120%">
+      <feOffset dx={-offset} dy={offset * 0.6} result="shifted" />
+      <feColorMatrix
+        in="shifted"
+        type="matrix"
+        values="0.9 0 0 0 0  0 0.4 0 0 0  0 0 0.5 0 0  0 0 0 0.55 0"
+        result="ink"
+      />
+      <feMerge>
+        <feMergeNode in="ink" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  );
+}
+
+/** Fine film grain over a fill. Subtle by design: texture, not noise. */
+export function GrainFilter({ id, amount = 0.42 }: { id: string; amount?: number }) {
+  return (
+    <filter id={id} x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" />
+      <feColorMatrix in="noise" type="saturate" values="0" result="grey" />
+      <feComponentTransfer in="grey" result="soft">
+        <feFuncA type="linear" slope={amount} intercept="0" />
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="soft" mode="multiply" result="grained" />
+      {/* Clipped back to the source shape. A filter paints its whole region,
+          so without this the noise covers the plot area as a grey rectangle
+          rather than texturing the fill. */}
+      <feComposite in="grained" in2="SourceGraphic" operator="in" />
+    </filter>
+  );
+}

@@ -1,5 +1,13 @@
 import { useId } from "react";
-import { Area, AreaChart as RechartsArea, Brush, CartesianGrid, Tooltip, XAxis } from "recharts";
+import {
+  Area,
+  AreaChart as RechartsArea,
+  Brush,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   ChartContainer,
   ChartLegend,
@@ -9,7 +17,15 @@ import {
   type ChartConfig,
 } from "./chart.js";
 
-import { BarStripePattern, DitherDots, GlowFilter, HatchPattern } from "./patterns.js";
+import {
+  BarStripePattern,
+  DitherDots,
+  GlowFilter,
+  GrainFilter,
+  HatchPattern,
+  RisoFilter,
+  ScreentonePattern,
+} from "./patterns.js";
 import { annotationLines, type Annotation } from "./annotations.js";
 import { useSyncGroup } from "./sync.js";
 import {
@@ -23,6 +39,7 @@ import {
   AREA_CHART_VARIANTS,
   AREA_MULTI_VARIANTS,
   type AreaChartVariant,
+  type AxisScale,
   type ChartDatum,
 } from "./variants.js";
 
@@ -42,6 +59,9 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   stream: "natural",
   band: "monotone",
   ridge: "natural",
+  riso: "monotone",
+  screentone: "monotone",
+  grain: "monotone",
 };
 
 /** One ridgeline: an opaque filled curve on its own baseline. */
@@ -94,6 +114,7 @@ export function AreaChart({
   dataKeys,
   labelKey = "date",
   variant = "gradient",
+  scale = "linear",
   emphasizeLast = false,
   previous,
   gaps,
@@ -108,6 +129,8 @@ export function AreaChart({
   dataKeys?: string[];
   labelKey?: string;
   variant?: AreaChartVariant;
+  /** Axis scale. symlog is log-like but defined through zero. */
+  scale?: AxisScale;
   /** Terminal dot plus a value pill on the final point. */
   emphasizeLast?: boolean;
   /** Previous-period rows, drawn dashed underneath and aligned by index. */
@@ -136,6 +159,9 @@ export function AreaChart({
   const hatchId = `ak-area-hatch-${uid}`;
   const barsId = `ak-area-bars-${uid}`;
   const glowId = `ak-glow-${uid}`;
+  const risoId = `ak-area-riso-${uid}`;
+  const toneId = `ak-area-tone-${uid}`;
+  const grainId = `ak-area-grain-${uid}`;
   const last = data.length - 1;
   const rows = withPrevious(data, previous, dataKey);
   const join = connectNulls(gaps);
@@ -151,7 +177,11 @@ export function AreaChart({
             ? `url(#${gradId})`
             : variant === "solid"
               ? color
-              : "none";
+              : variant === "screentone"
+                ? `url(#${toneId})`
+                : variant === "riso" || variant === "grain"
+                  ? color
+                  : "none";
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
 
@@ -353,6 +383,9 @@ export function AreaChart({
           {variant === "hatched" ? <HatchPattern id={hatchId} color={color} /> : null}
           {variant === "bars" ? <BarStripePattern id={barsId} color={color} /> : null}
           {variant === "glow" ? <GlowFilter id={glowId} /> : null}
+          {variant === "screentone" ? <ScreentonePattern id={toneId} color={color} /> : null}
+          {variant === "riso" ? <RisoFilter id={risoId} /> : null}
+          {variant === "grain" ? <GrainFilter id={grainId} /> : null}
         </defs>
         {spark ? null : (
           <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
@@ -365,6 +398,20 @@ export function AreaChart({
             tickMargin={8}
             minTickGap={24}
             tickFormatter={(value: string) => String(value).slice(0, 10)}
+          />
+        )}
+        {spark || scale === "linear" ? null : (
+          // recharts needs an explicit domain on a log axis; "auto" leaves it
+          // starting at zero, which a log scale cannot represent.
+          <YAxis
+            scale={scale}
+            // A log axis cannot represent zero, so its floor is pinned to 1
+            // rather than left on "auto", which would silently drop the point.
+            domain={[1, "auto"]}
+            allowDataOverflow
+            tickLine={false}
+            axisLine={false}
+            width={44}
           />
         )}
         {spark ? null : (
@@ -428,7 +475,15 @@ export function AreaChart({
           strokeWidth={variant === "glow" ? 2.5 : 2}
           fill={fill}
           fillOpacity={variant === "solid" ? 0.22 : 1}
-          filter={variant === "glow" ? `url(#${glowId})` : undefined}
+          filter={
+            variant === "glow"
+              ? `url(#${glowId})`
+              : variant === "riso"
+                ? `url(#${risoId})`
+                : variant === "grain"
+                  ? `url(#${grainId})`
+                  : undefined
+          }
           dot={variant === "dots" ? { r: 3, fill: color, strokeWidth: 0 } : false}
           connectNulls={join}
           // recharts' mount animation starts clipped to zero width and needs a

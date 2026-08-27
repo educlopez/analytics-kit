@@ -14,6 +14,9 @@ export const AREA_CHART_VARIANTS = [
   "stream",
   "band",
   "ridge",
+  "riso",
+  "screentone",
+  "grain",
 ] as const;
 export type AreaChartVariant = (typeof AREA_CHART_VARIANTS)[number];
 
@@ -33,6 +36,7 @@ export const LINE_CHART_VARIANTS = [
   "values",
   "focus",
   "anomaly",
+  "riso",
 ] as const;
 export type LineChartVariant = (typeof LINE_CHART_VARIANTS)[number];
 
@@ -171,3 +175,14 @@ export interface SunburstNode {
   value: number;
   children?: SunburstNode[];
 }
+
+/**
+ * Axis scale.
+ *
+ * No symlog: recharts' ScaleType does not include it, and offering an option
+ * that silently does nothing is worse than not offering it. A log axis cannot
+ * represent zero either, so the charts pin its floor to 1 rather than letting
+ * a zero point disappear without saying so.
+ */
+export const AXIS_SCALES = ["linear", "log"] as const;
+export type AxisScale = (typeof AXIS_SCALES)[number];
