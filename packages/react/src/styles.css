@@ -442,6 +442,57 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ak-ridge {
+  display: flex;
+  flex-direction: column;
+}
+
+.ak-ridge-lane {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.ak-ridge-label {
+  flex: 0 0 auto;
+  width: 84px;
+  font-size: 12px;
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.ak-ridge-svg {
+  flex: 1;
+  height: 46px;
+  display: block;
+}
+
+/* Every series faint until one is hovered. Interaction is the variant: no
+   extra state, no second render. */
+.ak-focus-line {
+  opacity: 0.24;
+  transition: opacity 140ms ease-out;
+}
+
+.recharts-wrapper:hover .ak-focus-line {
+  opacity: 0.12;
+}
+
+.recharts-wrapper .ak-focus-line:hover,
+.ak-focus-line:hover {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-focus-line {
+    transition: none;
+  }
+}
+
 .ak-rank-inset {
   position: relative;
   display: flex;

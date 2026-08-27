@@ -180,7 +180,7 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream"',
+      type: '"gradient" | "linear" | "natural" | "step" | "dots" | "spark" | "dither" | "glow" | "hatched" | "bars" | "solid" | "stacked" | "stream" | "band" | "ridge"',
       default: '"gradient"',
       notes:
         "How the fill and curve are drawn. hatched and bars are SVG textures. Not a color theme.",
@@ -204,10 +204,23 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values"',
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly"',
       default: '"monotone"',
       notes:
         "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      default: "[dataKey]",
+      notes: 'Series to draw. Pass several for variant="focus"; ignored by the other variants.',
+    },
+    {
+      name: "anomalyThreshold",
+      type: "number",
+      default: "3.5",
+      notes:
+        'How far from the rolling median a point must sit to be ringed by variant="anomaly", in MAD-derived standard deviations. Strict by default: ringing every wobble trains people to ignore the rings.',
     },
     ...SERIES_TREATMENTS,
   ],

@@ -12,11 +12,13 @@ export const AREA_CHART_VARIANTS = [
   "solid",
   "stacked",
   "stream",
+  "band",
+  "ridge",
 ] as const;
 export type AreaChartVariant = (typeof AREA_CHART_VARIANTS)[number];
 
 /** Variants that draw one band per key in `dataKeys` instead of a single series. */
-export const AREA_MULTI_VARIANTS: readonly AreaChartVariant[] = ["stacked", "stream"];
+export const AREA_MULTI_VARIANTS: readonly AreaChartVariant[] = ["stacked", "stream", "ridge"];
 
 export const LINE_CHART_VARIANTS = [
   "monotone",
@@ -29,6 +31,8 @@ export const LINE_CHART_VARIANTS = [
   "ping",
   "rainbow",
   "values",
+  "focus",
+  "anomaly",
 ] as const;
 export type LineChartVariant = (typeof LINE_CHART_VARIANTS)[number];
 
@@ -48,6 +52,9 @@ export const BAR_CHART_VARIANTS = [
   "editorial",
 ] as const;
 export type BarChartVariant = (typeof BAR_CHART_VARIANTS)[number];
+
+/** Variants that draw one line per key in `dataKeys` instead of a single series. */
+export const LINE_MULTI_VARIANTS: readonly LineChartVariant[] = ["focus"];
 
 /** Variants that draw one bar per key in `dataKeys` instead of a single series. */
 export const BAR_MULTI_VARIANTS: readonly BarChartVariant[] = ["grouped", "stacked", "stacked-100"];
