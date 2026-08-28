@@ -1,10 +1,20 @@
 import { useId } from "react";
-import { Brush, CartesianGrid, Line, LineChart as RechartsLine, Tooltip, XAxis } from "recharts";
+import {
+  Brush,
+  CartesianGrid,
+  Line,
+  LineChart as RechartsLine,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   ChartContainer,
   ChartLegend,
   ChartTooltipBox,
   ChartTooltipRows,
+  numericAxisDomain,
+  rechartsScale,
   seriesConfig,
   type ChartConfig,
 } from "./chart.js";
@@ -18,13 +28,18 @@ import {
   withPrevious,
   type GapMode,
 } from "./treatments.js";
-import { LINE_CHART_VARIANTS, type ChartDatum, type LineChartVariant } from "./variants.js";
+import {
+  LINE_CHART_VARIANTS,
+  type AxisScale,
+  type ChartDatum,
+  type LineChartVariant,
+} from "./variants.js";
 
 /**
  * Rolling median and MAD, computed client-side. No model, no service — the
  * point of the anomaly variant is to direct attention, not to be clever.
  */
-function outlierIndexes(values: number[], window = 7, threshold = 3.5): Set<number> {
+export function findAnomalyIndexes(values: number[], window = 7, threshold = 3.5): Set<number> {
   const out = new Set<number>();
   if (values.length < window + 2) return out;
   const median = (list: number[]) => {
@@ -104,6 +119,7 @@ export function LineChart({
   dataKeys,
   labelKey = "date",
   variant = "monotone",
+  scale = "linear",
   emphasizeLast = false,
   previous,
   gaps,
@@ -119,6 +135,8 @@ export function LineChart({
   dataKeys?: string[];
   labelKey?: string;
   variant?: LineChartVariant;
+  /** Axis scale. symlog is log-like but remains defined through zero. */
+  scale?: AxisScale;
   /** Terminal dot plus a value pill on the final point. */
   emphasizeLast?: boolean;
   /** Previous-period rows, drawn dashed underneath and aligned by index. */
@@ -153,7 +171,7 @@ export function LineChart({
   const keys = dataKeys?.length ? dataKeys : [dataKey];
   const outliers =
     variant === "anomaly"
-      ? outlierIndexes(
+      ? findAnomalyIndexes(
           data.map((row) => Number(row[dataKey] ?? 0)),
           7,
           anomalyThreshold,
@@ -177,6 +195,16 @@ export function LineChart({
               minTickGap={24}
               tickFormatter={(value: string) => String(value).slice(0, 10)}
             />
+            {scale === "linear" ? null : (
+              <YAxis
+                scale={rechartsScale(scale)}
+                domain={numericAxisDomain(scale)}
+                allowDataOverflow
+                tickLine={false}
+                axisLine={false}
+                width={44}
+              />
+            )}
             <Tooltip
               cursor={{ stroke: "var(--ak-border)" }}
               content={({ active, payload, label }) =>
@@ -240,6 +268,16 @@ export function LineChart({
           minTickGap={24}
           tickFormatter={(value: string) => String(value).slice(0, 10)}
         />
+        {scale === "linear" ? null : (
+          <YAxis
+            scale={rechartsScale(scale)}
+            domain={numericAxisDomain(scale)}
+            allowDataOverflow
+            tickLine={false}
+            axisLine={false}
+            width={44}
+          />
+        )}
         <Tooltip
           cursor={{ stroke: "var(--ak-border)" }}
           content={({ active, payload, label }) => {

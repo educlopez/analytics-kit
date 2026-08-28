@@ -1,5 +1,10 @@
 import { useId } from "react";
 import {
+  scaleLinear as d3ScaleLinear,
+  scaleLog as d3ScaleLog,
+  scaleSymlog as d3ScaleSymlog,
+} from "d3-scale";
+import {
   Area,
   AreaChart as RechartsArea,
   Brush,
@@ -13,6 +18,8 @@ import {
   ChartLegend,
   ChartTooltipBox,
   ChartTooltipRows,
+  numericAxisDomain,
+  rechartsScale,
   seriesConfig,
   type ChartConfig,
 } from "./chart.js";
@@ -64,18 +71,74 @@ const CURVE: Record<AreaChartVariant, "monotone" | "linear" | "natural" | "step"
   grain: "monotone",
 };
 
-/** One ridgeline: an opaque filled curve on its own baseline. */
-function RidgeLane({ values, color, offset }: { values: number[]; color: string; offset: number }) {
-  const width = 100;
-  const height = 46;
-  const max = Math.max(...values, 1);
-  const points = values
+/** Geometry for one independently-normalized ridgeline. */
+export function ridgeGeometry(
+  values: number[],
+  scale: AxisScale,
+  width = 100,
+  height = 46,
+): { points: string; baseline: number } {
+  const finite = values.map((value) => (Number.isFinite(value) ? value : 0));
+  let baseline = height;
+  let y: (value: number) => number;
+
+  if (scale === "log") {
+    // Match the Recharts log-axis contract: non-positive values are outside
+    // the domain and collapse to the floor rather than producing NaN/-Infinity.
+    const max = Math.max(1, ...finite.filter((value) => value > 0));
+    const transform = d3ScaleLog()
+      .domain([1, max > 1 ? max : 10])
+      .range([height, 0])
+      .clamp(true);
+    y = (value) => (value > 0 ? transform(Math.max(1, value)) : height);
+  } else {
+    const min = Math.min(0, ...finite);
+    const max = Math.max(0, ...finite);
+    if (min === max) {
+      y = () => height;
+    } else if (scale === "linear" && !Number.isFinite(max - min)) {
+      // Opposite finite extremes can still overflow when subtracted
+      // (`MAX_VALUE - -MAX_VALUE`). Normalize first so interpolation remains
+      // finite while preserving their relative geometry and the zero baseline.
+      const magnitude = Math.max(Math.abs(min), Math.abs(max));
+      const normalizedMin = min / magnitude;
+      const normalizedMax = max / magnitude;
+      const transform = d3ScaleLinear().domain([normalizedMin, normalizedMax]).range([height, 0]);
+      baseline = transform(0);
+      y = (value) => transform(value / magnitude);
+    } else {
+      const transform = (scale === "symlog" ? d3ScaleSymlog() : d3ScaleLinear())
+        .domain([min, max])
+        .range([height, 0]);
+      baseline = transform(0);
+      y = transform;
+    }
+  }
+
+  const points = finite
     .map((value, index) => {
-      const x = (index / Math.max(values.length - 1, 1)) * width;
-      const y = height - (value / max) * height;
-      return `${x.toFixed(2)},${y.toFixed(2)}`;
+      const x = (index / Math.max(finite.length - 1, 1)) * width;
+      return `${x.toFixed(2)},${y(value).toFixed(2)}`;
     })
     .join(" ");
+  return { points, baseline };
+}
+
+/** One ridgeline: an opaque filled curve on its own baseline. */
+function RidgeLane({
+  values,
+  color,
+  offset,
+  scale,
+}: {
+  values: number[];
+  color: string;
+  offset: number;
+  scale: AxisScale;
+}) {
+  const width = 100;
+  const height = 46;
+  const { points, baseline } = ridgeGeometry(values, scale, width, height);
   return (
     <svg
       className="ak-ridge-svg"
@@ -84,9 +147,9 @@ function RidgeLane({ values, color, offset }: { values: number[]; color: string;
       aria-hidden="true"
       style={{ marginTop: offset === 0 ? 0 : -18 }}
     >
-      <polygon points={`0,${height} ${points} ${width},${height}`} fill="var(--ak-surface)" />
+      <polygon points={`0,${baseline} ${points} ${width},${baseline}`} fill="var(--ak-surface)" />
       <polygon
-        points={`0,${height} ${points} ${width},${height}`}
+        points={`0,${baseline} ${points} ${width},${baseline}`}
         fill={color}
         fillOpacity={0.42}
       />
@@ -106,6 +169,23 @@ interface EndpointProps {
   cy?: number;
   value?: number | number[];
   index?: number;
+}
+
+function AreaScaleAxis({ scale, hidden = false }: { scale: AxisScale; hidden?: boolean }) {
+  if (scale === "linear") return null;
+  return (
+    <YAxis
+      // Named scales do not include symlog, but recharts also accepts a
+      // d3-compatible callable and assigns its final domain and range.
+      scale={rechartsScale(scale)}
+      domain={numericAxisDomain(scale)}
+      allowDataOverflow
+      hide={hidden}
+      tickLine={false}
+      axisLine={false}
+      width={hidden ? 0 : 44}
+    />
+  );
 }
 
 export function AreaChart({
@@ -129,7 +209,7 @@ export function AreaChart({
   dataKeys?: string[];
   labelKey?: string;
   variant?: AreaChartVariant;
-  /** Axis scale. symlog is log-like but defined through zero. */
+  /** Axis scale. symlog is log-like but remains defined through zero. */
   scale?: AxisScale;
   /** Terminal dot plus a value pill on the final point. */
   emphasizeLast?: boolean;
@@ -212,6 +292,7 @@ export function AreaChart({
             minTickGap={24}
             tickFormatter={(value: string) => String(value).slice(0, 10)}
           />
+          <AreaScaleAxis scale={scale} />
           <Tooltip
             cursor={{ stroke: "var(--ak-border)" }}
             content={({ active, payload, label }) =>
@@ -287,6 +368,7 @@ export function AreaChart({
                 <RidgeLane
                   values={data.map((row) => Number(row[key] ?? 0))}
                   color={stackConfig[key]?.color ?? ""}
+                  scale={scale}
                   // position, not index: the pull-up applies to every lane
                   // after the first one *drawn*, and lanes are drawn back to
                   // front so the overlap occludes correctly.
@@ -318,6 +400,9 @@ export function AreaChart({
               minTickGap={24}
               tickFormatter={(value: string) => String(value).slice(0, 10)}
             />
+            {/* A stream's centred baseline is not a readable axis, but its
+                hidden Y axis still owns the requested numeric transform. */}
+            <AreaScaleAxis scale={scale} hidden={stream} />
             <Tooltip
               cursor={{ stroke: "var(--ak-border)" }}
               content={({ active, payload, label }) =>
@@ -400,20 +485,8 @@ export function AreaChart({
             tickFormatter={(value: string) => String(value).slice(0, 10)}
           />
         )}
-        {spark || scale === "linear" ? null : (
-          // recharts needs an explicit domain on a log axis; "auto" leaves it
-          // starting at zero, which a log scale cannot represent.
-          <YAxis
-            scale={scale}
-            // A log axis cannot represent zero, so its floor is pinned to 1
-            // rather than left on "auto", which would silently drop the point.
-            domain={[1, "auto"]}
-            allowDataOverflow
-            tickLine={false}
-            axisLine={false}
-            width={44}
-          />
-        )}
+        {/* Spark keeps its chrome hidden, not its scale semantics. */}
+        <AreaScaleAxis scale={scale} hidden={spark} />
         {spark ? null : (
           <Tooltip
             cursor={{ stroke: "var(--ak-border)" }}

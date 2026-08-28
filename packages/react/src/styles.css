@@ -1088,14 +1088,6 @@
 .ak-legend-name {
   display: inline-flex;
   align-items: center;
-}
-
-/* The legend rows hold three children — swatch, label, value — and
-   space-between spreads all three, stranding the swatch at the far edge of a
-   wide card. Letting the label take the slack keeps the swatch against its own
-   label and the value hard right, with no markup change in the four charts
-   that render this shape. */
-.ak-legend li > span {
   flex: 1;
 }
 

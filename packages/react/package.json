@@ -35,10 +35,12 @@
   "dependencies": {
     "@analytics-kit/core": "workspace:*",
     "clsx": "^2.1.1",
+    "d3-scale": "^4.0.2",
     "recharts": "^2.15.4",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@types/d3-scale": "^4.0.9",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "react": "^19.1.0",

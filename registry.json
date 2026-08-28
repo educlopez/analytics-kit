@@ -8,7 +8,7 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "Recharts container used by every Analytics Kit chart. Colors inherit --chart-1…5 from the host theme.",
-      "dependencies": ["recharts@2.15.4", "clsx", "tailwind-merge"],
+      "dependencies": ["recharts@2.15.4", "d3-scale@4.0.2", "clsx", "tailwind-merge"],
       "files": [
         {
           "path": "packages/react/src/lib/cn.ts",
@@ -38,7 +38,7 @@
       "name": "area-chart",
       "type": "registry:ui",
       "title": "Area chart",
-      "description": "Trend with filled region. Variants: gradient, linear, natural, step, dots, spark, dither, glow, hatched, bars, solid.",
+      "description": "Trend with filled region and linear, log, or symlog y-axis scaling.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -54,7 +54,7 @@
       "name": "line-chart",
       "type": "registry:ui",
       "title": "Line chart",
-      "description": "Time series line. Variants: monotone, linear, step, dashed, dots, dither, glow, ping, rainbow, values.",
+      "description": "Time series line with linear, log, or symlog y-axis scaling.",
       "dependencies": ["recharts@2.15.4"],
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
@@ -196,7 +196,7 @@
       "name": "candlestick-chart",
       "type": "registry:ui",
       "title": "Candlestick chart",
-      "description": "Open, high, low, close. Variants: ohlc, hollow, wick.",
+      "description": "Open, high, low, close, and optional volume. Variants: ohlc, hollow, wick, volume.",
       "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
       "files": [
         {

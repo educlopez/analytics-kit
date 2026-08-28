@@ -72,8 +72,10 @@ export function RingChart({
       <ul className="ak-legend">
         {rows.slice(0, 5).map((row, index) => (
           <li key={row.label}>
-            <i style={{ background: PALETTE[index % PALETTE.length] }} />
-            <span>{row.label}</span>
+            <span className="ak-legend-name">
+              <i style={{ background: PALETTE[index % PALETTE.length] }} />
+              {row.label}
+            </span>
             <strong>{formatNumber(row.value)}</strong>
           </li>
         ))}

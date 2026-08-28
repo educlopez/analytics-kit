@@ -149,8 +149,10 @@ export function PieChart({
         <ul className="ak-legend">
           {data.map((row, index) => (
             <li key={String(row[labelKey])}>
-              <i style={{ background: PALETTE[index % PALETTE.length] }} />
-              <span>{String(row[labelKey])}</span>
+              <span className="ak-legend-name">
+                <i style={{ background: PALETTE[index % PALETTE.length] }} />
+                {String(row[labelKey])}
+              </span>
               <strong>{formatNumber(Number(row[dataKey] ?? 0))}</strong>
             </li>
           ))}

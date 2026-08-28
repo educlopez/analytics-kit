@@ -5,6 +5,51 @@ import {
   type CandlestickChartVariant,
 } from "./variants.js";
 
+/** Real volume when present; candle range only as a 0.5-compatible fallback. */
+export function candleActivity(data: CandleDatum[]): number[] {
+  return data.map((row) => {
+    const range = Math.abs(row.high - row.low);
+    const fallback = Number.isFinite(range) ? range : 0;
+    // A non-finite volume is malformed rather than meaningfully high/low.
+    // Treat it as absent and preserve the price-range compatibility fallback.
+    if (row.volume == null || !Number.isFinite(row.volume)) return fallback;
+    return Math.max(0, row.volume);
+  });
+}
+
+function finitePrice(value: number): number {
+  return Number.isFinite(value) ? value : 0;
+}
+
+/**
+ * Map prices into the plot without subtracting opposite IEEE-754 extremes.
+ *
+ * A conventional `(max - value) / (max - min)` overflows when the domain
+ * reaches from `-Number.MAX_VALUE` to `Number.MAX_VALUE`. Dividing the whole
+ * domain by its largest magnitude first preserves ordinary geometry while
+ * keeping every intermediate finite. Malformed non-finite prices collapse to
+ * zero, matching the chart's existing finite volume fallback.
+ */
+function candleYScale(data: CandleDatum[], top: number, bottom: number): (value: number) => number {
+  const prices = data.flatMap((row) => [row.open, row.high, row.low, row.close]).map(finitePrice);
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const span = max - min;
+
+  if (span === 0) return () => top;
+
+  if (!Number.isFinite(span)) {
+    const magnitude = Math.max(Math.abs(min), Math.abs(max), 1);
+    const normalizedMin = min / magnitude;
+    const normalizedMax = max / magnitude;
+    const normalizedSpan = normalizedMax - normalizedMin;
+    return (value) =>
+      top + ((normalizedMax - finitePrice(value) / magnitude) / normalizedSpan) * (bottom - top);
+  }
+
+  return (value) => top + ((max - finitePrice(value)) / span) * (bottom - top);
+}
+
 export function CandlestickChart({
   data,
   variant = "ohlc",
@@ -15,11 +60,6 @@ export function CandlestickChart({
   className?: string;
 }) {
   if (!data.length) return <p className="ak-muted">No candle data.</p>;
-  const lows = data.map((row) => row.low);
-  const highs = data.map((row) => row.high);
-  const min = Math.min(...lows);
-  const max = Math.max(...highs);
-  const span = max - min || 1;
   const W = 1000;
   // The volume pane takes a quarter of the height, on the same x-scale. The
   // OHLC convention is incomplete without it — a move on no volume means
@@ -30,10 +70,10 @@ export function CandlestickChart({
   const pad = 16;
   const inner = W - pad * 2;
   const slot = inner / data.length;
-  const y = (value: number) => pad + ((max - value) / span) * (priceH - pad * 2);
-  // Real traded volume is not in CandleDatum, so the pane uses the candle's own
-  // range as a stand-in for activity rather than inventing a number.
-  const activity = data.map((row) => Math.abs(row.high - row.low));
+  const y = candleYScale(data, pad, priceH - pad);
+  // Prefer real traded volume. The range fallback preserves the 0.5 API for
+  // existing consumers whose CandleDatum rows predate the optional field.
+  const activity = candleActivity(data);
   const peak = Math.max(...activity, 1);
 
   return (
@@ -72,6 +112,9 @@ export function CandlestickChart({
         })}
         {volume
           ? data.map((row, index) => {
+              // Zero volume means no activity. Rendering a minimum-height bar
+              // would turn absence into a visible event.
+              if (activity[index] <= 0) return null;
               const up = row.close >= row.open;
               const cx = pad + index * slot + slot / 2;
               const h = (activity[index] / peak) * (H - priceH - 10);
@@ -81,7 +124,7 @@ export function CandlestickChart({
                   x={cx - Math.max(1.5, slot * 0.3)}
                   y={H - h - 4}
                   width={Math.max(3, slot * 0.6)}
-                  height={Math.max(1, h)}
+                  height={h}
                   fill={up ? "var(--ak-up)" : "var(--ak-down)"}
                   fillOpacity={0.45}
                 />

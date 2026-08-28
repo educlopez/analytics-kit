@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { buildRadialTimePreviewQuery } from "../../../src/catalog/previewQueries.js";
 import { createVercelConnector, odataFilter, VERCEL_CAPABILITIES } from "./index.js";
 
 describe("vercel connector", () => {
@@ -94,6 +95,85 @@ describe("vercel connector", () => {
     expect(result.totals).toEqual({ visitors: 980, pageviews: 1250 });
     expect(result.series[0]?.values.visitors).toBe(180);
     expect(result.breakdown[0]?.key).toBe("/pricing");
+  });
+
+  it("sends the radial preview's honest completed-hour window", async () => {
+    const aggregateUrls: URL[] = [];
+    const fetchImpl = vi.fn(async (url: string) => {
+      const parsed = new URL(String(url));
+      if (parsed.pathname.endsWith("/visits/count")) {
+        return json({ data: { pageviews: 12, visitors: 8 } });
+      }
+      if (parsed.pathname.endsWith("/visits/aggregate")) {
+        aggregateUrls.push(parsed);
+        return json({
+          data: [
+            {
+              timestamp: "2026-08-27T13:00:00.000Z",
+              pageviews: 5,
+              visitors: 3,
+            },
+            {
+              timestamp: "2026-08-27T14:00:00.000Z",
+              pageviews: 7,
+              visitors: 5,
+            },
+          ],
+        });
+      }
+      return json({ data: {} });
+    });
+    const connector = createVercelConnector({
+      token: "tok",
+      projectId: "prj_1",
+      fetch: fetchImpl as unknown as typeof fetch,
+    });
+
+    const previewQuery = buildRadialTimePreviewQuery(
+      "visitors",
+      new Date("2026-08-27T15:42:31.000Z"),
+    );
+    const result = await connector.query(previewQuery);
+
+    expect(aggregateUrls).toHaveLength(1);
+    expect(aggregateUrls[0]?.searchParams.get("by")).toBe("hour");
+    expect(Number(aggregateUrls[0]?.searchParams.get("limit"))).toBeLessThanOrEqual(100);
+    expect(aggregateUrls[0]?.searchParams.get("limit")).toBe("96");
+    expect(aggregateUrls[0]?.searchParams.get("since")).toBe("2026-08-23T15:00:00.000Z");
+    expect(aggregateUrls[0]?.searchParams.get("until")).toBe("2026-08-27T14:59:59.999Z");
+    expect(result.series).toEqual([
+      {
+        date: "2026-08-27T13:00:00.000Z",
+        values: { visitors: 3 },
+      },
+      {
+        date: "2026-08-27T14:00:00.000Z",
+        values: { visitors: 5 },
+      },
+    ]);
+  });
+
+  it("caps oversized aggregate requests at Vercel's 100-row maximum", async () => {
+    let aggregateUrl: URL | undefined;
+    const fetchImpl = vi.fn(async (url: string) => {
+      const parsed = new URL(String(url));
+      if (parsed.pathname.endsWith("/visits/aggregate")) aggregateUrl = parsed;
+      return json({ data: [] });
+    });
+    const connector = createVercelConnector({
+      token: "tok",
+      projectId: "prj_1",
+      fetch: fetchImpl as unknown as typeof fetch,
+    });
+
+    await connector.query({
+      range: "7d",
+      metrics: ["visitors"],
+      granularity: "hour",
+      limit: 101,
+    });
+
+    expect(aggregateUrl?.searchParams.get("limit")).toBe("100");
   });
 });
 

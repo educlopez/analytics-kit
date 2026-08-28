@@ -34,6 +34,9 @@ const DIMENSION_MAP: Record<string, string> = {
   campaign: "utmCampaign",
 };
 
+/** Vercel rejects aggregate requests whose row limit exceeds 100. */
+const VERCEL_AGGREGATE_MAX_LIMIT = 100;
+
 export const VERCEL_CAPABILITIES: ConnectorCapabilities = {
   metrics: {
     visitors: true,
@@ -251,7 +254,7 @@ async function aggregateVisits(
       since: query.range.from.toISOString(),
       until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters),
-      limit: String(query.limit),
+      limit: String(Math.min(query.limit, VERCEL_AGGREGATE_MAX_LIMIT)),
     },
     by,
   );
@@ -272,7 +275,7 @@ async function aggregateEvents(
       since: query.range.from.toISOString(),
       until: clampUntil(query.range.to).toISOString(),
       filter: odataFilter(query.filters, true),
-      limit: String(query.limit),
+      limit: String(Math.min(query.limit, VERCEL_AGGREGATE_MAX_LIMIT)),
     },
     by,
   );

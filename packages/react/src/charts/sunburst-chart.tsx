@@ -87,8 +87,10 @@ export function SunburstChart({
       <ul className="ak-legend">
         {data.map((node, index) => (
           <li key={node.label}>
-            <i style={{ background: PALETTE[index % PALETTE.length] }} />
-            <span>{node.label}</span>
+            <span className="ak-legend-name">
+              <i style={{ background: PALETTE[index % PALETTE.length] }} />
+              {node.label}
+            </span>
             <strong>{formatNumber(node.value)}</strong>
           </li>
         ))}

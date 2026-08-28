@@ -79,3 +79,4 @@ export {
   formatMetric,
   formatNumber,
 } from "./format.js";
+export type { CandleDatum } from "./charts.js";
