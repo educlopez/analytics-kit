@@ -4,10 +4,12 @@ import type { CatalogItem } from "./items";
 import {
   PREVIEW_GAPS,
   PREVIEW_METRICS,
+  PREVIEW_SCALES,
   itemControls,
   type PreviewGaps,
   type PreviewKnobs,
   type PreviewMetric,
+  type PreviewScale,
 } from "./knobs";
 
 function ControlHead({ title, value }: { title: string; value?: string }) {
@@ -122,7 +124,8 @@ export function Customize({
     !controls.height &&
     !controls.columns &&
     !controls.showRange &&
-    !controls.treatments
+    !controls.treatments &&
+    !controls.scale
   ) {
     return null;
   }
@@ -201,6 +204,14 @@ export function Customize({
               onChange={(value) => onChange("gaps", value as PreviewGaps)}
             />
           </>
+        ) : null}
+        {controls.scale ? (
+          <PreviewEnum
+            title="scale"
+            options={PREVIEW_SCALES}
+            value={knobs.scale}
+            onChange={(value) => onChange("scale", value as PreviewScale)}
+          />
         ) : null}
         {controls.columns ? (
           <PreviewSlider

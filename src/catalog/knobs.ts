@@ -6,6 +6,9 @@ export type PreviewMetric = (typeof PREVIEW_METRICS)[number];
 export const PREVIEW_GAPS = ["off", "bridge", "break"] as const;
 export type PreviewGaps = (typeof PREVIEW_GAPS)[number];
 
+export const PREVIEW_SCALES = ["linear", "log", "symlog"] as const;
+export type PreviewScale = (typeof PREVIEW_SCALES)[number];
+
 export interface PreviewKnobs {
   variant: string;
   metric: PreviewMetric;
@@ -14,6 +17,7 @@ export interface PreviewKnobs {
   showRange: boolean;
   emphasizeLast: boolean;
   compare: boolean;
+  scale: PreviewScale;
   gaps: PreviewGaps;
   annotations: boolean;
   brush: boolean;
@@ -28,6 +32,7 @@ export function defaultKnobs(item: CatalogItem): PreviewKnobs {
     showRange: true,
     emphasizeLast: false,
     compare: false,
+    scale: "linear",
     gaps: "off",
     annotations: false,
     brush: false,
@@ -43,6 +48,7 @@ export function knobsEqual(a: PreviewKnobs, b: PreviewKnobs): boolean {
     a.showRange === b.showRange &&
     a.emphasizeLast === b.emphasizeLast &&
     a.compare === b.compare &&
+    a.scale === b.scale &&
     a.gaps === b.gaps &&
     a.annotations === b.annotations &&
     a.brush === b.brush
@@ -93,6 +99,7 @@ export function itemControls(slug: string) {
     showRange: slug === "dashboard",
     // The cross-cutting treatments only apply to the time-series charts.
     treatments: slug === "area-chart" || slug === "line-chart",
+    scale: slug === "area-chart" || slug === "line-chart",
   };
 }
 
@@ -123,7 +130,7 @@ const points = [
 <${name}
   data={points}
   dataKey="value"
-  labelKey="date"${attr("variant", knobs.variant, item.defaultVariant)}${attr("emphasizeLast", knobs.emphasizeLast, false)}${knobs.compare ? "\n  previous={lastPeriod}" : ""}${attr("gaps", knobs.gaps === "off" ? undefined : knobs.gaps)}${attr("className", heightClass)}
+  labelKey="date"${attr("variant", knobs.variant, item.defaultVariant)}${attr("scale", knobs.scale, "linear")}${attr("emphasizeLast", knobs.emphasizeLast, false)}${knobs.compare ? "\n  previous={lastPeriod}" : ""}${attr("gaps", knobs.gaps === "off" ? undefined : knobs.gaps)}${attr("className", heightClass)}
 />`;
   }
 
@@ -199,6 +206,11 @@ const stages = [
 
   if (item.slug === "candlestick-chart") {
     return `import { CandlestickChart } from "@analytics-kit/react";
+
+const candles = [
+  { date: "2026-08-01", open: 120, high: 138, low: 114, close: 132, volume: 18400 },
+  { date: "2026-08-02", open: 132, high: 136, low: 121, close: 125, volume: 12300 },
+];
 
 <CandlestickChart
   data={candles}${attr("variant", knobs.variant, item.defaultVariant)}

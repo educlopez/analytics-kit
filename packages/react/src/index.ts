@@ -68,7 +68,7 @@ export type {
 export { ChartContainer, ChartTooltipBox } from "./charts/chart.js";
 export type { ChartConfig } from "./charts/chart.js";
 export { AreaChart } from "./charts/area-chart.js";
-export { LineChart } from "./charts/line-chart.js";
+export { findAnomalyIndexes, LineChart } from "./charts/line-chart.js";
 export { BarChart } from "./charts/bar-chart.js";
 export { PieChart } from "./charts/pie-chart.js";
 export { FunnelChart } from "./charts/funnel-chart.js";

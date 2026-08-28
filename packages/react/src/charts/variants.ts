@@ -162,12 +162,15 @@ export interface SankeyLink {
   value: number;
 }
 
+/** Structurally matches @analytics-kit/core's provider-agnostic candle type. */
 export interface CandleDatum {
   date: string;
   open: number;
   high: number;
   low: number;
   close: number;
+  /** Traded volume for the period. Optional for price-only legacy rows. */
+  volume?: number;
 }
 
 export interface SunburstNode {
@@ -179,10 +182,9 @@ export interface SunburstNode {
 /**
  * Axis scale.
  *
- * No symlog: recharts' ScaleType does not include it, and offering an option
- * that silently does nothing is worse than not offering it. A log axis cannot
- * represent zero either, so the charts pin its floor to 1 rather than letting
- * a zero point disappear without saying so.
+ * `symlog` is backed by a custom d3 scale because recharts' named ScaleType
+ * union does not include it. A log axis cannot represent zero, so the charts
+ * pin its floor to 1 rather than letting a zero point disappear silently.
  */
-export const AXIS_SCALES = ["linear", "log"] as const;
+export const AXIS_SCALES = ["linear", "log", "symlog"] as const;
 export type AxisScale = (typeof AXIS_SCALES)[number];

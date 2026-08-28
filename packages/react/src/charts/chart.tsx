@@ -1,6 +1,8 @@
 import { type CSSProperties, type ReactElement, useId } from "react";
+import { scaleSymlog } from "d3-scale";
 import { ResponsiveContainer } from "recharts";
 import { cn } from "../lib/cn.js";
+import type { AxisScale } from "./variants.js";
 
 export type ChartConfig = Record<
   string,
@@ -33,6 +35,18 @@ export const PALETTE = [
   "var(--ak-chart-4, var(--chart-4))",
   "var(--ak-chart-5, var(--chart-5))",
 ];
+
+/**
+ * Resolve the public scale option to something recharts can consume.
+ * Recharts assigns the final domain and range, so symlog needs a fresh scale.
+ */
+export function rechartsScale(scale: AxisScale): "log" | ReturnType<typeof scaleSymlog> {
+  return scale === "symlog" ? scaleSymlog() : "log";
+}
+
+export function numericAxisDomain(scale: Exclude<AxisScale, "linear">): [number | "auto", "auto"] {
+  return scale === "log" ? [1, "auto"] : ["auto", "auto"];
+}
 
 /** Config for a multi-series chart, one palette colour per key. */
 export function seriesConfig(keys: string[], config?: ChartConfig): ChartConfig {

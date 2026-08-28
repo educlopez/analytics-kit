@@ -29,10 +29,10 @@ const SERIES_TREATMENTS: PropRow[] = [
   },
   {
     name: "scale",
-    type: '"linear" | "log"',
+    type: '"linear" | "log" | "symlog"',
     default: '"linear"',
     notes:
-      "Y-axis scale. Long-tail data is unreadable on a linear axis. No symlog: recharts does not support it, and a log axis cannot represent zero, so its floor is pinned to 1.",
+      "Y-axis scale. log is pinned to 1 because it cannot represent zero. symlog uses a custom d3 scale and remains defined for negative values and zero.",
   },
   {
     name: "gaps",
@@ -463,13 +463,14 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     {
       name: "data",
       type: "CandleDatum[]",
-      notes: "{ date, open, high, low, close }[] in order.",
+      notes:
+        "{ date, open, high, low, close, volume? }[] in order. volume drives the volume pane; legacy rows without it fall back to candle range.",
     },
     {
       name: "variant",
       type: '"ohlc" | "hollow" | "wick" | "volume"',
       default: '"ohlc"',
-      notes: "Solid bodies, hollow up-days, or a thin wick.",
+      notes: "Solid bodies, hollow up-days, a thin wick, or OHLC with a volume pane.",
     },
     {
       name: "className",

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createMockConnector, mockQuery } from "@analytics-kit/connector-mock";
-import type { AnalyticsQuery } from "@analytics-kit/core";
+import { createHttpConnector, type AnalyticsQuery, type SeriesPoint } from "@analytics-kit/core";
 import {
   AnalyticsProvider,
   AreaChart,
@@ -25,6 +25,7 @@ import {
   ComposedChart,
   Dashboard,
   FunnelChart,
+  findAnomalyIndexes,
   GaugeChart,
   HeatmapChart,
   LineChart,
@@ -70,6 +71,57 @@ import {
   type SunburstChartVariant,
 } from "@analytics-kit/react";
 import type { PreviewKnobs } from "./knobs";
+import { buildRadialTimePreviewQuery } from "./previewQueries";
+
+function useCredentialedSeries({
+  enabled,
+  metric,
+  granularity,
+  range,
+  queryKind,
+  limit,
+}: {
+  enabled: boolean;
+  metric: string;
+  granularity: "day" | "hour";
+  range?: AnalyticsQuery["range"];
+  queryKind?: "radial-time";
+  limit?: number;
+}): SeriesPoint[] | undefined {
+  const [live, setLive] = useState<{
+    key: string;
+    series: SeriesPoint[];
+  }>();
+  const rangeKey = queryKind ?? String(range);
+  const key = `${metric}:${granularity}:${rangeKey}:${limit ?? "default"}`;
+
+  useEffect(() => {
+    if (!enabled || (!range && !queryKind)) return;
+    let cancelled = false;
+    const connector = createHttpConnector({ endpoint: "/api/analytics" });
+    const query =
+      queryKind === "radial-time"
+        ? buildRadialTimePreviewQuery(metric)
+        : { range: range!, metrics: [metric], granularity, limit };
+    void connector
+      .query(query)
+      .then((result) => {
+        // Mock connector ids are explicit (`mock:vercel`, etc.). Keep them out
+        // of paths labelled as provider data while allowing future real ids.
+        if (!cancelled && !result.meta.connectorId.startsWith("mock") && result.series.length) {
+          setLive({ key, series: result.series });
+        }
+      })
+      .catch(() => {
+        // Each caller owns an explicit deterministic fallback for offline use.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, granularity, key, limit, metric, queryKind, range]);
+
+  return live?.key === key ? live.series : undefined;
+}
 
 function PreviewInner({
   slug,
@@ -80,6 +132,18 @@ function PreviewInner({
   knobs: PreviewKnobs;
   preview?: boolean;
 }) {
+  const liveHourlySeries = useCredentialedSeries({
+    enabled: slug === "radial-time-chart",
+    metric: knobs.metric,
+    granularity: "hour",
+    queryKind: "radial-time",
+  });
+  const liveAnomalySeries = useCredentialedSeries({
+    enabled: slug === "line-chart" && knobs.variant === "anomaly",
+    metric: knobs.metric,
+    granularity: "day",
+    range: "30d",
+  });
   const seriesQuery = useQuery({ metrics: [knobs.metric], granularity: "day" });
   const dualQuery = useQuery({ metrics: ["visitors", "pageviews"], granularity: "day" });
   const horizonQuery = useQuery({
@@ -170,6 +234,9 @@ function PreviewInner({
       high: Math.max(open, close) * 1.04,
       low: Math.min(open, close) * 0.96,
       close,
+      // The catalog has no market feed, so daily visitors are the real
+      // activity measure carried into this financial-shape preview.
+      volume: row.value,
     };
   });
   const regions = (countries.data?.breakdown ?? []).map((row) => ({
@@ -245,9 +312,8 @@ function PreviewInner({
     date: point.date,
     value: Math.round(point.visitors * 0.78),
   }));
-  // The anomaly variant needs an actual outlier to find. The sample series is
-  // too well-behaved, so the preview plants two — same honesty as the gaps
-  // control punching a real hole.
+  // Explicit demonstration fallback. A credentialed provider series replaces
+  // this only when the same detector used by LineChart finds a real outlier.
   const spiked = series.map((point, index) =>
     index === 9
       ? { ...point, value: Math.round(point.value * 3.2) }
@@ -255,6 +321,14 @@ function PreviewInner({
         ? { ...point, value: Math.round(point.value * 0.18) }
         : point,
   );
+  const liveAnomaly = (liveAnomalySeries ?? []).map((point) => ({
+    date: point.date,
+    value: point.values[knobs.metric] ?? 0,
+  }));
+  const hasLiveAnomalies = findAnomalyIndexes(liveAnomaly.map((point) => point.value)).size > 0;
+  const anomalyPreview = hasLiveAnomalies
+    ? { data: liveAnomaly, source: "provider" as const }
+    : { data: spiked, source: "synthetic" as const };
   const holed =
     knobs.gaps === "off"
       ? series
@@ -282,8 +356,41 @@ function PreviewInner({
     return <StripChart lanes={lanes} />;
   }
   if (slug === "radial-time-chart") {
-    // Hour and weekday come from the real dates in the series; the value is
-    // that day's real count spread across its hours by a fixed daily shape.
+    // The demo route exposes Vercel, so request its real hourly buckets when
+    // it is credentialed and aggregate repeated weekdays to the 7×24 cells
+    // this chart expects.
+    if (liveHourlySeries?.length) {
+      const buckets = new Map<
+        string,
+        { day: number; hour: number; total: number; count: number }
+      >();
+      for (const point of liveHourlySeries) {
+        const date = new Date(point.date);
+        if (Number.isNaN(date.getTime())) continue;
+        const day = (date.getUTCDay() + 6) % 7;
+        const hour = date.getUTCHours();
+        const key = `${day}-${hour}`;
+        const current = buckets.get(key) ?? { day, hour, total: 0, count: 0 };
+        current.total += point.values[knobs.metric] ?? 0;
+        current.count += 1;
+        buckets.set(key, current);
+      }
+      return (
+        <div className="grid gap-2" data-preview-source="provider">
+          <RadialTimeChart
+            data={[...buckets.values()].map((cell) => ({
+              day: cell.day,
+              hour: cell.hour,
+              value: Math.round(cell.total / cell.count),
+            }))}
+          />
+          <p className="ak-muted">Provider hourly data · latest 96 completed hours</p>
+        </div>
+      );
+    }
+    // Without credentials the API route identifies itself as mock:vercel,
+    // whose daily-only series cannot honestly become hourly data. Keep the
+    // documented synthetic fallback instead of pretending those are buckets.
     const shape = [
       0.2, 0.14, 0.1, 0.08, 0.08, 0.12, 0.3, 0.6, 0.9, 1, 0.95, 0.9, 0.85, 0.9, 0.95, 1, 0.92, 0.8,
       0.7, 0.62, 0.55, 0.45, 0.35, 0.26,
@@ -301,7 +408,12 @@ function PreviewInner({
         cells.push({ day, hour, value: Math.round(point.value * shape[hour]) });
       }
     }
-    return <RadialTimeChart data={cells} />;
+    return (
+      <div className="grid gap-2" data-preview-source="synthetic">
+        <RadialTimeChart data={cells} />
+        <p className="ak-muted">Synthetic hourly fallback</p>
+      </div>
+    );
   }
   if (slug === "bump-chart") {
     // Ranking the four metrics against each other never changes order, and a
@@ -407,6 +519,7 @@ function PreviewInner({
           data={horizon}
           dataKeys={horizonKeys}
           variant={activeVariant as AreaChartVariant}
+          scale={knobs.scale}
         />
       );
     }
@@ -416,6 +529,7 @@ function PreviewInner({
           data={composed}
           dataKeys={["visitors", "pageviews"]}
           variant={activeVariant as AreaChartVariant}
+          scale={knobs.scale}
         />
       );
     }
@@ -423,6 +537,7 @@ function PreviewInner({
       <AreaChart
         data={holed}
         variant={activeVariant as AreaChartVariant}
+        scale={knobs.scale}
         emphasizeLast={knobs.emphasizeLast}
         previous={knobs.compare || activeVariant === "band" ? previousSeries : undefined}
         gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
@@ -433,7 +548,20 @@ function PreviewInner({
   }
   if (slug === "line-chart") {
     if (activeVariant === "anomaly") {
-      return <LineChart data={spiked} variant={activeVariant as LineChartVariant} />;
+      return (
+        <div className="grid gap-2" data-preview-source={anomalyPreview.source}>
+          <LineChart
+            data={anomalyPreview.data}
+            variant={activeVariant as LineChartVariant}
+            scale={knobs.scale}
+          />
+          <p className="ak-muted">
+            {anomalyPreview.source === "provider"
+              ? "Credentialed provider data"
+              : "Synthetic outliers — no qualifying provider spike available"}
+          </p>
+        </div>
+      );
     }
     if (activeVariant === "focus") {
       return (
@@ -441,6 +569,7 @@ function PreviewInner({
           data={horizon}
           dataKeys={horizonKeys}
           variant={activeVariant as LineChartVariant}
+          scale={knobs.scale}
         />
       );
     }
@@ -448,6 +577,7 @@ function PreviewInner({
       <LineChart
         data={holed}
         variant={activeVariant as LineChartVariant}
+        scale={knobs.scale}
         emphasizeLast={knobs.emphasizeLast}
         previous={knobs.compare ? previousSeries : undefined}
         gaps={knobs.gaps === "off" ? undefined : knobs.gaps}
@@ -605,6 +735,7 @@ export function LivePreview({
     showRange: knobs?.showRange ?? true,
     emphasizeLast: knobs?.emphasizeLast ?? false,
     compare: knobs?.compare ?? false,
+    scale: knobs?.scale ?? "linear",
     gaps: knobs?.gaps ?? "off",
     annotations: knobs?.annotations ?? false,
     brush: knobs?.brush ?? false,

@@ -191,7 +191,7 @@ export const CATALOG: CatalogItem[] = [
     title: "Candlestick chart",
     component: "CandlestickChart",
     group: "charts",
-    blurb: "Open, high, low, close. Solid, hollow, or wick-only.",
+    blurb: "Open, high, low, close, and volume. Solid, hollow, wick-only, or volume pane.",
     registry: "candlestick-chart",
     snippet: `<CandlestickChart data={candles} variant="ohlc" />`,
     variants: ["ohlc", "hollow", "wick", "volume"],
