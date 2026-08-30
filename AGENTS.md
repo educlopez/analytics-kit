@@ -7,3 +7,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Friction log
+
+Papercuts while developing this repo are GitHub issues labeled `friction`, not
+files in the tree. Load `.cursor/skills/friction-log/SKILL.md` when you hit one
+(policy: `docs/contributing/friction-log.md`). A daily Cursor agent
+([`educlopez/friction-log`](https://github.com/educlopez/friction-log))
+investigates them.
