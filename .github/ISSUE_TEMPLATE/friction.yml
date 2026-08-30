@@ -1,6 +1,6 @@
 name: Friction
 description: Log a contributor or agent papercut while working in this repo
-title: 'Friction: '
+title: "Friction: "
 labels: [friction]
 body:
   - type: markdown
@@ -34,7 +34,6 @@ body:
     id: cost
     attributes:
       label: Cost
-      description:
-        Time lost, how often this happens, who it hits, and the workaround.
+      description: Time lost, how often this happens, who it hits, and the workaround.
     validations:
       required: true

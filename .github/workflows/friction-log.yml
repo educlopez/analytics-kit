@@ -6,7 +6,7 @@ name: Friction log
 on:
   schedule:
     # ~05:00–06:00 Europe/Madrid (GitHub cron is UTC-only)
-    - cron: '24 4 * * *'
+    - cron: "24 4 * * *"
   workflow_dispatch:
     inputs:
       dry_run:

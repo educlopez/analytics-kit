@@ -57,11 +57,11 @@ give a different approach).
 
 ## Operator controls
 
-| Command / control                        | Purpose                                 |
-| ---------------------------------------- | --------------------------------------- |
-| `npx github:educlopez/friction-log scan` | Read-only eligibility scan. No agent.   |
-| Repo variable `FRICTION_LOG_PAUSED=true` | Kill switch: scan, but do not spawn.    |
-| Actions → Friction log → Run workflow    | Manual sweep (`dry_run`, `force`).      |
+| Command / control                        | Purpose                               |
+| ---------------------------------------- | ------------------------------------- |
+| `npx github:educlopez/friction-log scan` | Read-only eligibility scan. No agent. |
+| Repo variable `FRICTION_LOG_PAUSED=true` | Kill switch: scan, but do not spawn.  |
+| Actions → Friction log → Run workflow    | Manual sweep (`dry_run`, `force`).    |
 
 Create the `friction` label (color `#D4A017`) if it does not exist. Add a
 repository secret `CURSOR_API_KEY` (Cursor Dashboard → API Keys) so the daily

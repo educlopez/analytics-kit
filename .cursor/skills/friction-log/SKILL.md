@@ -89,6 +89,7 @@ For each listed issue, choose exactly one outcome:
    Tell @educlopez the next run stays skipped until they reply with: close as
    already fixed, close as invalid, ship the recommended fix, or a different
    approach. Do not open a speculative PR.
+
 4. **Fix** — implement on a fresh branch, push, and create or update the pull
    request with Cursor Cloud **ManagePullRequest**. Then wait for CI. Low and
    medium risk may squash-merge after green checks. High risk stays
