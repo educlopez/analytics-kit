@@ -53,3 +53,10 @@ Copy [`examples/custom-connector.ts`](examples/custom-connector.ts) into `packag
 See [`examples/custom-widget.tsx`](examples/custom-widget.tsx). Register with `defineWidget` so `<Dashboard />` can render it by id.
 
 To expose it on the shadcn registry, add a recipe under `registry/default/blocks/` and an item in `registry.json`. `pnpm registry:build` inlines those files into `public/r` (served by the Next.js site).
+
+## Friction log
+
+Repository papercuts — confusing docs, a script that needs a secret handshake, a
+type that lies — go in GitHub issues labeled `friction`, not in this file. See
+[docs/contributing/friction-log.md](docs/contributing/friction-log.md). Feature
+requests and bug reports about the published package stay ordinary issues.
