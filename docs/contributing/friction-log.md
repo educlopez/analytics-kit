@@ -1,0 +1,88 @@
+# Friction log
+
+Contributor and agent papercuts while working in this repository live as GitHub
+issues labeled `friction`. They are not files in the tree.
+
+This is not a product feature request. File those as ordinary issues. This page
+is for developing `educlopez/analytics-kit`: confusing docs, a command that needs a secret
+handshake, a type that lies, a test that only fails locally.
+
+The policy lives here. Agents that load skills on demand read the same policy
+from `.cursor/skills/friction-log/SKILL.md` or
+`.claude/skills/friction-log/SKILL.md`; agents that read a single root file get
+a pointer to this page from [`AGENTS.md`](../../AGENTS.md). Both skill copies
+and `AGENTS.md` are written by `friction-log init`.
+
+Canonical tooling: [`educlopez/friction-log`](https://github.com/educlopez/friction-log).
+
+## File an entry
+
+Search open `friction` issues first. Comment on a match instead of opening a
+duplicate.
+
+Title: `Friction: <what hurt>`.
+
+Label: `friction`.
+
+Use the [Friction issue form](../../.github/ISSUE_TEMPLATE/friction.yml) or:
+
+```bash
+gh issue create --repo educlopez/analytics-kit --title "Friction: …" --label friction --body-file -
+```
+
+Write one issue per papercut. Include what you were doing, the unexpected cost,
+the workaround, and enough reproduction to investigate without the original
+session. Omit secrets, tokens, and unrelated private content.
+
+Do not commit a `.agents/friction-log/` or `docs/friction-log/` directory.
+GitHub is the log.
+
+## Daily investigation
+
+The `Friction log` GitHub Action runs daily at 04:00 UTC. It uses
+`educlopez/friction-log@v1` to list open `friction` issues and, when any are
+eligible and `CURSOR_API_KEY` is set, spawn one Cursor Cloud Agent on
+`educlopez/analytics-kit` `main`.
+
+The investigator chooses one outcome per issue:
+
+| Outcome       | What happens                                                                                       |
+| ------------- | -------------------------------------------------------------------------------------------------- |
+| Already fixed | Closes the issue with the evidence.                                                                |
+| Invalid       | Closes the issue (not repo friction, duplicate, or not actionable).                                |
+| Skip          | Comments a recommended fix and marks the issue skipped until @educlopez replies.                   |
+| Fix           | Opens a PR. Low and medium risk may squash-merge after green CI. High risk stays ready-for-review. |
+
+A skip comment includes `<!-- friction-log:skipped -->`. Later daily runs ignore
+that issue until @educlopez comments (approve the recommendation, close it, or
+give a different approach). The marker counts only when `github-actions[bot]`,
+`cursor[bot]` or a configured owner login wrote it — otherwise any commenter on
+a public repository could silence an issue indefinitely.
+
+After a successful spawn the sweep comments
+`<!-- friction-log:claimed:YYYY-MM-DD -->` on each issue it handed to the
+agent, and later runs the same UTC day treat those issues as ineligible. A
+second investigator is therefore spawned only for work the first one never
+received. `--force` ignores claims entirely. Only the issues actually listed in
+the prompt are claimed (at most 20); a longer backlog stays eligible so a later
+run picks it up instead of being silenced unread. The same trusted-author rule
+applies: a claim is only honoured from those logins.
+
+Claims are written after the agent has already spawned, so a failed write does
+not abort the run — the sweep finishes, names those issue numbers in
+`result.unclaimed`, and warns. Those issues stay unclaimed, so a later run the
+same day can spawn a second investigator on them. That is the deliberate
+trade: a duplicate investigator is recoverable, a silently dropped run is not.
+
+## Operator controls
+
+| Command / control                        | Purpose                               |
+| ---------------------------------------- | ------------------------------------- |
+| `npx github:educlopez/friction-log scan` | Read-only eligibility scan. No agent. |
+| Repo variable `FRICTION_LOG_PAUSED=true` | Kill switch: scan, but do not spawn.  |
+| Actions → Friction log → Run workflow    | Manual sweep (`dry_run`, `force`).    |
+
+Create the `friction` label (color `#D4A017`) if it does not exist. Add a
+repository secret `CURSOR_API_KEY` (Cursor Dashboard → API Keys) so the daily
+job can spawn an investigator. Without that secret the Action still scans and
+exits successfully.
