@@ -9,7 +9,10 @@
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     // AlignUI components and blocks are copied in verbatim and import through
     // `@/`, so the alias points at src/ to keep them diffable against upstream.
-    "baseUrl": ".",
+    //
+    // No `baseUrl`: it is deprecated and stops working in TypeScript 7, and
+    // these mappings do not need it — a relative `paths` value resolves
+    // against this file's own directory.
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["app", "src", "next-env.d.ts", ".next/types/**/*.ts"],
