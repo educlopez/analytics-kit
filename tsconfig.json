@@ -6,7 +6,11 @@
     "allowJs": true,
     "incremental": true,
     "plugins": [{ "name": "next" }],
-    "lib": ["DOM", "DOM.Iterable", "ES2022"]
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    // AlignUI components and blocks are copied in verbatim and import through
+    // `@/`, so the alias points at src/ to keep them diffable against upstream.
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["app", "src", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules", "packages", "apps"]

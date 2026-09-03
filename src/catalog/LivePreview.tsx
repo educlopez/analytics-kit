@@ -24,6 +24,8 @@ import {
   ChoroplethChart,
   ComposedChart,
   Dashboard,
+  EmptyState,
+  GlobeChart,
   FunnelChart,
   findAnomalyIndexes,
   GaugeChart,
@@ -48,7 +50,14 @@ import {
   type WaterfallChartVariant,
   type ShareBandVariant,
   type SlopeChartVariant,
+  type BreakdownCardVariant,
   type BumpChartVariant,
+  type MarimekkoVariant,
+  type QuotaBarVariant,
+  type RadialTimeVariant,
+  type SparkTableVariant,
+  type StripChartVariant,
+  type TimelineVariant,
   type CohortGridVariant,
   type TreemapChartVariant,
   type BarChartVariant,
@@ -56,6 +65,9 @@ import {
   type CandlestickChartVariant,
   type ChoroplethChartVariant,
   type ComposedChartVariant,
+  type EmptyStateVariant,
+  type GlobeChartVariant,
+  type MetricTabsVariant,
   type FunnelChartVariant,
   type GaugeChartVariant,
   type HeatmapChartVariant,
@@ -70,6 +82,8 @@ import {
   type ScatterChartVariant,
   type SunburstChartVariant,
 } from "@analytics-kit/react";
+import { BreakdownCardPreview } from "./BreakdownCardPreview";
+import { MetricTabsPreview } from "./MetricTabsPreview";
 import type { PreviewKnobs } from "./knobs";
 import { buildRadialTimePreviewQuery } from "./previewQueries";
 
@@ -168,6 +182,18 @@ function PreviewInner({
     metrics: [knobs.metric],
     dimensions: ["country"],
     limit: 12,
+  });
+  // The breakdown card's tabs each stand on their own query, so switching a
+  // dimension is a real dimension change and not three slices of one.
+  const countriesDual = useQuery({
+    metrics: ["visitors", "pageviews"],
+    dimensions: ["country"],
+    limit: 8,
+  });
+  const devicesDual = useQuery({
+    metrics: ["visitors", "pageviews"],
+    dimensions: ["device"],
+    limit: 8,
   });
   // Same dimension over a wider window, so the treemap's delta is a real
   // difference of two queries rather than an invented number. No date maths
@@ -353,7 +379,7 @@ function PreviewInner({
         return Array.from({ length: count }, (_, i) => base + (i / Math.max(count, 1)) * 86400000);
       }),
     }));
-    return <StripChart lanes={lanes} />;
+    return <StripChart lanes={lanes} variant={activeVariant as StripChartVariant} />;
   }
   if (slug === "radial-time-chart") {
     // The demo route exposes Vercel, so request its real hourly buckets when
@@ -383,6 +409,7 @@ function PreviewInner({
               hour: cell.hour,
               value: Math.round(cell.total / cell.count),
             }))}
+            variant={activeVariant as RadialTimeVariant}
           />
           <p className="ak-muted">Provider hourly data · latest 96 completed hours</p>
         </div>
@@ -410,7 +437,7 @@ function PreviewInner({
     }
     return (
       <div className="grid gap-2" data-preview-source="synthetic">
-        <RadialTimeChart data={cells} />
+        <RadialTimeChart data={cells} variant={activeVariant as RadialTimeVariant} />
         <p className="ak-muted">Synthetic hourly fallback</p>
       </div>
     );
@@ -436,7 +463,13 @@ function PreviewInner({
     );
   }
   if (slug === "marimekko-chart") {
-    return <MarimekkoChart data={breakdownDual} dataKeys={["visitors", "pageviews"]} />;
+    return (
+      <MarimekkoChart
+        data={breakdownDual}
+        dataKeys={["visitors", "pageviews"]}
+        variant={activeVariant as MarimekkoVariant}
+      />
+    );
   }
   if (slug === "spark-table") {
     const bySeries = horizonKeys.map((key) => ({
@@ -448,10 +481,12 @@ function PreviewInner({
           Number(horizon[0]?.[key as keyof (typeof horizon)[number]] ?? 0),
       ),
     }));
-    return <SparkTable data={bySeries} label="Metric" />;
+    return (
+      <SparkTable data={bySeries} label="Metric" variant={activeVariant as SparkTableVariant} />
+    );
   }
   if (slug === "timeline-chart") {
-    return <TimelineChart items={sampleAnnotations} />;
+    return <TimelineChart items={sampleAnnotations} variant={activeVariant as TimelineVariant} />;
   }
   if (slug === "waterfall-chart") {
     // Real day-over-day deltas from the series, not invented steps.
@@ -489,6 +524,7 @@ function PreviewInner({
         projected={Math.round(used * 1.18)}
         label="Events this cycle"
         resetsIn="12 days"
+        variant={activeVariant as QuotaBarVariant}
       />
     );
   }
@@ -571,6 +607,24 @@ function PreviewInner({
           variant={activeVariant as LineChartVariant}
           scale={knobs.scale}
         />
+      );
+    }
+    if (activeVariant === "dual") {
+      // Two metrics whose units genuinely differ by roughly an order of
+      // magnitude, which is the only situation twin axes are the right answer to.
+      return (
+        <LineChart
+          data={composed}
+          dataKeys={["visitors", "pageviews"]}
+          variant={activeVariant as LineChartVariant}
+        />
+      );
+    }
+    if (activeVariant === "forecast") {
+      // Fitted to the contiguous series, not to `holed` — projecting a trend
+      // through a collection outage measures the outage.
+      return (
+        <LineChart data={series} variant={activeVariant as LineChartVariant} scale={knobs.scale} />
       );
     }
     return (
@@ -660,6 +714,36 @@ function PreviewInner({
   if (slug === "choropleth-chart") {
     return <ChoroplethChart data={regions} variant={activeVariant as ChoroplethChartVariant} />;
   }
+  if (slug === "globe-chart") {
+    return (
+      <GlobeChart
+        locations={regions.map((row) => ({
+          code: row.code,
+          label: row.label,
+          value: row.value,
+        }))}
+        variant={activeVariant as GlobeChartVariant}
+        valueLabel={knobs.metric}
+      />
+    );
+  }
+  if (slug === "metric-tabs") {
+    return <MetricTabsPreview rows={horizon} variant={activeVariant as MetricTabsVariant} />;
+  }
+  if (slug === "empty-state") {
+    return (
+      <EmptyState
+        title="No events in this range"
+        description="Events arrive once the tracking snippet fires. Widen the range, or check that the site is sending them."
+        action={
+          <button type="button" className="ak-retry">
+            Open the docs
+          </button>
+        }
+        variant={activeVariant as EmptyStateVariant}
+      />
+    );
+  }
   if (slug === "live-line-chart") {
     return <LiveLineChart data={series} variant={activeVariant as LiveLineChartVariant} />;
   }
@@ -687,6 +771,17 @@ function PreviewInner({
   }
   if (slug === "metric-card") {
     return <MetricCard metric={knobs.metric} variant={activeVariant as MetricCardVariant} />;
+  }
+  if (slug === "breakdown-card") {
+    return (
+      <BreakdownCardPreview
+        countries={countriesDual.data?.breakdown ?? []}
+        devices={devicesDual.data?.breakdown ?? []}
+        browsers={browsersDual.data?.breakdown ?? []}
+        metric="visitors"
+        variant={activeVariant as BreakdownCardVariant}
+      />
+    );
   }
   if (slug === "ranked-list") {
     return (

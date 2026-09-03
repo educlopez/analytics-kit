@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { createHttpConnector, withSampleFallback } from "@analytics-kit/core";
-import { ANALYTICS_KIT_DATASET, createMockConnector } from "@analytics-kit/connector-mock";
-import { AnalyticsProvider, Dashboard, defaultDashboard } from "@analytics-kit/react";
 import Link from "next/link";
 import { ChartTeaser } from "../ChartTeaser";
-import { CodeBlock } from "../site/CodeBlock";
-import { CoverImg } from "../site/CoverImg";
-import { useSite } from "../site/SiteShell";
-import { useCopy } from "../site/useCopy";
-import { useRegistryCommand } from "../site/useRegistryCommand";
+import { Cta } from "@/blocks/Cta";
+import { Faq } from "@/blocks/Faq";
+import { Features } from "@/blocks/Features";
+import { Hero } from "@/blocks/Hero";
+import { HowItWorks } from "@/blocks/HowItWorks";
+import { Stats } from "@/blocks/Stats";
+import { CATALOG } from "@/catalog/items";
+import { CodeBlock } from "@/site/CodeBlock";
+import { CopyCommand } from "@/site/CopyCommand";
+import { Section, SectionHead } from "@/site/Section";
+import { useSite } from "@/site/theme";
+import { useRegistryCommand } from "@/site/useRegistryCommand";
 
 const INSTALL =
   "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
@@ -28,360 +31,66 @@ export function Stats() {
   );
 }`;
 
-/**
- * Custom events and UTM dimensions are paid-plan Web Analytics features, so on
- * this project's Vercel plan those two widgets could only ever render sample
- * data. A demo of live analytics is better off without them than padded with
- * permanent Sample badges. Filtered rather than hardcoded so the demo picks up
- * anything new the package adds to its default.
- */
-const PLAN_UNSUPPORTED = new Set(["events", "top-sources"]);
-
-/**
- * Dropping one widget from each of those two rows leaves a one-column hole in a
- * four-column grid, so widen the lead metric and the last breakdown to close
- * them. Keeps every row full instead of trailing empty space.
- */
-const REBALANCED_SPANS: Record<string, number> = { visitors: 2, "top-countries": 2 };
-
-const DEMO_DASHBOARD = defaultDashboard
-  .filter((item) => !PLAN_UNSUPPORTED.has(item.widget))
-  .map((item) =>
-    REBALANCED_SPANS[item.widget] ? { ...item, span: REBALANCED_SPANS[item.widget] } : item,
-  );
-
-const TICKER = [
-  "One query model, five connectors",
-  "Visitors · pageviews · referrers · devices",
-  "Vercel today, Plausible tomorrow",
-  "Capabilities, not crashes",
-  "Keys stay on the server",
-  "Swap the vendor, keep the dashboard",
-];
-
-const FEATURES = [
-  {
-    title: "Widgets stay canonical",
-    body: "Visitors, pages, referrers, devices. The dashboard asks for metrics — not vendor field names.",
-  },
-  {
-    title: "Capabilities, not crashes",
-    body: "Vercel has no bounce rate. The widget knows, and sits out, instead of lying or throwing.",
-  },
-  {
-    title: "Keys stay on the server",
-    body: "The Next handler (or any Fetch route) holds the token. The browser talks to your endpoint.",
-  },
-];
-
-const STEPS = [
-  {
-    n: "01",
-    title: "Pick a connector",
-    body: "Vercel, Plausible, GA4, Umami, PostHog — or write one with defineConnector.",
-  },
-  {
-    n: "02",
-    title: "Drop the dashboard",
-    body: "AnalyticsProvider + Dashboard. Same widgets, same query model.",
-  },
-  {
-    n: "03",
-    title: "Swap the vendor",
-    body: "Change the constructor. The UI does not care which analytics tool you used last quarter.",
-  },
-];
-
-const FAQS = [
-  {
-    q: "Is this tied to Vercel?",
-    a: "No. This landing uses the Vercel connector as the example. Plausible, GA4, Umami, and PostHog ship in the same release. The widgets do not change.",
-  },
-  {
-    q: "Where do API tokens live?",
-    a: "On the server. Use @analytics-kit/next (or createHttpConnector against your own route). Do not put vendor keys in the browser bundle.",
-  },
-  {
-    q: "What if a provider cannot answer a metric?",
-    a: "Connectors declare capabilities. Widgets that need bounceRate on Vercel render an unsupported state instead of failing the page.",
-  },
-  {
-    q: "Can I add my own provider or widget?",
-    a: "Yes. defineConnector and defineWidget are the extension points. See examples/ in the repo.",
-  },
-  {
-    q: "How do I change how a chart looks?",
-    a: "Pass variant on the chart — gradient, tape, overlay, arc, ping, hero. Colors come from your CSS variables (--chart-1, --primary, --card), so the chart follows the host site.",
-  },
-];
-
 export function HomePage() {
   const { theme } = useSite();
-  const connector = useMemo(() => {
-    const live = createHttpConnector({ endpoint: "/api/analytics" });
-    // The Vercel connector's real capabilities exclude UTM/event dimensions
-    // (paid-plan only) and can legitimately return no traffic for a slice.
-    // Rather than showing an error or an empty widget, fall back to a full
-    // sample profile — WidgetFrame renders a visible "Sample" badge whenever
-    // that happens, so the landing never looks broken but never lies either.
-    const sample = createMockConnector({
-      profile: "full",
-      seed: 21,
-      scale: 2.4,
-      dataset: ANALYTICS_KIT_DATASET,
-      siteName: "analytics-kit-demo.vercel.app",
-    });
-    return withSampleFallback({ connector: live, sample });
-  }, []);
-  const { copied, copy } = useCopy();
   const registry = useRegistryCommand("dashboard");
-  const [live, setLive] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  useEffect(() => {
-    void fetch("/api/analytics")
-      .then((response) => response.json() as Promise<{ id?: string }>)
-      .then((info) => setLive(info.id === "vercel"))
-      .catch(() => setLive(false));
-  }, []);
 
   return (
     <>
-      <header className="hero" id="top">
-        <div className="hero-stage">
-          <CoverImg
-            id="photo-1469474968028-56623f02e42e"
-            alt="Mist lifting off a mountain meadow"
-            eager
-            position="center 28%"
-          />
-          <div className="cover-scrim" />
-          <div className="hero-copy">
-            <p className="kicker on-photo">Analytics, without the vendor lock-in</p>
-            <h1>
-              One dashboard.
-              <em> Any analytics tool.</em>
-            </h1>
-            <p className="lede on-photo">
-              One query model. Five connectors. Widgets that render Vercel today and Plausible
-              tomorrow — without rewriting the page.
-            </p>
-            <div className="ticker" aria-hidden="true">
-              <div className="ticker-track">
-                {[...TICKER, ...TICKER].map((item, i) => (
-                  <span key={`${item}-${i}`}>{item}</span>
-                ))}
-              </div>
-            </div>
-            <div className="actions">
-              <a className="btn btn-paper" href="#dashboard">
-                See it on Vercel data
-              </a>
-              <a className="btn btn-ghost-photo" href="https://www.npmjs.com/org/analytics-kit">
-                npm @analytics-kit
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Hero theme={theme} />
 
-      <section className="vista">
-        <div className="vista-frame">
-          <CoverImg
-            id="photo-1500382017468-9049fed747ef"
-            alt="A path through a green field"
-            position="center 62%"
-          />
-          <div className="cover-scrim vista-scrim" />
-          <div className="vista-copy">
-            <p className="kicker on-photo">The kit</p>
-            <h2>
-              The dashboard
-              <em> does not learn a vendor.</em>
-            </h2>
-            <p className="lede on-photo wide">
-              Connectors map Vercel, Plausible, GA4, Umami, and PostHog onto the same metrics and
-              dimensions. The dashboard never learns a vendor’s dialect.
-            </p>
-          </div>
-        </div>
-        <ul className="feature-grid vista-cards">
-          {FEATURES.map((feature) => (
-            <li key={feature.title} className="paper-card">
-              <h3>{feature.title}</h3>
-              <p>{feature.body}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <Features />
 
-      <section className="analytics" id="dashboard">
-        <div className="analytics-head">
-          <div>
-            <p className="kicker">Live example</p>
-            <h2>
-              This site,
-              <em> through Vercel.</em>
-            </h2>
-            <p className="lede compact">
-              {live
-                ? "Live Vercel Web Analytics for this site. Widgets marked Sample show representative data where Vercel's plan or a given slice can't answer yet."
-                : "Vercel capability profile with this site's routes. Set ANALYTICS_VERCEL_TOKEN and ANALYTICS_VERCEL_PROJECT_ID on the server to load real data. Nothing below is live yet."}
-            </p>
-          </div>
-          <span className={`pill ${live ? "live" : ""}`}>
-            {live ? "Live Vercel" : "Vercel profile · sample"}
-          </span>
-        </div>
-        <div className="dashboard-frame">
-          <AnalyticsProvider connector={connector} theme={theme} range="7d">
-            <Dashboard widgets={DEMO_DASHBOARD} showRange columns={4} />
-          </AnalyticsProvider>
-        </div>
-      </section>
-
-      <section className="analytics" id="kit">
-        <div className="analytics-head">
-          <div>
-            <p className="kicker">Charts</p>
-            <h2>
-              Same data.
-              <em> Different shapes.</em>
-            </h2>
-            <p className="lede compact">
-              A small taste of the kit. Every chart has visual <code>variant</code>s — the drawing,
+      <Section id="kit">
+        <SectionHead
+          kicker="Charts"
+          title="Same data. Different shapes."
+          lede={
+            <>
+              Every chart has visual <code className="text-label-sm">variant</code>s — the drawing,
               not a color theme. Colors inherit from your CSS.{" "}
-              <Link href="/components">See every component and its config</Link>
-              {" · "}
-              <Link href="/docs">Read the docs</Link>.
-            </p>
-          </div>
-        </div>
+              <Link href="/components" className="text-primary-base hover:underline">
+                See every component and its config
+              </Link>
+              .
+            </>
+          }
+        />
         <ChartTeaser theme={theme} />
-      </section>
+      </Section>
 
-      <section className="snippet-block" id="registry">
-        <div className="analytics-head">
-          <div>
-            <p className="kicker">shadcn registry</p>
-            <h2>
-              Install a widget.
-              <em> Own the file.</em>
-            </h2>
-            <p className="lede compact">
-              Add the catalog from this site’s <code>/r</code> folder, or{" "}
-              <code>educlopez/analytics-kit/dashboard</code> from the repo. Runtime still comes from
-              npm so connectors and queries stay canonical.
-            </p>
-          </div>
-          <button type="button" className="ghost" onClick={() => void copy(registry, "registry")}>
-            {copied === "registry" ? "Copied" : "Copy"}
-          </button>
-        </div>
-        <button type="button" className="install" onClick={() => void copy(registry, "registry")}>
-          <span>$</span>
-          <code>{registry}</code>
-          <em>{copied === "registry" ? "Copied" : "Copy"}</em>
-        </button>
-      </section>
-
-      <section className="stat-plate">
-        <CoverImg
-          id="photo-1441974231531-c6227db76b6e"
-          alt="Sun through a forest canopy"
-          position="center 40%"
+      <Section id="registry">
+        <SectionHead
+          kicker="shadcn registry"
+          title="Install a widget. Own the file."
+          lede={
+            <>
+              Add the catalog from this site&apos;s <code className="text-label-sm">/r</code>{" "}
+              folder, or <code className="text-label-sm">educlopez/analytics-kit/dashboard</code>{" "}
+              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+            </>
+          }
         />
-        <div className="cover-scrim vista-scrim" />
-        <div className="stat-copy">
-          <p className="stat-figure">1</p>
-          <h2>
-            constructor change
-            <em> to leave a vendor.</em>
-          </h2>
-        </div>
-      </section>
+        <CopyCommand command={registry} id="registry" />
+      </Section>
 
-      <section className="band" id="how">
-        <div className="band-copy">
-          <p className="kicker">How it works</p>
-          <h2>
-            Three steps.
-            <em> Then you stop thinking about it.</em>
-          </h2>
-        </div>
-        <ol className="steps">
-          {STEPS.map((step) => (
-            <li key={step.n} className="paper-card">
-              <span className="step-n">{step.n}</span>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <Stats componentCount={CATALOG.length} />
 
-      <section className="snippet-block">
-        <div className="analytics-head">
-          <div>
-            <p className="kicker">Drop-in</p>
-            <h2>
-              Same widgets.
-              <em> Vercel connector.</em>
-            </h2>
-            <p className="lede compact">
-              Keep tokens on the server in production. Swap the import for Plausible or GA4.
-            </p>
-          </div>
-        </div>
-        <CodeBlock code={SNIPPET} lang="tsx" title="stats.tsx" copyId="snippet" />
-        <button type="button" className="install" onClick={() => void copy(INSTALL, "install")}>
-          <span>$</span>
-          <code>{INSTALL}</code>
-          <em>{copied === "install" ? "Copied" : "Copy"}</em>
-        </button>
-      </section>
-
-      <section className="band faq">
-        <div className="band-copy">
-          <p className="kicker">FAQ</p>
-          <h2>
-            The usual
-            <em> questions.</em>
-          </h2>
-        </div>
-        <div className="faq-list">
-          {FAQS.map((item, index) => {
-            const open = openFaq === index;
-            return (
-              <div key={item.q} className={`faq-item ${open ? "is-open" : ""}`}>
-                <button type="button" onClick={() => setOpenFaq(open ? null : index)}>
-                  <span>{item.q}</span>
-                  <span aria-hidden="true">{open ? "–" : "+"}</span>
-                </button>
-                {open ? <p>{item.a}</p> : null}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="close">
-        <CoverImg
-          id="photo-1462275646964-a0e3386b89fa"
-          alt="Wildflowers across a hillside"
-          position="center 55%"
+      <Section>
+        <SectionHead
+          kicker="Drop-in"
+          title="Same widgets. Vercel connector."
+          lede="Keep tokens on the server in production. Swap the import for Plausible or GA4."
         />
-        <div className="cover-scrim close-scrim" />
-        <div className="close-copy">
-          <h2>
-            Ship the dashboard.
-            <em> Keep the provider.</em>
-          </h2>
-          <a className="btn btn-paper" href="https://github.com/educlopez/analytics-kit">
-            Get started on GitHub
-          </a>
+        <div className="flex flex-col gap-4">
+          <CodeBlock code={SNIPPET} lang="tsx" title="stats.tsx" copyId="snippet" />
+          <CopyCommand command={INSTALL} id="install" />
         </div>
-      </section>
+      </Section>
+
+      <HowItWorks />
+      <Faq />
+      <Cta />
     </>
   );
 }

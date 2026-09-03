@@ -68,6 +68,328 @@ const CHART_SHARED: PropRow[] = [
 ];
 
 export const PROP_DOCS: Record<string, PropRow[]> = {
+  "breakdown-card": [
+    {
+      name: "rows",
+      type: "BreakdownCardRow[]",
+      notes:
+        "{ key, label?, value, secondary?, icon? }. secondary feeds the second value column; icon is any node — a flag, a favicon, a provider glyph.",
+    },
+    {
+      name: "title",
+      type: "string",
+      notes: "Header text. Ignored when tabs is given — the tabs are the header.",
+    },
+    {
+      name: "tabs",
+      type: "BreakdownCardTab[]",
+      notes: "{ id, label } per dimension, rendered as a tablist. The host owns the state.",
+    },
+    { name: "activeTab", type: "string", notes: "Selected tab id. Defaults to the first tab." },
+    { name: "onTabChange", type: "(id: string) => void", notes: "Fired on tab selection." },
+    {
+      name: "valueLabel",
+      type: "string",
+      default: '"Visitors"',
+      notes: "Right-aligned heading for the value column.",
+    },
+    {
+      name: "secondaryLabel",
+      type: "string",
+      notes: "Heading for the second value column. Omit to hide the column entirely.",
+    },
+    {
+      name: "display",
+      type: '"value" | "share" | "both"',
+      default: '"value"',
+      notes:
+        "value prints the number, share its percentage, both prints each — a percentage alone is the classic dashboard ambiguity.",
+    },
+    {
+      name: "variant",
+      type: '"bars" | "split" | "plain" | "heat"',
+      default: '"bars"',
+      notes:
+        "bars puts the magnitude behind the label. split moves it to its own track underneath. plain drops it. heat tints the whole row instead of measuring it, which survives a narrow column that a bar cannot.",
+    },
+    {
+      name: "fadeLast",
+      type: "boolean",
+      default: "false",
+      notes:
+        "Fades the last row — the honest signal that the list is truncated, rather than a hard cut that reads as the end of the data.",
+    },
+    { name: "onExpand", type: "() => void", notes: "Adds the expand affordance under the rows." },
+    {
+      name: "expandLabel",
+      type: "string",
+      default: '"Show all"',
+      notes: "Text on the expand control.",
+    },
+    {
+      name: "actions",
+      type: "ReactNode",
+      notes:
+        "Toolbar revealed on hover or keyboard focus, so row actions do not compete with the data while you read it.",
+    },
+    {
+      name: "emptyLabel",
+      type: "string",
+      default: '"No breakdown data."',
+      notes: "Shown when rows is empty.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "globe-chart": [
+    {
+      name: "locations",
+      type: "GlobeLocation[]",
+      notes:
+        "{ code?, label?, value, lat?, lon? }. code is an ISO 3166-1 alpha-2 country code, resolved to that country's centroid — which is what providers return. Pass lat/lon to place anything else. Rows that cannot be placed are dropped from the drawing and counted in the note under it.",
+    },
+    {
+      name: "variant",
+      type: '"spin" | "drag" | "focus" | "arcs" | "still"',
+      default: '"spin"',
+      notes:
+        "spin rotates continuously. drag hands rotation to the pointer and the arrow keys. focus swings to each of the busiest locations in turn. arcs draws every location's route into hub. still holds one framing — which is also what the moving variants degrade to under prefers-reduced-motion.",
+    },
+    {
+      name: "dark",
+      type: "boolean",
+      notes:
+        "Defaults to the nearest [data-ak-theme], so an in-dashboard globe follows the dashboard, then to the OS preference.",
+    },
+    {
+      name: "markerColor",
+      type: "string",
+      default: '"var(--ak-chart-1)"',
+      notes:
+        "Any CSS colour. Resolved through a probe node, so a var() chain or a token works and not just a hex.",
+    },
+    {
+      name: "size",
+      type: "number",
+      notes:
+        "Square edge in CSS pixels. Omit to fill the container, which is measured with a ResizeObserver so a column change resizes it even when the window does not.",
+    },
+    { name: "speed", type: "number", default: "1", notes: "Multiplier on the spin rate." },
+    {
+      name: "hub",
+      type: "[number, number]",
+      notes: "Arc destination as [lat, lon]. Defaults to the busiest location.",
+    },
+    {
+      name: "focusDwellMs",
+      type: "number",
+      default: "3200",
+      notes: 'How long variant="focus" holds on each location.',
+    },
+    {
+      name: "ariaLabel",
+      type: "string",
+      notes:
+        "Overrides the generated summary. The default names the count and the three busiest locations, since the canvas itself reads as nothing.",
+    },
+    {
+      name: "emptyLabel",
+      type: "string",
+      default: '"No location data."',
+      notes: "Shown for an empty locations array.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "metric-tabs": [
+    {
+      name: "metrics",
+      type: "MetricTabItem[]",
+      notes:
+        "{ id, label, value, delta?, spark?, hint?, trailing? }. value is preformatted so the host keeps units and locale; spark takes raw numbers and is drawn as an inline polyline, no chart library.",
+    },
+    {
+      name: "activeId",
+      type: "string",
+      notes:
+        "Selected metric. Defaults to the first. The host owns it, so the strip composes with any chart.",
+    },
+    { name: "onChange", type: "(id: string) => void", notes: "Fired on selection." },
+    {
+      name: "variant",
+      type: '"cards" | "strip" | "segmented" | "stacked"',
+      default: '"cards"',
+      notes:
+        "cards is the bordered row. strip drops the boxes for a rule under the active metric. segmented compacts it to a pill group for a toolbar. stacked runs vertically, for a sidebar beside a tall chart.",
+    },
+    {
+      name: "showSpark",
+      type: "boolean",
+      default: "true",
+      notes: "Draws the inline spark where the variant has room for one.",
+    },
+    { name: "ariaLabel", type: "string", default: '"Metric"', notes: "Names the tablist." },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "empty-state": [
+    { name: "title", type: "string", notes: "What is missing. One line." },
+    {
+      name: "description",
+      type: "string",
+      notes: "Why it is empty and what would fill it.",
+    },
+    {
+      name: "icon",
+      type: "ReactNode | null",
+      notes: "Defaults to a neutral mark so the state reads as deliberate. Pass null to drop it.",
+    },
+    { name: "action", type: "ReactNode", notes: "The way out — a button, a link, a range reset." },
+    {
+      name: "variant",
+      type: '"panel" | "dashed" | "inline" | "compact"',
+      default: '"panel"',
+      notes:
+        "panel centres it in a bordered card for a whole widget body. dashed does the same with a dashed edge, which reads as a slot waiting to be filled rather than a failure. inline is one left-aligned row for a table body. compact is the smallest form, for a metric tile.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "quota-bar": [
+    { name: "used", type: "number", notes: "Consumed amount. May exceed the limit." },
+    {
+      name: "limit",
+      type: "number",
+      notes:
+        "The ceiling. Must be positive; the track scales to whichever of used/limit/projected is largest, so going over stays visible.",
+    },
+    { name: "label", type: "string", default: '"Usage"', notes: "Heading above the track." },
+    {
+      name: "projected",
+      type: "number",
+      notes:
+        "Expected usage by the end of the period, drawn as a ghost extension. Ignored when below used.",
+    },
+    { name: "resetsIn", type: "string", notes: 'Free-text countdown, e.g. "26 days".' },
+    {
+      name: "variant",
+      type: '"bar" | "segments" | "steps" | "compact"',
+      default: '"bar"',
+      notes:
+        "bar is one continuous track. segments meters it into 20 blocks. steps marks the quarters. compact drops the header for use inside a metric card.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "marimekko-chart": [
+    {
+      name: "data",
+      type: "ChartDatum[]",
+      notes: "One row per column. Rows totalling zero are dropped.",
+    },
+    {
+      name: "dataKeys",
+      type: "string[]",
+      notes: "Segment keys, stacked in order within each column.",
+    },
+    {
+      name: "labelKey",
+      type: "string",
+      default: '"label"',
+      notes: "Column name, printed on the axis.",
+    },
+    {
+      name: "variant",
+      type: '"mosaic" | "labels" | "outline" | "heat"',
+      default: '"mosaic"',
+      notes:
+        "mosaic is solid fills. labels prints each share where it fits. outline keeps only hairlines. heat drops the categorical palette for one hue tinted by each cell's share, comparing cells across columns instead of naming the series.",
+    },
+    { name: "height", type: "number", default: "260", notes: "Height in px. Width is fluid." },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "spark-table": [
+    {
+      name: "data",
+      type: "SparkRow[]",
+      notes:
+        "Rows carry a series alongside the scalars, which ChartDatum cannot express — hence its own row type.",
+    },
+    { name: "labelKey", type: "string", default: '"label"', notes: "First column." },
+    { name: "dataKey", type: "string", default: '"value"', notes: "Numeric column." },
+    {
+      name: "trendKey",
+      type: "string",
+      default: '"trend"',
+      notes: "Field holding the row's series. Rows without one omit the spark.",
+    },
+    {
+      name: "deltaKey",
+      type: "string",
+      default: '"delta"',
+      notes: "Signed change, coloured by sign.",
+    },
+    { name: "label", type: "string", default: '"Name"', notes: "Header for the first column." },
+    {
+      name: "variant",
+      type: '"sparkline" | "bars" | "area" | "plain"',
+      default: '"sparkline"',
+      notes:
+        "How the trend column draws: a stroke, one bar per point, or a filled stroke. plain drops the column for a dense provider-style list.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "timeline-chart": [
+    {
+      name: "items",
+      type: "Annotation[]",
+      notes:
+        "{ at, label, kind? } — the same shape the annotations layer takes, so a release history can sit under a dashboard without restating it.",
+    },
+    {
+      name: "variant",
+      type: '"rail" | "alternating" | "stacked" | "dots"',
+      default: '"alternating"',
+      notes:
+        "alternating pins above and below. rail keeps one side. dots drops labels to markers. stacked abandons the time axis for one row per item, the only form that survives items clustered on one day.",
+    },
+    {
+      name: "height",
+      type: "number",
+      default: "150",
+      notes: "Rail height in px. Ignored by stacked.",
+    },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "strip-chart": [
+    {
+      name: "lanes",
+      type: "StripLane[]",
+      notes:
+        "{ label, at[] } per lane. Timestamps are anything Date can parse; unparseable ones are dropped.",
+    },
+    {
+      name: "variant",
+      type: '"ticks" | "barcode" | "dots" | "density"',
+      default: '"ticks"',
+      notes:
+        "ticks is one mark per event. barcode runs them full height. dots lets overlap build as opacity. density buckets the lane into 48 slots, the only form that survives thousands of events.",
+    },
+    { name: "laneHeight", type: "number", default: "26", notes: "Track height per lane, in px." },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
+  "radial-time-chart": [
+    {
+      name: "data",
+      type: "RadialTimeCell[]",
+      notes:
+        "{ hour: 0–23, day: 0=Monday, value }. Hour-of-day is cyclical, so 23:00 and 00:00 are neighbours here rather than opposite edges.",
+    },
+    {
+      name: "variant",
+      type: '"rings" | "dots" | "bands"',
+      default: '"rings"',
+      notes:
+        "rings fills each cell by opacity. dots moves the value into the dot radius, which survives print. bands closes the cell gaps so each weekday reads as one continuous ring.",
+    },
+    { name: "size", type: "number", default: "260", notes: "Diameter in px; the chart is square." },
+    { name: "className", type: "string", notes: "Outer wrapper." },
+  ],
   "treemap-chart": [
     {
       name: "data",
@@ -211,16 +533,31 @@ export const PROP_DOCS: Record<string, PropRow[]> = {
     },
     {
       name: "variant",
-      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly" | "riso"',
+      type: '"monotone" | "linear" | "step" | "dashed" | "dots" | "dither" | "glow" | "ping" | "rainbow" | "values" | "focus" | "anomaly" | "riso" | "forecast" | "dual"',
       default: '"monotone"',
       notes:
-        "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots.",
+        "Stroke interpolation and decoration. ping pulses the last point; rainbow strokes --chart-1…5; values labels dots. forecast extends a dotted trend past the last measured point over a tinted span. dual gives each of two keys its own y-axis, tinted to its series.",
     },
     {
       name: "dataKeys",
       type: "string[]",
       default: "[dataKey]",
-      notes: 'Series to draw. Pass several for variant="focus"; ignored by the other variants.',
+      notes:
+        'Series to draw. Pass several for variant="focus", and exactly two for variant="dual" (first key left axis, second right); ignored by the other variants.',
+    },
+    {
+      name: "forecastPeriods",
+      type: "number",
+      default: "7",
+      notes:
+        'How many periods variant="forecast" projects past the last real point. Labels continue the series\' own cadence when they parse as dates, and fall back to +1…+n when they do not.',
+    },
+    {
+      name: "forecastWindow",
+      type: "number",
+      default: "14",
+      notes:
+        "How much of the tail the least-squares trend is fitted to. Client-side, no model and no service — a straight line is the weakest claim still worth drawing, and looking like one is why it reads as a projection.",
     },
     {
       name: "anomalyThreshold",

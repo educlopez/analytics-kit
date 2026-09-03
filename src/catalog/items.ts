@@ -28,6 +28,7 @@ export const CATALOG_GROUPS: { id: CatalogGroupId; label: string }[] = [
 const REACT = { name: "@analytics-kit/react", version: "^0.1.0" };
 const CORE = { name: "@analytics-kit/core", version: "^0.1.0" };
 const RECHARTS = { name: "recharts", version: "^2.15.4" };
+const COBE = { name: "cobe", version: "^2.0.1" };
 
 export const CATALOG: CatalogItem[] = [
   {
@@ -66,7 +67,8 @@ export const CATALOG: CatalogItem[] = [
     title: "Line chart",
     component: "LineChart",
     group: "charts",
-    blurb: "Stroke only. Dashed, ping, rainbow, numbered dots, or a soft glow.",
+    blurb:
+      "Stroke only. Dashed, ping, rainbow, numbered dots, a soft glow, a dotted projection, or twin axes.",
     registry: "line-chart",
     snippet: `<LineChart data={points} variant="monotone" />`,
     variants: [
@@ -83,6 +85,8 @@ export const CATALOG: CatalogItem[] = [
       "focus",
       "anomaly",
       "riso",
+      "forecast",
+      "dual",
     ],
     defaultVariant: "monotone",
     dependencies: [REACT, RECHARTS],
@@ -338,8 +342,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "Usage against a ceiling, with the limit in the drawing.",
     registry: "quota-bar",
     snippet: `<QuotaBar used={20} limit={20} resetsIn="26 days" />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["bar", "segments", "steps", "compact"],
+    defaultVariant: "bar",
     dependencies: [REACT],
   },
   {
@@ -362,8 +366,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "Width is volume, height is share. Area is the real number.",
     registry: "marimekko-chart",
     snippet: `<MarimekkoChart data={rows} dataKeys={devices} />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["mosaic", "labels", "outline", "heat"],
+    defaultVariant: "mosaic",
     dependencies: [REACT],
   },
   {
@@ -374,8 +378,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "A real table with a trailing sparkline and a signed delta.",
     registry: "spark-table",
     snippet: `<SparkTable data={rows} />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["sparkline", "bars", "area", "plain"],
+    defaultVariant: "sparkline",
     dependencies: [REACT],
   },
   {
@@ -386,8 +390,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "A dated rail of deploys, releases and incidents.",
     registry: "timeline-chart",
     snippet: `<TimelineChart items={releases} />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["rail", "alternating", "stacked", "dots"],
+    defaultVariant: "alternating",
     dependencies: [REACT],
   },
   {
@@ -398,8 +402,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "Raw events, one tick each. Bursts and gaps survive, unlike buckets.",
     registry: "strip-chart",
     snippet: `<StripChart lanes={events} />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["ticks", "barcode", "dots", "density"],
+    defaultVariant: "ticks",
     dependencies: [REACT],
   },
   {
@@ -410,8 +414,8 @@ export const CATALOG: CatalogItem[] = [
     blurb: "Hours around the circle, weekdays as rings. Midnight stops being an edge.",
     registry: "radial-time-chart",
     snippet: `<RadialTimeChart data={cells} />`,
-    variants: [],
-    defaultVariant: "",
+    variants: ["rings", "dots", "bands"],
+    defaultVariant: "rings",
     dependencies: [REACT],
   },
   {
@@ -448,6 +452,52 @@ export const CATALOG: CatalogItem[] = [
     snippet: `<GaugeChart value={42} max={100} variant="arc" />`,
     variants: ["arc", "ring", "tick", "score"],
     defaultVariant: "arc",
+    dependencies: [REACT],
+  },
+  {
+    slug: "breakdown-card",
+    title: "Breakdown card",
+    component: "BreakdownCard",
+    group: "lists",
+    blurb:
+      "A breakdown with the panel around it: dimension tabs, two value columns, a faded overflow row and a hover toolbar.",
+    snippet: `<BreakdownCard rows={rows} tabs={dimensions} secondaryLabel="Total" fadeLast />`,
+    variants: ["bars", "split", "plain", "heat"],
+    defaultVariant: "bars",
+    dependencies: [REACT],
+  },
+  {
+    slug: "globe-chart",
+    title: "Globe",
+    component: "GlobeChart",
+    group: "charts",
+    blurb:
+      "Just the globe. Country codes resolve to coordinates, markers scale with the value, and it names the shortfall without WebGL.",
+    snippet: `<GlobeChart locations={countries} variant="spin" />`,
+    variants: ["spin", "drag", "focus", "arcs", "still"],
+    defaultVariant: "spin",
+    dependencies: [REACT, COBE],
+  },
+  {
+    slug: "metric-tabs",
+    title: "Metric tabs",
+    component: "MetricTabs",
+    group: "metrics",
+    blurb: "The metric cards are the chart's tabs — click one and the chart below follows.",
+    snippet: `<MetricTabs metrics={metrics} activeId={metric} onChange={setMetric} />`,
+    variants: ["cards", "strip", "segmented", "stacked"],
+    defaultVariant: "cards",
+    dependencies: [REACT],
+  },
+  {
+    slug: "empty-state",
+    title: "Empty state",
+    component: "EmptyState",
+    group: "layout",
+    blurb: "Nothing to show, said once: what is missing, why, and the way out.",
+    snippet: `<EmptyState title="No events yet" description="…" action={<button>Docs</button>} />`,
+    variants: ["panel", "dashed", "inline", "compact"],
+    defaultVariant: "panel",
     dependencies: [REACT],
   },
   {

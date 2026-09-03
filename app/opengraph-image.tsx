@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { CATALOG } from "../src/catalog/items";
 
 export const alt = "Analytics Kit — one dashboard, any analytics tool";
 export const size = { width: 1200, height: 630 };
@@ -39,26 +40,18 @@ export default function OpengraphImage() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        background: "#f9f8f5",
+        background: "#ffffff",
         padding: 72,
         fontFamily: "sans-serif",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            background: "#070503",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div style={{ width: 16, height: 16, borderRadius: 4, background: "#f9f8f5" }} />
-        </div>
-        <div style={{ fontSize: 30, color: "#1a1613", letterSpacing: "-0.01em" }}>
+        <svg width={31} height={48} viewBox="0 0 31 48" fill="#335cff">
+          <path d="m0 17.8433 30.9054-17.8433-.8189 12.6994-26.32053 15.1961z" />
+          <path d="m3.76562 27.8951 21.73568-12.5492-.8189 12.6994-17.15081 9.902z" opacity="0.5" />
+          <path d="m7.5293 37.9477 12.566-7.255-.8189 12.6994-7.9811 4.6079z" opacity="0.25" />
+        </svg>
+        <div style={{ fontSize: 30, color: "#000000", letterSpacing: "-0.02em" }}>
           Analytics Kit
         </div>
       </div>
@@ -68,8 +61,8 @@ export default function OpengraphImage() {
           style={{
             fontSize: 74,
             lineHeight: 1.05,
-            letterSpacing: "-0.035em",
-            color: "#1a1613",
+            letterSpacing: "-0.045em",
+            color: "#000000",
             display: "flex",
             flexDirection: "column",
           }}
@@ -77,7 +70,7 @@ export default function OpengraphImage() {
           <span>One dashboard.</span>
           <span>Any analytics tool.</span>
         </div>
-        <div style={{ fontSize: 27, color: "#4f4843", maxWidth: 820 }}>
+        <div style={{ fontSize: 27, color: "#666666", maxWidth: 820 }}>
           Provider-agnostic React widgets. Swap Vercel, Plausible, GA4, Umami or PostHog and keep
           the same charts.
         </div>
@@ -87,15 +80,15 @@ export default function OpengraphImage() {
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
           <defs>
             <linearGradient id="og-fill" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#1d779b" stopOpacity="0.34" />
-              <stop offset="100%" stopColor="#1d779b" stopOpacity="0" />
+              <stop offset="0%" stopColor="#335cff" stopOpacity="0.34" />
+              <stop offset="100%" stopColor="#335cff" stopOpacity="0" />
             </linearGradient>
           </defs>
           <path d={`${line} L${w},${h} L0,${h} Z`} fill="url(#og-fill)" />
-          <path d={line} fill="none" stroke="#1d779b" strokeWidth={4} />
+          <path d={line} fill="none" stroke="#335cff" strokeWidth={4} />
         </svg>
-        <div style={{ display: "flex", gap: 28, fontSize: 23, color: "#4f4843" }}>
-          <span>23 chart types</span>
+        <div style={{ display: "flex", gap: 28, fontSize: 23, color: "#666666" }}>
+          <span>{CATALOG.length} components</span>
           <span>·</span>
           <span>5 connectors</span>
           <span>·</span>

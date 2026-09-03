@@ -13,11 +13,11 @@ const LANG: Record<CodeLang, BundledLanguage> = {
 
 export async function highlight(code: string, lang: CodeLang): Promise<string> {
   const highlighter = await getSingletonHighlighter({
-    themes: ["vitesse-dark"],
+    themes: ["vesper"],
     langs: ["tsx", "typescript", "bash", "css", "json"],
   });
   return highlighter.codeToHtml(code, {
     lang: LANG[lang],
-    theme: "vitesse-dark",
+    theme: "vesper",
   });
 }

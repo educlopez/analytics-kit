@@ -1,32 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
-import { DM_Mono, DM_Sans, Newsreader } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import { SiteShell } from "../src/site/SiteShell";
 import { REPO_URL, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../src/site/meta";
 import "../src/tailwind.css";
-import "../src/app.css";
+import "../src/site.css";
 import "@analytics-kit/react/styles.css";
 
-const newsreader = Newsreader({
+// Inter is AlignUI's typeface; Geist Mono stays for code surfaces, which
+// AlignUI does not specify.
+const inter = Inter({
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
-  variable: "--font-title",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const dmMono = DM_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
 });
@@ -91,8 +82,8 @@ export const viewport: Viewport = {
   // Matches each theme's page background, so the mobile browser chrome does
   // not sit on a colour the page never uses.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f9f8f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#120c08" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 };
 
@@ -100,7 +91,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${dmSans.variable} ${dmMono.variable}`}
+      className={`${inter.variable} ${geistMono.variable} antialiased`}
       suppressHydrationWarning
     >
       <head>

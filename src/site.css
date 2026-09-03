@@ -1,0 +1,104 @@
+/* ---------------------------------------------------------------------------
+   Site-level glue on top of the AlignUI theme.
+
+   Everything here exists because something outside AlignUI reads it: the widget
+   package resolves its palette from `--chart-*` and shadcn-style token names,
+   and the catalog preview needs a real height on the wrapper chain Recharts
+   measures against.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* The chart ramp the widget package reads. Pointed at the AlignUI hues so a
+     theme change moves the charts with the rest of the page. */
+  --chart-1: var(--color-blue-500);
+  --chart-2: var(--color-purple-500);
+  --chart-3: var(--color-orange-500);
+  --chart-4: var(--color-teal-500);
+  --chart-5: var(--color-pink-500);
+}
+
+/* The widget package derives its palette from shadcn-style token names. Left to
+   guess against AlignUI's names it painted dark-on-dark, so the contract is
+   mapped explicitly. `body` raises specificity over the package's own defaults,
+   which are imported after this file, and the attribute selector is
+   load-bearing: the package's light block is `.ak-root[data-ak-theme="light"]`,
+   so a bare `.ak-root` here would lose to it. */
+body .ak-root[data-ak-theme] {
+  --ak-bg: var(--color-bg-white-0);
+  --ak-surface: var(--color-bg-white-0);
+  --ak-surface-2: var(--color-bg-weak-50);
+  --ak-border: var(--color-stroke-soft-200);
+  --ak-text: var(--color-text-strong-950);
+  --ak-muted: var(--color-text-sub-600);
+  /* Read through a knob slot so the catalog's Customize panel can set the
+     accent from outside `.ak-root`. This declaration outranks the package's
+     own, so a bare override on an ancestor would never land. */
+  --ak-accent: var(--ak-knob-accent, var(--color-primary-base));
+}
+
+/* AnalyticsProvider renders an `.ak-root` wrapper — and the charts add one more
+   unnamed wrapper inside it — between the frame and the plot. Without a height
+   on that chain the plot resolves against nothing and Recharts draws no SVG.
+   The column lets charts that stack extra chrome underneath (the pie's legend)
+   give the plot whatever space is left instead of squeezing it back to zero. */
+.demo-chart-frame {
+  min-height: max(72px, var(--demo-chart-height, 220px));
+}
+
+.demo-chart-frame > .ak-root,
+.demo-chart-frame > .ak-root > * {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-chart-frame .ak-rechart {
+  flex: 0 0 auto;
+  height: var(--demo-chart-height, 220px) !important;
+  min-height: 0;
+}
+
+/* DialKit's inline panel pads its top by 10px and its bottom by 0, so the last
+   control sat flush against the card's own border — measured gap: 0px. In
+   popover mode a footer fills that space; inline mode has none, so the padding
+   is matched here. Scoped to the inline variant to leave the popover alone. */
+.dialkit-panel-inner.dialkit-panel-inline {
+  padding-bottom: 10px;
+
+  /* The panel renders its select dropdowns as children, and this element
+     carries `overflow: auto` — which never actually scrolls in inline mode
+     (measured clientHeight === scrollHeight on every panel) but does establish
+     a clipping box that cut the open option list off. Nothing here needs to
+     scroll, so the box goes away. */
+  overflow: visible;
+}
+
+/* Sticky only when the tallest panel (~540px, plus its 56px offset and the
+   96px header gap) actually fits. Below that the column scrolls with the page,
+   so its bottom stays reachable — a scroll container of our own is not an
+   option, because it would clip those same dropdowns. */
+@media (min-width: 1280px) and (min-height: 760px) {
+  .ak-dial-sticky {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+/* Long commands and code lines scroll locally; the bar itself would be noise. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

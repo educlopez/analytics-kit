@@ -11,6 +11,7 @@ import {
   type AnalyticsTheme,
 } from "@analytics-kit/react";
 import Link from "next/link";
+import * as Button from "@/components/ui/button";
 
 function TeaserCharts() {
   const series = useQuery({ metrics: ["visitors"], granularity: "day" });
@@ -29,24 +30,31 @@ function TeaserCharts() {
   }));
 
   return (
-    <div className="gallery-grid">
-      <article className="gallery-card">
-        <header>
-          <h3>Area · gradient</h3>
-          <p>
-            The default trend. Color comes from <code>--chart-1</code> on this page.
+    <div className="grid gap-4 md:grid-cols-2">
+      <article className="rounded-20 bg-bg-weak-25 min-w-0 p-6 lg:rounded-3xl lg:p-8">
+        <header className="mb-5">
+          <h3 className="text-label-md lg:text-label-lg text-text-strong-950">Area · gradient</h3>
+          <p className="text-label-sm text-text-soft-400 mt-1">
+            The default trend. Color comes from <code className="font-mono">--chart-1</code> on this
+            page.
           </p>
         </header>
         <AreaChart data={areaData} variant="gradient" />
-        <code>{`<AreaChart variant="gradient" />`}</code>
+        <code className="border-stroke-soft-200 text-text-soft-400 mt-5 block border-t pt-4 font-mono text-xs">
+          {`<AreaChart variant="gradient" />`}
+        </code>
       </article>
-      <article className="gallery-card">
-        <header>
-          <h3>Pie · donut</h3>
-          <p>Share of a dimension. Same query, a different drawing.</p>
+      <article className="rounded-20 bg-bg-weak-25 min-w-0 p-6 lg:rounded-3xl lg:p-8">
+        <header className="mb-5">
+          <h3 className="text-label-md lg:text-label-lg text-text-strong-950">Pie · donut</h3>
+          <p className="text-label-sm text-text-soft-400 mt-1">
+            Share of a dimension. Same query, a different drawing.
+          </p>
         </header>
         <PieChart data={pieData} variant="donut" />
-        <code>{`<PieChart variant="donut" />`}</code>
+        <code className="border-stroke-soft-200 text-text-soft-400 mt-5 block border-t pt-4 font-mono text-xs">
+          {`<PieChart variant="donut" />`}
+        </code>
       </article>
     </div>
   );
@@ -73,13 +81,13 @@ export function ChartTeaser({ theme }: { theme: AnalyticsTheme }) {
       >
         <TeaserCharts />
       </AnalyticsProvider>
-      <div className="teaser-actions">
-        <Link className="btn btn-ink" href="/components">
-          All components &amp; config
-        </Link>
-        <Link className="ghost" href="/docs">
-          Read the docs
-        </Link>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Button.Root asChild className="rounded-10 cursor-pointer">
+          <Link href="/components">All components &amp; config</Link>
+        </Button.Root>
+        <Button.Root variant="neutral" mode="stroke" asChild className="rounded-10 cursor-pointer">
+          <Link href="/docs">Read the docs</Link>
+        </Button.Root>
       </div>
     </div>
   );
