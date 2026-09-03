@@ -1,5 +1,11 @@
 # @analytics-kit/core
 
+## 0.6.0
+
+### Minor Changes
+
+- [#39](https://github.com/educlopez/analytics-kit/pull/39) [`bbe70bc`](https://github.com/educlopez/analytics-kit/commit/bbe70bc292bd8acd0e8177e2e066c6d9ce64a680) Thanks [@educlopez](https://github.com/educlopez)! - Add optional real volume to `CandleDatum`, use it in the candlestick volume pane without drawing phantom zero-volume bars, group legend swatches with their labels, and support custom symlog axes on area and line charts.
+
 ## 0.5.0
 
 ## 0.4.0

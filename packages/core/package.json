@@ -1,6 +1,6 @@
 {
   "name": "@analytics-kit/core",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Provider-agnostic analytics query model, connector contract, and registries.",
   "type": "module",
   "main": "./dist/index.cjs",

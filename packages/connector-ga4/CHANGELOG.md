@@ -1,5 +1,12 @@
 # @analytics-kit/connector-ga4
 
+## 0.6.0
+
+### Patch Changes
+
+- Updated dependencies [[`bbe70bc`](https://github.com/educlopez/analytics-kit/commit/bbe70bc292bd8acd0e8177e2e066c6d9ce64a680)]:
+  - @analytics-kit/core@0.6.0
+
 ## 0.5.0
 
 ### Patch Changes
