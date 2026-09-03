@@ -37,6 +37,8 @@ export const LINE_CHART_VARIANTS = [
   "focus",
   "anomaly",
   "riso",
+  "forecast",
+  "dual",
 ] as const;
 export type LineChartVariant = (typeof LINE_CHART_VARIANTS)[number];
 
@@ -59,7 +61,7 @@ export const BAR_CHART_VARIANTS = [
 export type BarChartVariant = (typeof BAR_CHART_VARIANTS)[number];
 
 /** Variants that draw one line per key in `dataKeys` instead of a single series. */
-export const LINE_MULTI_VARIANTS: readonly LineChartVariant[] = ["focus"];
+export const LINE_MULTI_VARIANTS: readonly LineChartVariant[] = ["focus", "dual"];
 
 /** Variants that draw one bar per key in `dataKeys` instead of a single series. */
 export const BAR_MULTI_VARIANTS: readonly BarChartVariant[] = ["grouped", "stacked", "stacked-100"];
@@ -178,6 +180,36 @@ export interface SunburstNode {
   value: number;
   children?: SunburstNode[];
 }
+
+export const BREAKDOWN_CARD_VARIANTS = ["bars", "split", "plain", "heat"] as const;
+export type BreakdownCardVariant = (typeof BREAKDOWN_CARD_VARIANTS)[number];
+
+export const QUOTA_BAR_VARIANTS = ["bar", "segments", "steps", "compact"] as const;
+export type QuotaBarVariant = (typeof QUOTA_BAR_VARIANTS)[number];
+
+export const MARIMEKKO_VARIANTS = ["mosaic", "labels", "outline", "heat"] as const;
+export type MarimekkoVariant = (typeof MARIMEKKO_VARIANTS)[number];
+
+export const SPARK_TABLE_VARIANTS = ["sparkline", "bars", "area", "plain"] as const;
+export type SparkTableVariant = (typeof SPARK_TABLE_VARIANTS)[number];
+
+export const TIMELINE_VARIANTS = ["rail", "alternating", "stacked", "dots"] as const;
+export type TimelineVariant = (typeof TIMELINE_VARIANTS)[number];
+
+export const STRIP_CHART_VARIANTS = ["ticks", "barcode", "dots", "density"] as const;
+export type StripChartVariant = (typeof STRIP_CHART_VARIANTS)[number];
+
+export const RADIAL_TIME_VARIANTS = ["rings", "dots", "bands"] as const;
+export type RadialTimeVariant = (typeof RADIAL_TIME_VARIANTS)[number];
+
+export const GLOBE_CHART_VARIANTS = ["spin", "drag", "focus", "arcs", "still"] as const;
+export type GlobeChartVariant = (typeof GLOBE_CHART_VARIANTS)[number];
+
+export const METRIC_TABS_VARIANTS = ["cards", "strip", "segmented", "stacked"] as const;
+export type MetricTabsVariant = (typeof METRIC_TABS_VARIANTS)[number];
+
+export const EMPTY_STATE_VARIANTS = ["panel", "dashed", "inline", "compact"] as const;
+export type EmptyStateVariant = (typeof EMPTY_STATE_VARIANTS)[number];
 
 /**
  * Axis scale.

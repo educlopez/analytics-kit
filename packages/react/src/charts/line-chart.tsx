@@ -4,6 +4,7 @@ import {
   CartesianGrid,
   Line,
   LineChart as RechartsLine,
+  ReferenceArea,
   Tooltip,
   XAxis,
   YAxis,
@@ -60,6 +61,62 @@ export function findAnomalyIndexes(values: number[], window = 7, threshold = 3.5
   return out;
 }
 
+/** Key the projection is merged onto. Internal to the forecast variant. */
+const FORECAST_KEY = "__ak_forecast";
+
+/**
+ * Least-squares trend over the tail of a series, extended forward.
+ *
+ * Same footing as the anomaly variant: no model, no service, no call home. A
+ * straight line through the recent past is the weakest claim that is still
+ * worth drawing, and being obviously a straight line is part of why it reads
+ * as a projection rather than as data.
+ */
+export function projectSeries(values: number[], periods: number, window = 14): number[] {
+  if (periods <= 0 || values.length < 2) return [];
+  const tail = values.slice(-Math.max(2, Math.min(window, values.length)));
+  const n = tail.length;
+  const meanX = (n - 1) / 2;
+  const meanY = tail.reduce((sum, value) => sum + value, 0) / n;
+  let sxy = 0;
+  let sxx = 0;
+  for (let i = 0; i < n; i += 1) {
+    sxy += (i - meanX) * (tail[i] - meanY);
+    sxx += (i - meanX) ** 2;
+  }
+  const slope = sxx === 0 ? 0 : sxy / sxx;
+  const intercept = meanY - slope * meanX;
+  return Array.from({ length: periods }, (_, step) =>
+    // Counts do not go negative, and a projection that dips below zero says
+    // more about the fit than about the future.
+    Math.max(0, Math.round(intercept + slope * (n - 1 + step + 1))),
+  );
+}
+
+/**
+ * Labels for the projected points.
+ *
+ * Dated labels get the series' own cadence continued — the gap between the
+ * last two points, whatever it is. Anything else falls back to `+n`, because
+ * inventing a date format the caller never used is worse than admitting the
+ * axis is now counting steps.
+ */
+function forecastLabels(labels: string[], periods: number): string[] {
+  const last = labels[labels.length - 1] ?? "";
+  const prev = labels[labels.length - 2] ?? "";
+  const lastMs = Date.parse(last);
+  const prevMs = Date.parse(prev);
+  const step = lastMs - prevMs;
+  if (!Number.isFinite(lastMs) || !Number.isFinite(prevMs) || step <= 0) {
+    return Array.from({ length: periods }, (_, i) => `+${i + 1}`);
+  }
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(last);
+  return Array.from({ length: periods }, (_, i) => {
+    const iso = new Date(lastMs + step * (i + 1)).toISOString();
+    return dateOnly ? iso.slice(0, 10) : iso;
+  });
+}
+
 const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   monotone: "monotone",
   linear: "linear",
@@ -74,6 +131,8 @@ const CURVE: Record<LineChartVariant, "monotone" | "linear" | "step"> = {
   focus: "monotone",
   anomaly: "monotone",
   riso: "monotone",
+  forecast: "monotone",
+  dual: "monotone",
 };
 
 /** Ring plus a solid centre on the points the rolling MAD flagged. */
@@ -126,6 +185,8 @@ export function LineChart({
   annotations,
   brush = false,
   anomalyThreshold = 3.5,
+  forecastPeriods = 7,
+  forecastWindow = 14,
   config,
   className,
 }: {
@@ -153,6 +214,10 @@ export function LineChart({
    * that rings every wobble trains people to ignore the rings.
    */
   anomalyThreshold?: number;
+  /** How many periods the forecast variant projects past the last real point. */
+  forecastPeriods?: number;
+  /** How much of the tail the trend is fitted to. */
+  forecastWindow?: number;
   config?: ChartConfig;
   className?: string;
 }) {
@@ -179,6 +244,198 @@ export function LineChart({
       : null;
 
   if (!data.length) return <p className="ak-muted">No series data.</p>;
+
+  if (variant === "forecast") {
+    const values = data.map((row) => Number(row[dataKey] ?? 0));
+    const projected = projectSeries(values, forecastPeriods, forecastWindow);
+    const labels = forecastLabels(
+      data.map((row) => String(row[labelKey] ?? "")),
+      projected.length,
+    );
+    // The projection carries the last real point as its own first point, so the
+    // dotted segment starts attached to the solid line instead of floating a
+    // period away from it.
+    const merged: ChartDatum[] = [
+      ...data.map((row, index) => ({
+        ...row,
+        [FORECAST_KEY]: index === last ? values[last] : (null as unknown as number),
+      })),
+      ...projected.map((value, index) => ({
+        [labelKey]: labels[index],
+        [dataKey]: null as unknown as number,
+        [FORECAST_KEY]: value,
+      })),
+    ];
+
+    return (
+      <ChartContainer className={className} config={chartConfig}>
+        <RechartsLine data={merged} syncId={sync?.syncId}>
+          <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+          <XAxis
+            dataKey={labelKey}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            minTickGap={24}
+            tickFormatter={(value: string) => String(value).slice(0, 10)}
+          />
+          {scale === "linear" ? null : (
+            <YAxis
+              scale={rechartsScale(scale)}
+              domain={numericAxisDomain(scale)}
+              allowDataOverflow
+              tickLine={false}
+              axisLine={false}
+              width={44}
+            />
+          )}
+          {/* Tinting the span is the part that cannot be missed. A dotted stroke
+              alone gets read as a style choice; a shaded region says this side of
+              the chart was never measured. */}
+          {labels.length ? (
+            <ReferenceArea
+              x1={String(data[last]?.[labelKey] ?? "")}
+              x2={labels[labels.length - 1]}
+              fill="var(--ak-muted)"
+              fillOpacity={0.07}
+              stroke="none"
+            />
+          ) : null}
+          <Tooltip
+            cursor={{ stroke: "var(--ak-border)" }}
+            content={({ active, payload, label: axisLabel }) => {
+              if (!active || !payload?.length) return null;
+              const actual = payload.find((item) => item.dataKey === dataKey);
+              const point = payload.find((item) => item.dataKey === FORECAST_KEY);
+              const isProjected = actual?.value == null && point?.value != null;
+              return (
+                <ChartTooltipBox
+                  label={String(axisLabel ?? "")}
+                  value={Number(actual?.value ?? point?.value ?? 0)}
+                  // Nothing else in the tooltip distinguishes a measured point
+                  // from a projected one, and the number looks identical.
+                  name={isProjected ? "Projected" : (chartConfig[dataKey]?.label ?? dataKey)}
+                />
+              );
+            }}
+          />
+          <Line
+            type={CURVE[variant]}
+            dataKey={dataKey}
+            stroke={color}
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 4 }}
+            connectNulls={false}
+            isAnimationActive={false}
+          />
+          <Line
+            type={CURVE[variant]}
+            dataKey={FORECAST_KEY}
+            stroke={color}
+            strokeWidth={2}
+            strokeDasharray="4 5"
+            strokeOpacity={0.65}
+            dot={false}
+            activeDot={{ r: 3 }}
+            legendType="none"
+            connectNulls={false}
+            isAnimationActive={false}
+          />
+          {annotationLines(annotations)}
+        </RechartsLine>
+      </ChartContainer>
+    );
+  }
+
+  if (variant === "dual") {
+    // Two axes only make sense for two series, and silently plotting one of them
+    // against an axis the reader cannot attribute is the failure mode of this
+    // chart. Fall back to naming the problem.
+    if (keys.length < 2) {
+      return <p className="ak-muted">A dual-axis line needs two keys in dataKeys.</p>;
+    }
+    const dualConfig = seriesConfig(keys.slice(0, 2), config);
+    const [leftKey, rightKey] = keys;
+    const leftColor = dualConfig[leftKey]?.color ?? "var(--ak-chart-1)";
+    const rightColor = dualConfig[rightKey]?.color ?? "var(--ak-chart-2)";
+
+    return (
+      <div className="grid gap-3">
+        <ChartContainer className={className} config={dualConfig}>
+          <RechartsLine data={data} syncId={sync?.syncId}>
+            <CartesianGrid vertical={false} stroke="var(--ak-border)" strokeDasharray="3 6" />
+            <XAxis
+              dataKey={labelKey}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={24}
+              tickFormatter={(value: string) => String(value).slice(0, 10)}
+            />
+            {/* Each axis is tinted to its own series. Twin axes are only readable
+                when the tick labels tell you which line they belong to, and
+                position alone does not — the left axis is not "the first line"
+                to anyone who did not build the chart. */}
+            <YAxis
+              yAxisId="left"
+              tickLine={false}
+              axisLine={false}
+              width={46}
+              tick={{ fill: leftColor, fontSize: 11 }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tickLine={false}
+              axisLine={false}
+              width={46}
+              tick={{ fill: rightColor, fontSize: 11 }}
+            />
+            <Tooltip
+              cursor={{ stroke: "var(--ak-border)" }}
+              content={({ active, payload, label: axisLabel }) =>
+                active && payload?.length ? (
+                  <ChartTooltipRows
+                    label={String(axisLabel ?? "")}
+                    rows={payload.map((item) => ({
+                      name: dualConfig[String(item.dataKey)]?.label ?? String(item.dataKey),
+                      value: Number(item.value ?? 0),
+                      color: dualConfig[String(item.dataKey)]?.color ?? "",
+                    }))}
+                  />
+                ) : null
+              }
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey={leftKey}
+              stroke={leftColor}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 4 }}
+              connectNulls={join}
+              isAnimationActive={false}
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey={rightKey}
+              stroke={rightColor}
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              dot={false}
+              activeDot={{ r: 4 }}
+              connectNulls={join}
+              isAnimationActive={false}
+            />
+          </RechartsLine>
+        </ChartContainer>
+        <ChartLegend keys={keys.slice(0, 2)} config={dualConfig} data={data} />
+      </div>
+    );
+  }
 
   if (variant === "focus") {
     const focusConfig = seriesConfig(keys, config);

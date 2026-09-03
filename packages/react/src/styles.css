@@ -478,6 +478,33 @@
   opacity: 0.85;
 }
 
+/* `barcode` runs the marks edge to edge so a burst reads as a solid block. */
+.ak-strip-track.is-barcode .ak-strip-tick {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  opacity: 1;
+}
+
+.ak-strip-tick.is-dot {
+  top: 50%;
+  bottom: auto;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+/* `density` gives up on individual events; the bucket carries the count. */
+.ak-strip-bucket {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: block;
+}
+
 .ak-strip-count {
   font-variant-numeric: tabular-nums;
   color: var(--ak-text);
@@ -554,8 +581,32 @@
 }
 
 .ak-mekko-cell {
+  position: relative;
   display: block;
   width: 100%;
+}
+
+/* `outline` keeps the hairline and drops the fill, so the mosaic survives
+   print and does not fight a dense page for attention. */
+.ak-mekko.is-outline .ak-mekko-cell {
+  border-style: solid;
+  border-width: 0 0 1px;
+}
+
+.ak-mekko.is-outline .ak-mekko-col:not(:last-child) .ak-mekko-cell {
+  border-right-width: 1px;
+}
+
+.ak-mekko-share {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ak-surface);
+  font-size: 10px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
 }
 
 .ak-mekko-axis {
@@ -642,6 +693,46 @@
   font-size: 11px;
   text-align: center;
   max-width: 108px;
+}
+
+/* `dots` is markers only: the label lives in the title attribute, which is the
+   only way a dense release history stays legible. */
+.ak-timeline-pin.is-dots b {
+  width: 9px;
+  height: 9px;
+}
+
+.ak-timeline-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-timeline-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ak-timeline-list b {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: translateY(-1px);
+}
+
+.ak-timeline-list small {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--ak-muted);
+}
+
+.ak-timeline-list em {
+  font-style: normal;
+  overflow-wrap: anywhere;
 }
 
 .ak-timeline-pin.is-above {
@@ -762,6 +853,38 @@
 .ak-quota-count {
   color: var(--ak-muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* `segments` meters the allowance into blocks, the way a plan limit is
+   usually read; `steps` keeps the continuous track and marks the quarters. */
+.ak-quota-segments {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+}
+
+.ak-quota-segment {
+  flex: 1 1 0;
+  border-radius: 2px;
+  background: var(--ak-surface-2);
+}
+
+.ak-quota-segment-on {
+  background: var(--ak-chart-1, var(--chart-1));
+}
+
+.ak-quota-segment-ghost {
+  background: var(--ak-chart-1, var(--chart-1));
+  opacity: 0.28;
+}
+
+.ak-quota-step {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--ak-surface);
+  opacity: 0.7;
 }
 
 .ak-quota-track {
@@ -1584,4 +1707,767 @@
   .ak-donut {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---------------------------------------------------------- breakdown card */
+
+.ak-bcard {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ak-bcard-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px 12px;
+  border-bottom: 1px solid var(--ak-border);
+  min-width: 0;
+  /* Narrow cards cannot fit the tab strip and the column headings on one line
+     — measured at a 308px card, the last tab ran straight into the first
+     heading. Wrapping drops the headings to their own line, still right
+     aligned over the columns they name. */
+  flex-wrap: wrap;
+}
+
+.ak-bcard-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ak-text);
+}
+
+.ak-bcard-tabs {
+  display: flex;
+  gap: 14px;
+  /* Wide enough that the head wraps before the tabs get crushed, but capped at
+     the card so it never forces its own overflow. Beyond that width the strip
+     scrolls, so a long dimension list stays on one line. */
+  flex: 1 1 auto;
+  min-width: min(100%, 15rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ak-bcard-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.ak-bcard-tab {
+  appearance: none;
+  flex: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0 0 7px;
+  background: none;
+  color: var(--ak-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ak-bcard-tab:hover {
+  color: var(--ak-text);
+}
+
+.ak-bcard-tab.is-active {
+  border-bottom-color: var(--ak-text);
+  color: var(--ak-text);
+}
+
+/* Column headings, matched to the value columns on each row. */
+.ak-bcard-cols {
+  display: flex;
+  gap: 16px;
+  /* Holds the right edge on whichever line it lands on. */
+  margin-left: auto;
+  padding-bottom: 8px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ak-muted);
+  white-space: nowrap;
+}
+
+.ak-bcard-rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-bcard-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+/* The last row fades when the list is truncated — an honest signal that there
+   is more, rather than a hard cut that reads as the end of the data. */
+.ak-bcard-row.is-faded {
+  mask-image: linear-gradient(180deg, #000 0%, #0006 55%, #0000 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #0006 55%, #0000 100%);
+}
+
+.ak-bcard-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  border-radius: 4px;
+  padding: 5px 8px;
+}
+
+/* `bars` measures the row from behind the label, which halves the row height
+   against a separate track and keeps the label attached to its magnitude. */
+.ak-bcard-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  /* The bar is data, so it carries the data hue at low alpha rather than a
+     surface grey — which vanished whenever the card sat on a tinted ground
+     instead of white. */
+  background: color-mix(in srgb, var(--ak-chart-1, var(--chart-1)) 14%, transparent);
+}
+
+.ak-bcard-icon {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.ak-bcard-icon img,
+.ak-bcard-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ak-bcard-label {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--ak-text);
+}
+
+.ak-bcard-values {
+  display: flex;
+  flex: none;
+  gap: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-bcard-values b {
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--ak-text);
+}
+
+.ak-bcard-share {
+  min-width: 3ch;
+}
+
+.ak-bcard-value,
+.ak-bcard-secondary {
+  min-width: 4ch;
+}
+
+.ak-bcard-secondary {
+  color: var(--ak-muted) !important;
+}
+
+/* `split` gives the magnitude its own track under the label, for when the row
+   has to stay readable at a narrow width. */
+.ak-bcard-split .ak-bcard-row {
+  flex-wrap: wrap;
+}
+
+.ak-bcard-track {
+  order: 3;
+  flex: 1 0 100%;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--ak-surface-2);
+  overflow: hidden;
+}
+
+.ak-bcard-track-fill {
+  display: block;
+  height: 100%;
+  background: var(--ak-chart-1, var(--chart-1));
+}
+
+.ak-bcard-plain .ak-bcard-main,
+.ak-bcard-heat .ak-bcard-main {
+  padding-left: 0;
+}
+
+.ak-bcard-expand {
+  display: flex;
+  justify-content: center;
+}
+
+.ak-bcard-expand button {
+  appearance: none;
+  border: 1px solid var(--ak-border);
+  border-radius: 99px;
+  padding: 3px 12px;
+  background: var(--ak-surface);
+  color: var(--ak-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+}
+
+.ak-bcard-expand button:hover {
+  color: var(--ak-text);
+}
+
+/* Revealed on hover or keyboard focus, so the row actions do not compete with
+   the data for attention while you are reading it. */
+.ak-bcard-actions {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  border: 1px solid var(--ak-border);
+  border-radius: 99px;
+  padding: 3px;
+  background: var(--ak-surface);
+  box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.24);
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  pointer-events: none;
+}
+
+.ak-bcard:hover .ak-bcard-actions,
+.ak-bcard:focus-within .ak-bcard-actions {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-bcard-actions {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Globe
+-------------------------------------------------------------------------- */
+
+.ak-globe {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ak-globe-stage {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  /* The canvas is square and takes its size from this box, so the box must not
+     be able to take its width from the canvas it is sizing. */
+  width: 100%;
+}
+
+/* Sized to the canvas so the hit targets share its coordinate space. */
+.ak-globe-box {
+  position: relative;
+  flex: none;
+  max-width: 100%;
+}
+
+.ak-globe-pins {
+  position: absolute;
+  inset: 0;
+  /* The layer is a coordinate space, not a surface — presses meant for the
+     globe (dragging it) have to pass straight through. */
+  pointer-events: none;
+}
+
+.ak-globe-pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+.ak-globe-hit {
+  appearance: none;
+  display: block;
+  /* Comfortably larger than the drawn marker: the target has to be hittable on
+     a touch screen, where the marker itself is a few pixels across. */
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+/* A ring on hover, so the markers read as things you can press. cobe draws the
+   marker itself; this only ever outlines it. */
+.ak-globe-hit::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ak-chart-1, var(--chart-1));
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.ak-globe-hit:hover::after,
+.ak-globe-hit:focus-visible::after,
+.ak-globe-hit.is-open::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.ak-globe-hit:focus-visible {
+  outline: 2px solid var(--ak-accent);
+  outline-offset: 1px;
+}
+
+.ak-globe-callout {
+  position: absolute;
+  bottom: calc(100% - 2px);
+  left: 50%;
+  display: grid;
+  gap: 1px;
+  width: max-content;
+  max-width: 200px;
+  transform: translate(-50%, -4px);
+  border: 1px solid var(--ak-border);
+  border-radius: 8px;
+  padding: 6px 9px;
+  background: var(--ak-surface);
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.3);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ak-text);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.ak-globe-callout span {
+  color: var(--ak-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-globe-hit:hover + .ak-globe-callout,
+.ak-globe-hit:focus-visible + .ak-globe-callout,
+.ak-globe-hit.is-open + .ak-globe-callout {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-globe-hit::after,
+  .ak-globe-callout {
+    transition: none;
+  }
+}
+
+.ak-globe-canvas {
+  display: block;
+  /* cobe inscribes the sphere in a square with transparent corners, so there
+     is nothing to round or clip. */
+  max-width: 100%;
+  aspect-ratio: 1;
+  contain: paint;
+}
+
+.ak-globe-draggable {
+  cursor: grab;
+  touch-action: none;
+  border-radius: 12px;
+}
+
+.ak-globe-draggable:active {
+  cursor: grabbing;
+}
+
+.ak-globe-draggable:focus-visible {
+  outline: 2px solid var(--ak-accent);
+  outline-offset: 3px;
+}
+
+.ak-globe-note {
+  font-size: 12px;
+}
+
+/* Only the no-WebGL path. Plain rows, deliberately not a chart: it stands in
+   for a drawing that cannot happen, and dressing it up would read as a
+   feature. */
+.ak-globe-plain {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.ak-globe-plain li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ak-text);
+}
+
+.ak-globe-plain b {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Metric tabs
+-------------------------------------------------------------------------- */
+
+.ak-mtabs {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ak-mtab {
+  appearance: none;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  border: 1px solid transparent;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+  position: relative;
+}
+
+.ak-mtab:focus-visible {
+  outline: 2px solid var(--ak-accent);
+  outline-offset: 2px;
+}
+
+.ak-mtab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ak-mtab-label {
+  font-size: 12px;
+  color: var(--ak-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ak-mtab.is-active .ak-mtab-label {
+  color: var(--ak-text);
+}
+
+.ak-mtab-value {
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  /* Unselected metrics stay legible rather than greyed out: they are still
+     numbers the reader came to read, not disabled controls. */
+  color: var(--ak-text);
+}
+
+.ak-mtab-foot {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ak-mtab-foot .ak-muted {
+  font-size: 12px;
+}
+
+.ak-mtab-spark {
+  width: 100%;
+  height: 28px;
+  margin-top: 2px;
+  color: var(--ak-muted);
+  overflow: visible;
+}
+
+/* cards ------------------------------------------------------------------ */
+
+.ak-mtabs-cards {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.ak-mtabs-cards .ak-mtab {
+  border-color: var(--ak-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--ak-surface);
+  transition:
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.ak-mtabs-cards .ak-mtab:hover {
+  border-color: color-mix(in srgb, var(--ak-accent) 40%, var(--ak-border));
+}
+
+.ak-mtabs-cards .ak-mtab.is-active {
+  border-color: var(--ak-accent);
+  background: color-mix(in srgb, var(--ak-accent) 5%, var(--ak-surface));
+}
+
+/* strip ------------------------------------------------------------------ */
+
+.ak-mtabs-strip {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+  border-bottom: 1px solid var(--ak-border);
+}
+
+.ak-mtabs-strip .ak-mtab {
+  padding: 10px 16px 12px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.ak-mtabs-strip .ak-mtab + .ak-mtab {
+  border-left: 1px solid var(--ak-border);
+}
+
+.ak-mtabs-strip .ak-mtab.is-active {
+  border-bottom-color: var(--ak-accent);
+}
+
+/* segmented -------------------------------------------------------------- */
+
+.ak-mtabs-segmented {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, auto);
+  justify-content: start;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--ak-border);
+  border-radius: 99px;
+  background: var(--ak-surface-2);
+}
+
+.ak-mtabs-segmented .ak-mtab {
+  grid-auto-flow: column;
+  align-items: baseline;
+  gap: 8px;
+  border-radius: 99px;
+  padding: 6px 14px;
+}
+
+.ak-mtabs-segmented .ak-mtab.is-active {
+  background: var(--ak-surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+/* The pill has no room for a stacked value, so the two lines run inline and
+   the value drops to label size. */
+.ak-mtabs-segmented .ak-mtab-value {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ak-mtabs-segmented .ak-mtab-foot {
+  display: none;
+}
+
+/* stacked ---------------------------------------------------------------- */
+
+.ak-mtabs-stacked {
+  grid-auto-flow: row;
+  gap: 2px;
+}
+
+.ak-mtabs-stacked .ak-mtab {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border-left: 2px solid transparent;
+}
+
+.ak-mtabs-stacked .ak-mtab.is-active {
+  border-left-color: var(--ak-accent);
+  background: var(--ak-surface-2);
+}
+
+.ak-mtabs-stacked .ak-mtab-value {
+  font-size: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-mtabs-cards .ak-mtab {
+    transition: none;
+  }
+}
+
+/* Column-flow tab rows would otherwise squeeze four metrics into a phone. */
+@media (max-width: 560px) {
+  .ak-mtabs-cards,
+  .ak-mtabs-strip {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+  }
+
+  .ak-mtabs-strip .ak-mtab + .ak-mtab {
+    border-left: 0;
+    border-top: 1px solid var(--ak-border);
+  }
+
+  .ak-mtabs-segmented {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Empty state
+-------------------------------------------------------------------------- */
+
+.ak-empty {
+  display: flex;
+  min-width: 0;
+  color: var(--ak-text);
+}
+
+.ak-empty-body {
+  min-width: 0;
+}
+
+.ak-empty-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.ak-empty-desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--ak-muted);
+  /* Long enough to explain, short enough to read in one pass. */
+  max-width: 44ch;
+}
+
+.ak-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--ak-muted);
+}
+
+.ak-empty-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ak-empty-panel,
+.ak-empty-dashed {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--ak-border);
+  background: var(--ak-surface);
+}
+
+.ak-empty-dashed {
+  border-style: dashed;
+  background: none;
+}
+
+.ak-empty-panel .ak-empty-icon,
+.ak-empty-dashed .ak-empty-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--ak-surface-2);
+  padding: 8px;
+}
+
+.ak-empty-panel .ak-empty-desc,
+.ak-empty-dashed .ak-empty-desc {
+  margin-inline: auto;
+}
+
+.ak-empty-inline {
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+}
+
+.ak-empty-inline .ak-empty-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.ak-empty-inline .ak-empty-action {
+  margin-left: auto;
+}
+
+.ak-empty-compact {
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.ak-empty-compact .ak-empty-title {
+  font-size: 13px;
+  color: var(--ak-muted);
+  font-weight: 500;
+}
+
+.ak-empty-action {
+  flex: none;
 }

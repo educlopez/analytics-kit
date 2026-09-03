@@ -1,4 +1,5 @@
 import type { Annotation } from "./annotations.js";
+import { TIMELINE_VARIANTS, type TimelineVariant } from "./variants.js";
 
 const KIND_COLOR: Record<NonNullable<Annotation["kind"]>, string> = {
   deploy: "var(--ak-chart-2, var(--chart-2))",
@@ -16,11 +17,19 @@ const KIND_COLOR: Record<NonNullable<Annotation["kind"]>, string> = {
 export function TimelineChart({
   items,
   height = 150,
+  variant = "alternating",
   className,
 }: {
   /** `{ at, label, kind? }` — the same shape the annotations layer takes. */
   items: Annotation[];
   height?: number;
+  /**
+   * `alternating` pins above and below the rail. `rail` keeps every pin on one
+   * side. `dots` drops the labels to markers, for a dense release history.
+   * `stacked` abandons the time axis for one row per item, which is the only
+   * form that stays readable when items cluster on the same day.
+   */
+  variant?: TimelineVariant;
   className?: string;
 }) {
   if (!items.length) return <p className="ak-muted">No timeline items.</p>;
@@ -32,6 +41,22 @@ export function TimelineChart({
   const max = Math.max(...times);
   const span = max - min || 1;
 
+  if (variant === "stacked") {
+    return (
+      <div className={className}>
+        <ul className="ak-timeline-list">
+          {sorted.map((item) => (
+            <li key={`${item.at}-${item.label}`}>
+              <b style={{ background: KIND_COLOR[item.kind ?? "note"] }} />
+              <small>{item.at.slice(0, 10)}</small>
+              <em>{item.label}</em>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div className={className} style={{ height }}>
       <div className="ak-timeline" style={{ height }}>
@@ -42,16 +67,27 @@ export function TimelineChart({
           const position = valid
             ? ((times[index] - min) / span) * 100
             : (index / Math.max(sorted.length - 1, 1)) * 100;
-          const above = index % 2 === 0;
+          const above = variant === "alternating" ? index % 2 === 0 : false;
           return (
             <span
-              className={above ? "ak-timeline-pin is-above" : "ak-timeline-pin"}
+              className={[
+                "ak-timeline-pin",
+                above ? "is-above" : "",
+                variant === "dots" ? "is-dots" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
               key={`${item.at}-${item.label}`}
               style={{ left: `${position}%` }}
+              title={variant === "dots" ? `${item.at.slice(0, 10)} — ${item.label}` : undefined}
             >
               <b style={{ background: KIND_COLOR[item.kind ?? "note"] }} />
-              <em>{item.label}</em>
-              <small>{item.at.slice(0, 10)}</small>
+              {variant === "dots" ? null : (
+                <>
+                  <em>{item.label}</em>
+                  <small>{item.at.slice(0, 10)}</small>
+                </>
+              )}
             </span>
           );
         })}
@@ -59,3 +95,6 @@ export function TimelineChart({
     </div>
   );
 }
+
+export { TIMELINE_VARIANTS };
+export type { TimelineVariant };
