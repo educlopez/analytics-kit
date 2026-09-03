@@ -1,5 +1,5 @@
 import { formatNumber, PALETTE } from "./chart.js";
-import type { ChartDatum } from "./variants.js";
+import { MARIMEKKO_VARIANTS, type ChartDatum, type MarimekkoVariant } from "./variants.js";
 
 /**
  * Variable-width stacked bars: width is volume, segment height is share, so
@@ -14,6 +14,7 @@ export function MarimekkoChart({
   labelKey = "label",
   dataKeys,
   height = 260,
+  variant = "mosaic",
   className,
 }: {
   data: ChartDatum[];
@@ -21,6 +22,14 @@ export function MarimekkoChart({
   /** Segment keys, stacked in order within each column. */
   dataKeys: string[];
   height?: number;
+  /**
+   * `mosaic` is solid fills. `labels` prints each segment's share where it
+   * fits. `outline` keeps only the hairlines, for print or a dense page.
+   * `heat` drops the categorical palette for one hue tinted by each cell's
+   * share of its column, which compares cells across columns rather than
+   * naming the series.
+   */
+  variant?: MarimekkoVariant;
   className?: string;
 }) {
   if (!data.length || !dataKeys.length) return <p className="ak-muted">No breakdown data.</p>;
@@ -42,7 +51,7 @@ export function MarimekkoChart({
 
   return (
     <div className={className}>
-      <div className="ak-mekko" style={{ height }}>
+      <div className={`ak-mekko${variant === "outline" ? " is-outline" : ""}`} style={{ height }}>
         {columns.map((column) => (
           <div
             className="ak-mekko-col"
@@ -51,17 +60,29 @@ export function MarimekkoChart({
             // carry more traffic.
             style={{ width: `${(column.total / grand) * 100}%` }}
           >
-            {column.parts.map((value, index) => (
-              <span
-                key={dataKeys[index]}
-                className="ak-mekko-cell"
-                style={{
-                  height: `${(value / column.total) * 100}%`,
-                  background: PALETTE[index % PALETTE.length],
-                }}
-                title={`${column.label} · ${dataKeys[index]}: ${formatNumber(value)}`}
-              />
-            ))}
+            {column.parts.map((value, index) => {
+              const share = value / column.total;
+              return (
+                <span
+                  key={dataKeys[index]}
+                  className="ak-mekko-cell"
+                  style={{
+                    height: `${share * 100}%`,
+                    background:
+                      variant === "outline" ? "transparent" : PALETTE[index % PALETTE.length],
+                    borderColor:
+                      variant === "outline" ? PALETTE[index % PALETTE.length] : undefined,
+                  }}
+                  title={`${column.label} · ${dataKeys[index]}: ${formatNumber(value)}`}
+                >
+                  {/* Only where it fits: a percentage clipped to three pixels is
+                      worse than no percentage. */}
+                  {variant === "labels" && share > 0.12 && column.total / grand > 0.08 ? (
+                    <em className="ak-mekko-share">{Math.round(share * 100)}%</em>
+                  ) : null}
+                </span>
+              );
+            })}
           </div>
         ))}
       </div>
@@ -86,3 +107,6 @@ export function MarimekkoChart({
     </div>
   );
 }
+
+export { MARIMEKKO_VARIANTS };
+export type { MarimekkoVariant };

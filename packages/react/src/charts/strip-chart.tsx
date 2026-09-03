@@ -1,4 +1,5 @@
 import { formatNumber, PALETTE } from "./chart.js";
+import { STRIP_CHART_VARIANTS, type StripChartVariant } from "./variants.js";
 
 export interface StripLane {
   label: string;
@@ -15,10 +16,19 @@ export interface StripLane {
 export function StripChart({
   lanes,
   laneHeight = 26,
+  variant = "ticks",
   className,
 }: {
   lanes: StripLane[];
   laneHeight?: number;
+  /**
+   * `ticks` is one thin mark per event. `barcode` runs them full height with no
+   * lane padding, so a burst reads as a solid block. `dots` rounds them and
+   * lets overlap build up as opacity. `density` gives up on individual events
+   * and buckets the lane, which is the only form that stays readable once a
+   * lane carries thousands.
+   */
+  variant?: StripChartVariant;
   className?: string;
 }) {
   if (!lanes.length) return <p className="ak-muted">No event lanes.</p>;
@@ -45,17 +55,45 @@ export function StripChart({
               <span className="ak-strip-label" title={lane.label}>
                 {lane.label}
               </span>
-              <span className="ak-strip-track" style={{ height: laneHeight }}>
-                {stamps.map((time, tick) => (
-                  <span
-                    key={tick}
-                    className="ak-strip-tick"
-                    style={{
-                      left: `${((time - min) / span) * 100}%`,
-                      background: PALETTE[index % PALETTE.length],
-                    }}
-                  />
-                ))}
+              <span
+                className={`ak-strip-track${variant === "barcode" ? " is-barcode" : ""}`}
+                style={{ height: laneHeight }}
+              >
+                {variant === "density"
+                  ? (() => {
+                      const buckets = 48;
+                      const counts = new Array(buckets).fill(0);
+                      for (const time of stamps) {
+                        const slot = Math.min(
+                          buckets - 1,
+                          Math.floor(((time - min) / span) * buckets),
+                        );
+                        counts[slot] += 1;
+                      }
+                      const peak = Math.max(...counts, 1);
+                      return counts.map((count, slot) => (
+                        <span
+                          key={slot}
+                          className="ak-strip-bucket"
+                          style={{
+                            left: `${(slot / buckets) * 100}%`,
+                            width: `${100 / buckets}%`,
+                            background: PALETTE[index % PALETTE.length],
+                            opacity: count ? 0.15 + (count / peak) * 0.85 : 0,
+                          }}
+                        />
+                      ));
+                    })()
+                  : stamps.map((time, tick) => (
+                      <span
+                        key={tick}
+                        className={`ak-strip-tick${variant === "dots" ? " is-dot" : ""}`}
+                        style={{
+                          left: `${((time - min) / span) * 100}%`,
+                          background: PALETTE[index % PALETTE.length],
+                        }}
+                      />
+                    ))}
               </span>
               <span className="ak-strip-count">{formatNumber(stamps.length)}</span>
             </div>
@@ -69,3 +107,6 @@ export function StripChart({
     </div>
   );
 }
+
+export { STRIP_CHART_VARIANTS };
+export type { StripChartVariant };

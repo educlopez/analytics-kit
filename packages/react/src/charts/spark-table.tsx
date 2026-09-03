@@ -1,4 +1,5 @@
 import { formatNumber } from "./chart.js";
+import { SPARK_TABLE_VARIANTS, type SparkTableVariant } from "./variants.js";
 /**
  * Rows carry a series alongside the scalars, which ChartDatum cannot express —
  * it is Record<string, string | number>. Widening ChartDatum for one component
@@ -20,6 +21,7 @@ export function SparkTable({
   trendKey = "trend",
   deltaKey = "delta",
   label = "Name",
+  variant = "sparkline",
   className,
 }: {
   data: SparkRow[];
@@ -30,6 +32,12 @@ export function SparkTable({
   deltaKey?: string;
   /** Header for the first column. */
   label?: string;
+  /**
+   * How the trend column is drawn: `sparkline` a stroke, `bars` one bar per
+   * point, `area` a filled stroke. `plain` drops the column, which is what a
+   * dense provider-style list wants.
+   */
+  variant?: SparkTableVariant;
   className?: string;
 }) {
   if (!data.length) return <p className="ak-muted">No rows.</p>;
@@ -42,7 +50,7 @@ export function SparkTable({
             <tr>
               <th scope="col">{label}</th>
               <th scope="col">Value</th>
-              <th scope="col">Trend</th>
+              {variant === "plain" ? null : <th scope="col">Trend</th>}
               <th scope="col">Change</th>
             </tr>
           </thead>
@@ -56,9 +64,11 @@ export function SparkTable({
                 <tr key={String(row[labelKey])}>
                   <th scope="row">{String(row[labelKey] ?? "")}</th>
                   <td className="ak-sparktable-value">{formatNumber(Number(row[dataKey] ?? 0))}</td>
-                  <td className="ak-sparktable-trend">
-                    {trend.length > 1 ? <RowSpark values={trend} /> : null}
-                  </td>
+                  {variant === "plain" ? null : (
+                    <td className="ak-sparktable-trend">
+                      {trend.length > 1 ? <RowSpark values={trend} variant={variant} /> : null}
+                    </td>
+                  )}
                   <td className={delta >= 0 ? "ak-delta-up" : "ak-delta-down"}>
                     {delta > 0 ? "+" : ""}
                     {formatNumber(delta)}
@@ -73,12 +83,37 @@ export function SparkTable({
   );
 }
 
-function RowSpark({ values }: { values: number[] }) {
+function RowSpark({ values, variant }: { values: number[]; variant: SparkTableVariant }) {
   const width = 80;
   const height = 18;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const span = max - min || 1;
+
+  if (variant === "bars") {
+    // One bar per point, measured from the row minimum so a flat series does
+    // not render as a row of full-height bars.
+    const slot = width / values.length;
+    return (
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+        {values.map((value, index) => {
+          const h = Math.max(1, ((value - min) / span) * height);
+          return (
+            <rect
+              key={index}
+              x={index * slot}
+              y={height - h}
+              width={Math.max(1, slot - 1)}
+              height={h}
+              fill="var(--ak-chart-1, var(--chart-1))"
+              fillOpacity={0.85}
+            />
+          );
+        })}
+      </svg>
+    );
+  }
+
   const points = values
     .map((value, index) => {
       const x = (index / Math.max(values.length - 1, 1)) * width;
@@ -88,6 +123,13 @@ function RowSpark({ values }: { values: number[] }) {
     .join(" ");
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+      {variant === "area" ? (
+        <polygon
+          points={`0,${height} ${points} ${width},${height}`}
+          fill="var(--ak-chart-1, var(--chart-1))"
+          fillOpacity={0.18}
+        />
+      ) : null}
       <polyline
         points={points}
         fill="none"
@@ -97,3 +139,6 @@ function RowSpark({ values }: { values: number[] }) {
     </svg>
   );
 }
+
+export { SPARK_TABLE_VARIANTS };
+export type { SparkTableVariant };

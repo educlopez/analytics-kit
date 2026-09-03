@@ -46,6 +46,13 @@ const PATHS = [
   "/components/horizon-chart",
   "/components/cohort-grid",
   "/components/treemap-chart",
+  // The widest row layout in the catalog — label plus three numeric columns —
+  // so it is the first thing to overflow a 390px viewport.
+  "/components/breakdown-card",
+  // WebGL on a canvas the page sizes itself, and a tab row that has to collapse
+  // from four columns to four rows — both fail in ways only a real load shows.
+  "/components/globe-chart",
+  "/components/metric-tabs",
   "/docs",
 ];
 

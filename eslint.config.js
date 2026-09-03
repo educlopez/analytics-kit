@@ -50,5 +50,24 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // Vendored AlignUI source. Kept byte-for-byte against upstream so it stays
+    // diffable when the design system updates, which means its own conventions
+    // (`{}` prop defaults, spread-only props) rather than this repo's.
+    // `recursive-clone-children.tsx` is absent on purpose: it carries its own
+    // file-level disable comment, which would then report as unused.
+    files: [
+      "src/components/ui/**/*.{ts,tsx}",
+      "src/hooks/use-tab-observer.ts",
+      "src/utils/polymorphic.ts",
+    ],
+    rules: {
+      "react/prop-types": "off",
+      "react/display-name": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react-hooks/exhaustive-deps": "off",
+    },
+  },
   eslintConfigPrettier,
 );

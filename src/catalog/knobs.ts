@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { CatalogItem } from "./items";
 
 export const PREVIEW_METRICS = ["visitors", "pageviews", "bounceRate", "events"] as const;
@@ -8,6 +9,141 @@ export type PreviewGaps = (typeof PREVIEW_GAPS)[number];
 
 export const PREVIEW_SCALES = ["linear", "log", "symlog"] as const;
 export type PreviewScale = (typeof PREVIEW_SCALES)[number];
+
+/**
+ * The colours every component reads, as the tokens they actually read them
+ * from. Global on purpose: they are not props of any one chart, so they live in
+ * their own panel that survives moving between components.
+ *
+ * The defaults are the resolved light-theme hexes of the site's own ramp, so an
+ * untouched picker shows the colour that is on screen. Only a value that
+ * differs from its default is emitted — otherwise the override would pin the
+ * dark theme to the light theme's accent.
+ */
+export const PREVIEW_THEME_DEFAULTS = {
+  accent: "#335cff",
+  chart1: "#335cff",
+  chart2: "#7d52f4",
+  chart3: "#fa7319",
+  chart4: "#22d3bb",
+  chart5: "#fb4ba3",
+} as const;
+
+export type PreviewTheme = { -readonly [K in keyof typeof PREVIEW_THEME_DEFAULTS]: string };
+
+export const PREVIEW_THEME_KEYS = Object.keys(PREVIEW_THEME_DEFAULTS) as (keyof PreviewTheme)[];
+
+/**
+ * Which chart slots the component on screen actually paints with.
+ *
+ * Showing all five pickers when a single-series line only reads the first one
+ * leaves four controls that do nothing, and no way to tell which is which. The
+ * lists below were read off the components and off what the preview passes
+ * them; `src/catalog/slots.test.ts` scans every rendered preview for the
+ * palette colours and fails if a painted slot is missing from here.
+ */
+const CATEGORICAL: Record<string, number> = {
+  // One colour per category or lane, cycling the whole palette. For these the
+  // full set is the honest answer: the consumer decides how many categories
+  // there are, so every slot can land on screen.
+  "pie-chart": 5,
+  "ring-chart": 5,
+  "sunburst-chart": 5,
+  "funnel-chart": 5,
+  "sankey-chart": 5,
+  "treemap-chart": 5,
+  "share-band": 5,
+  "bump-chart": 5,
+  "strip-chart": 5,
+  // Every registered widget at once, so everything is on screen.
+  dashboard: 5,
+  "gauge-chart": 4,
+  // One lane per metric, and the preview passes four.
+  "horizon-chart": 4,
+  "composed-chart": 3,
+  "waterfall-chart": 3,
+  "timeline-chart": 3,
+  "slope-chart": 3,
+  // Banding, not categories: the mosaic alternates two.
+  "marimekko-chart": 2,
+};
+
+/** Series charts, where the count follows the active variant. */
+function seriesSlots(slug: string, variant: string): number[] {
+  if (slug === "area-chart") {
+    if (variant === "ridge") return [1, 2, 3, 4];
+    if (variant === "stacked" || variant === "stream") return [1, 2];
+    return [1];
+  }
+  if (slug === "line-chart") {
+    if (variant === "focus") return [1, 2, 3, 4];
+    if (variant === "dual") return [1, 2];
+    if (variant === "rainbow") return [1, 2, 3, 4, 5];
+    // The ring on a flagged point is chart-3, and nothing in between is used.
+    if (variant === "anomaly") return [1, 3];
+    return [1];
+  }
+  if (slug === "bar-chart") {
+    if (variant === "grouped" || variant === "stacked" || variant === "stacked-100") return [1, 2];
+    return [1];
+  }
+  return [];
+}
+
+export function chartSlots(slug: string, variant: string): number[] {
+  const series = seriesSlots(slug, variant);
+  if (series.length) return series;
+  const count = CATEGORICAL[slug];
+  return count ? Array.from({ length: count }, (_, i) => i + 1) : [1];
+}
+
+export function defaultTheme(): PreviewTheme {
+  return { ...PREVIEW_THEME_DEFAULTS };
+}
+
+/** Dirty only counts what is on screen — a hidden picker cannot be reset. */
+export function themeDirty(theme: PreviewTheme, slots: number[]): boolean {
+  if (theme.accent !== PREVIEW_THEME_DEFAULTS.accent) return true;
+  return slots.some((index) => {
+    const key = `chart${index}` as keyof PreviewTheme;
+    return theme[key] !== PREVIEW_THEME_DEFAULTS[key];
+  });
+}
+
+/**
+ * Custom properties for the preview frame.
+ *
+ * `--chart-N` rather than `--ak-chart-N`: the widget package declares
+ * `--ak-chart-1: var(--chart-1, …)` on its own `.ak-root`, so an override from
+ * outside that element loses to it — but the `var()` it reads through does not.
+ * The accent goes through `--ak-knob-accent`, which site.css reads for the same
+ * reason.
+ */
+export function themeVars(theme: PreviewTheme, slots: number[]): CSSProperties {
+  const vars: Record<string, string> = {};
+  if (theme.accent !== PREVIEW_THEME_DEFAULTS.accent) vars["--ak-knob-accent"] = theme.accent;
+  for (const index of slots) {
+    const key = `chart${index}` as keyof PreviewTheme;
+    if (theme[key] !== PREVIEW_THEME_DEFAULTS[key]) vars[`--chart-${index}`] = theme[key];
+  }
+  return vars as CSSProperties;
+}
+
+/** The same overrides as a copyable stylesheet, for the Code tab. */
+export function themeCss(theme: PreviewTheme, slots: number[]): string {
+  const lines: string[] = [];
+  if (theme.accent !== PREVIEW_THEME_DEFAULTS.accent) lines.push(`  --ak-accent: ${theme.accent};`);
+  for (const index of slots) {
+    const key = `chart${index}` as keyof PreviewTheme;
+    if (theme[key] !== PREVIEW_THEME_DEFAULTS[key])
+      lines.push(`  --chart-${index}: ${theme[key]};`);
+  }
+  if (!lines.length) return "";
+  return `/* Component colours. On :root for the whole app, or on any wrapper to scope them. */
+:root {
+${lines.join("\n")}
+}`;
+}
 
 export interface PreviewKnobs {
   variant: string;
@@ -114,7 +250,13 @@ function attr(
   return `\n  ${name}="${value}"`;
 }
 
-export function buildUsage(item: CatalogItem, knobs: PreviewKnobs): string {
+export function buildUsage(item: CatalogItem, knobs: PreviewKnobs, theme?: PreviewTheme): string {
+  const jsx = buildJsx(item, knobs);
+  const css = theme ? themeCss(theme, chartSlots(item.slug, knobs.variant)) : "";
+  return css ? `${jsx}\n\n${css}` : jsx;
+}
+
+function buildJsx(item: CatalogItem, knobs: PreviewKnobs): string {
   const heightClass =
     knobs.height !== 220 || knobs.variant === "spark" ? `h-[${knobs.height}px]` : undefined;
 

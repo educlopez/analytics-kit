@@ -9,9 +9,6 @@ const nextConfig: NextConfig = {
     "@analytics-kit/connector-vercel",
   ],
   serverExternalPackages: ["shiki", "@shikijs/engine-oniguruma"],
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
-  },
 };
 
 export default nextConfig;

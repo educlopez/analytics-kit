@@ -31,6 +31,16 @@ export {
   AXIS_SCALES,
   SHARE_BAND_VARIANTS,
   SLOPE_CHART_VARIANTS,
+  BREAKDOWN_CARD_VARIANTS,
+  QUOTA_BAR_VARIANTS,
+  MARIMEKKO_VARIANTS,
+  SPARK_TABLE_VARIANTS,
+  TIMELINE_VARIANTS,
+  STRIP_CHART_VARIANTS,
+  RADIAL_TIME_VARIANTS,
+  GLOBE_CHART_VARIANTS,
+  METRIC_TABS_VARIANTS,
+  EMPTY_STATE_VARIANTS,
 } from "./charts/variants.js";
 export type {
   AreaChartVariant,
@@ -64,11 +74,21 @@ export type {
   ScatterChartVariant,
   SunburstChartVariant,
   SunburstNode,
+  BreakdownCardVariant,
+  QuotaBarVariant,
+  MarimekkoVariant,
+  SparkTableVariant,
+  TimelineVariant,
+  StripChartVariant,
+  RadialTimeVariant,
+  GlobeChartVariant,
+  MetricTabsVariant,
+  EmptyStateVariant,
 } from "./charts/variants.js";
 export { ChartContainer, ChartTooltipBox } from "./charts/chart.js";
 export type { ChartConfig } from "./charts/chart.js";
 export { AreaChart } from "./charts/area-chart.js";
-export { findAnomalyIndexes, LineChart } from "./charts/line-chart.js";
+export { findAnomalyIndexes, LineChart, projectSeries } from "./charts/line-chart.js";
 export { BarChart } from "./charts/bar-chart.js";
 export { PieChart } from "./charts/pie-chart.js";
 export { FunnelChart } from "./charts/funnel-chart.js";
@@ -85,6 +105,8 @@ export { HeatmapChart } from "./charts/heatmap-chart.js";
 export { SunburstChart } from "./charts/sunburst-chart.js";
 export { ProfitLossChart } from "./charts/profit-loss-chart.js";
 export { HorizonChart } from "./charts/horizon-chart.js";
+export { BreakdownCard } from "./charts/breakdown-card.js";
+export type { BreakdownCardRow, BreakdownCardTab } from "./charts/breakdown-card.js";
 export { CohortGrid } from "./charts/cohort-grid.js";
 export { SyncGroup, useSyncGroup } from "./charts/sync.js";
 export { annotationLines } from "./charts/annotations.js";
@@ -104,6 +126,12 @@ export { StripChart } from "./charts/strip-chart.js";
 export type { StripLane } from "./charts/strip-chart.js";
 export { RadialTimeChart } from "./charts/radial-time-chart.js";
 export type { RadialTimeCell } from "./charts/radial-time-chart.js";
+export { GlobeChart } from "./charts/globe-chart.js";
+export type { GlobeLocation } from "./charts/globe-chart.js";
+export { COUNTRY_COORDS, countryCoords } from "./charts/country-coords.js";
+export { MetricTabs } from "./charts/metric-tabs.js";
+export type { MetricTabItem } from "./charts/metric-tabs.js";
+export { EmptyState } from "./primitives/EmptyState.js";
 export { Odometer } from "./charts/odometer.js";
 export { SmallMultiples } from "./charts/small-multiples.js";
 export { cn } from "./lib/cn.js";
