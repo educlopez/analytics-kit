@@ -53,6 +53,7 @@ export const metadata: Metadata = {
     canonical: "/",
     types: {
       "text/plain": "/llms.txt",
+      "application/json": "/openapi.json",
     },
   },
   openGraph: {
@@ -105,6 +106,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SiteShell>{children}</SiteShell>
         {/* Structured data: SoftwareSourceCode is the accurate type for a
             library. WebSite carries the search action target. */}
+        {/* The IANA-registered relation for an API description, so a client
+            can discover the spec from any page instead of guessing its URL. */}
+        <link rel="service-desc" type="application/json" href="/openapi.json" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

@@ -14,7 +14,7 @@ import { BrandMark } from "@/site/BrandMark";
 
 const socialLinksData = [
   { id: "github", href: "https://github.com/educlopez/wingtics", icon: RiGithubFill },
-  { id: "npm", href: "https://www.npmjs.com/org/analytics-kit", icon: RiNpmjsFill },
+  { id: "npm", href: "https://www.npmjs.com/org/wingtics", icon: RiNpmjsFill },
 ];
 
 const footerLinksData = {
@@ -34,7 +34,7 @@ const footerLinksData = {
       href: "https://www.npmjs.com/package/@wingtics/next",
       text: "@wingtics/next",
     },
-    { id: "pkg4", href: "https://www.npmjs.com/org/analytics-kit", text: "All connectors" },
+    { id: "pkg4", href: "https://www.npmjs.com/org/wingtics", text: "All connectors" },
   ],
   docs: [
     { id: "doc1", href: "/docs#install", text: "Install" },
@@ -46,12 +46,21 @@ const footerLinksData = {
     { id: "res1", href: "/components", text: "Components" },
     { id: "res5", href: "/demo", text: "Demo platform" },
     { id: "res2", href: "/llms.txt", text: "llms.txt" },
+    { id: "res6", href: "/openapi.json", text: "OpenAPI spec" },
     { id: "res3", href: "https://github.com/educlopez/wingtics/issues", text: "Issues" },
     {
       id: "res4",
       href: "https://github.com/educlopez/wingtics/blob/main/LICENSE",
       text: "MIT license",
     },
+  ],
+  // Sitemap and llms.txt listed these, but nothing on the site pointed at them,
+  // so a crawler starting at the homepage never reached them — which is how
+  // pages that exist still read as missing.
+  project: [
+    { id: "prj1", href: "/about", text: "About" },
+    { id: "prj2", href: "/contact", text: "Contact" },
+    { id: "prj3", href: "/privacy", text: "Privacy" },
   ],
 };
 
@@ -112,8 +121,8 @@ export function Footer() {
               </LinkButton.Root>
             ))}
           </div>
-          <div className="flex lg:gap-20">
-            <div className="border-stroke-soft-200 flex w-full flex-col items-start gap-5 border-r pr-10 lg:w-auto lg:border-r-0 lg:pr-0">
+          <div className="grid grid-cols-2 gap-x-10 gap-y-8 lg:flex lg:gap-20">
+            <div className="border-stroke-soft-200 flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:border-r-0 lg:pr-0">
               <div className="text-label-sm text-text-soft-400">Docs</div>
               {footerLinksData.docs.map((link) => (
                 <LinkButton.Root
@@ -125,7 +134,7 @@ export function Footer() {
                 </LinkButton.Root>
               ))}
             </div>
-            <div className="flex w-full flex-col items-start gap-5 pl-10 lg:w-auto lg:pl-0">
+            <div className="border-stroke-soft-200 flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:border-r-0 lg:pr-0 lg:pl-0">
               <div className="text-label-sm text-text-soft-400">Resources</div>
               {footerLinksData.resources.map((link) => (
                 <LinkButton.Root
@@ -134,6 +143,18 @@ export function Footer() {
                   asChild
                 >
                   <a href={link.href}>{link.text}</a>
+                </LinkButton.Root>
+              ))}
+            </div>
+            <div className="flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:pl-0">
+              <div className="text-label-sm text-text-soft-400">Project</div>
+              {footerLinksData.project.map((link) => (
+                <LinkButton.Root
+                  key={link.id}
+                  className="text-text-sub-600 text-label-sm h-auto cursor-pointer whitespace-break-spaces"
+                  asChild
+                >
+                  <Link href={link.href}>{link.text}</Link>
                 </LinkButton.Root>
               ))}
             </div>
