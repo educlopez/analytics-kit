@@ -121,8 +121,8 @@ export function Footer() {
               </LinkButton.Root>
             ))}
           </div>
-          <div className="flex lg:gap-20">
-            <div className="border-stroke-soft-200 flex w-full flex-col items-start gap-5 border-r pr-10 lg:w-auto lg:border-r-0 lg:pr-0">
+          <div className="grid grid-cols-2 gap-x-10 gap-y-8 lg:flex lg:gap-20">
+            <div className="border-stroke-soft-200 flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:border-r-0 lg:pr-0">
               <div className="text-label-sm text-text-soft-400">Docs</div>
               {footerLinksData.docs.map((link) => (
                 <LinkButton.Root
@@ -134,7 +134,7 @@ export function Footer() {
                 </LinkButton.Root>
               ))}
             </div>
-            <div className="border-stroke-soft-200 flex w-full flex-col items-start gap-5 border-r pr-10 pl-10 lg:w-auto lg:border-r-0 lg:pr-0 lg:pl-0">
+            <div className="border-stroke-soft-200 flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:border-r-0 lg:pr-0 lg:pl-0">
               <div className="text-label-sm text-text-soft-400">Resources</div>
               {footerLinksData.resources.map((link) => (
                 <LinkButton.Root
@@ -146,7 +146,7 @@ export function Footer() {
                 </LinkButton.Root>
               ))}
             </div>
-            <div className="flex w-full flex-col items-start gap-5 pl-10 lg:w-auto lg:pl-0">
+            <div className="flex min-w-0 flex-col items-start gap-5 lg:w-auto lg:pl-0">
               <div className="text-label-sm text-text-soft-400">Project</div>
               {footerLinksData.project.map((link) => (
                 <LinkButton.Root
