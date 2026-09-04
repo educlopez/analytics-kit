@@ -58,7 +58,7 @@ Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs hatch
 ## shadcn registry
 
 ```bash
-pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/area-chart.json
+pnpm dlx shadcn@latest add https://wingtics.com/r/area-chart.json
 ```
 
 Part of [Wingtics](https://github.com/educlopez/wingtics).

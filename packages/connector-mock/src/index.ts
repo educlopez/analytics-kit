@@ -167,7 +167,7 @@ export function createAnalyticsKitMockConnector(
     profile: "vercel",
     scale: 2.4,
     ...options,
-    siteName: "analytics-kit-demo.vercel.app",
+    siteName: "wingtics.com",
     dataset: ANALYTICS_KIT_DATASET,
   });
 }
