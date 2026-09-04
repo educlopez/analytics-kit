@@ -1,5 +1,5 @@
 /** Canonical origin. Every absolute URL on the site is built from this. */
-export const SITE_URL = "https://analytics-kit-demo.vercel.app";
+export const SITE_URL = "https://wingtics.com";
 
 export const SITE_NAME = "Wingtics";
 

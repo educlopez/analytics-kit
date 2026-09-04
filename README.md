@@ -142,21 +142,21 @@ Charts are Tailwind + Recharts, so they drop into a shadcn-style codebase withou
 Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@analytics-kit/react` for data:
 
 ```bash
-pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/dashboard.json
+pnpm dlx shadcn@latest add https://wingtics.com/r/dashboard.json
 ```
 
 GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
 
 Items: every catalog chart plus `metric-card` and `dashboard`.
 
-The site serves `/r/{name}.json`. `NEXT_PUBLIC_SITE_URL` should be `https://analytics-kit-demo.vercel.app` in Vercel so built registry items keep that origin.
+The site serves `/r/{name}.json`. `NEXT_PUBLIC_SITE_URL` should be `https://wingtics.com` in Vercel so built registry items keep that origin.
 
 Namespace:
 
 ```json
 {
   "registries": {
-    "@analytics-kit": "https://analytics-kit-demo.vercel.app/r/{name}.json"
+    "@analytics-kit": "https://wingtics.com/r/{name}.json"
   }
 }
 ```
@@ -203,11 +203,11 @@ Connectors map those onto vendor names (GA4 `activeUsers`, Plausible `bounce_rat
 
 ## Demo
 
-Live site: **https://analytics-kit-demo.vercel.app**
+Live site: **https://wingtics.com**
 
-- Docs — https://analytics-kit-demo.vercel.app/docs
-- Components — https://analytics-kit-demo.vercel.app/components
-- Area chart — https://analytics-kit-demo.vercel.app/components/area-chart
+- Docs — https://wingtics.com/docs
+- Components — https://wingtics.com/components
+- Area chart — https://wingtics.com/components/area-chart
 
 The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
 
@@ -220,7 +220,7 @@ The product site is the Next.js app at the repo root. The browser talks to `/api
    - `ANALYTICS_VERCEL_TOKEN` — account token scoped to the team that owns the project
    - `ANALYTICS_VERCEL_PROJECT_ID`
    - `ANALYTICS_VERCEL_TEAM_ID`
-   - `NEXT_PUBLIC_SITE_URL=https://analytics-kit-demo.vercel.app`
+   - `NEXT_PUBLIC_SITE_URL=https://wingtics.com`
 
 The dashboard reports this site's own traffic, collected by `@vercel/analytics` in `app/layout.tsx`.
 Set `ANALYTICS_VERCEL_PROJECT_ID` explicitly — the connector does not read Vercel's auto-injected
