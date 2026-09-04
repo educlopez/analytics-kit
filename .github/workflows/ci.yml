@@ -4,6 +4,9 @@ on:
   pull_request:
   push:
     branches: [main]
+  # Release pushes from changesets/action use GITHUB_TOKEN, which does not
+  # re-fire pull_request workflows. release.yml dispatches this after versioning.
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}

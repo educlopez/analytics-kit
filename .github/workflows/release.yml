@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
+      actions: write
       contents: write
       pull-requests: write
       id-token: write
@@ -28,6 +29,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - uses: changesets/action@v1
+        id: changesets
         with:
           version: pnpm version-packages
           publish: pnpm exec changeset publish
@@ -39,3 +41,13 @@ jobs:
           # and only falls back to OIDC trusted publishing when none is set. Every
           # @analytics-kit/* package trusts educlopez/analytics-kit + release.yml.
           NPM_CONFIG_PROVENANCE: true
+      # GITHUB_TOKEN pushes do not trigger pull_request workflows, so the release
+      # PR never gets lint · test · build unless we dispatch CI on its branch.
+      - name: Trigger CI on release PR branch
+        if: steps.changesets.outputs.published != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git ls-remote --exit-code --heads origin changeset-release/main >/dev/null 2>&1; then
+            gh workflow run ci.yml --ref changeset-release/main
+          fi
