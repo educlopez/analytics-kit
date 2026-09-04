@@ -138,11 +138,51 @@ async function run() {
           fail(`[${width} ${locale}] ${path} — blank mark — ${mark}`);
         }
 
-        const overflow = await page.evaluate(
-          () => document.body.scrollWidth - document.body.clientWidth,
-        );
-        if (overflow > 2) {
-          fail(`[${width} ${locale}] ${path} — body scrolls horizontally by ${overflow}px`);
+        // Naming the element matters more than the number: text metrics differ
+        // between this machine and CI, so an overflow can reproduce only there,
+        // and "4px" alone gives the next person nothing to look at.
+        const overflow = await page.evaluate(() => {
+          const px = document.body.scrollWidth - document.body.clientWidth;
+          if (px <= 2) return { px, culprits: [] };
+          const doc = document.documentElement;
+          const limit = doc.clientWidth;
+          // An element wider than the viewport only pushes the page when no
+          // ancestor clips or scrolls it — otherwise every code block inside
+          // an overflow-x:auto wrapper would be reported.
+          const contained = (el) => {
+            for (let p = el.parentElement; p && p !== doc; p = p.parentElement) {
+              const ox = getComputedStyle(p).overflowX;
+              if (ox === "auto" || ox === "scroll" || ox === "hidden") return true;
+            }
+            return false;
+          };
+          const culprits = [];
+          for (const el of document.querySelectorAll("*")) {
+            const r = el.getBoundingClientRect();
+            if (r.width === 0 || r.right <= limit + 0.5) continue;
+            if (contained(el)) continue;
+            if (culprits.some((c) => c.el.contains(el))) continue; // outermost only
+            culprits.push({ el, right: Math.round(r.right), width: Math.round(r.width) });
+          }
+          return {
+            px,
+            culprits: culprits.slice(0, 3).map((c) => {
+              const cls = (c.el.className?.baseVal ?? c.el.className ?? "").toString();
+              return (
+                `<${c.el.tagName.toLowerCase()}> right=${c.right} w=${c.width}` +
+                ` "${(c.el.textContent ?? "").trim().slice(0, 30)}"` +
+                (cls ? ` .${cls.slice(0, 70)}` : "")
+              );
+            }),
+          };
+        });
+        if (overflow.px > 2) {
+          const who = overflow.culprits.length
+            ? ` — ${overflow.culprits.join(" | ")}`
+            : " — no uncontained element found; likely an intrinsic min-width";
+          fail(
+            `[${width} ${locale}] ${path} — body scrolls horizontally by ${overflow.px}px${who}`,
+          );
         }
 
         for (const error of consoleErrors) {
