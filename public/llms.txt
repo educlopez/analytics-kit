@@ -2,10 +2,10 @@
 
 Provider-agnostic analytics widgets for React. One query model, five connectors, the same dashboard.
 
-Site: https://analytics-kit-demo.vercel.app
+Site: https://wingtics.com
 Repo: https://github.com/educlopez/wingtics
-Docs: https://analytics-kit-demo.vercel.app/docs
-Components: https://analytics-kit-demo.vercel.app/components
+Docs: https://wingtics.com/docs
+Components: https://wingtics.com/components
 
 ## Install
 
@@ -110,7 +110,7 @@ No kit theme pack. Set host CSS variables:
 ## shadcn registry
 
 ```bash
-pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/dashboard.json
+pnpm dlx shadcn@latest add https://wingtics.com/r/dashboard.json
 ```
 
 Every catalog chart plus `metric-card` and `dashboard`. GitHub: `educlopez/wingtics/dashboard`.
