@@ -1,6 +1,6 @@
 {
   "name": "@wingtics/connector-posthog",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "PostHog HogQL connector for Wingtics.",
   "type": "module",
   "main": "./dist/index.cjs",

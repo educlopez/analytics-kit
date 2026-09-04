@@ -1,5 +1,14 @@
 # @analytics-kit/connector-mock
 
+## 0.6.1
+
+### Patch Changes
+
+- [#51](https://github.com/educlopez/wingtics/pull/51) [`b8c4960`](https://github.com/educlopez/wingtics/commit/b8c4960e3ce60b1e6a4c6e6b64c8ec720c885525) Thanks [@educlopez](https://github.com/educlopez)! - The mock connector reported `analytics-kit-demo.vercel.app` as its site name, which the demo dashboard shows verbatim — so the old brand was still on screen. It now reports `wingtics.com`.
+
+- Updated dependencies []:
+  - @wingtics/core@0.6.1
+
 ## 0.6.0
 
 ### Patch Changes
