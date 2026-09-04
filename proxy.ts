@@ -10,8 +10,19 @@ import { NextResponse, type NextRequest } from "next/server";
  * in the cache first — so the negotiation works locally and silently fails in
  * production.
  *
- * `Vary` goes on every negotiated path, including the ones that answered in
- * HTML, because that is where the wrong cache entry would be created.
+ * Only the markdown half can carry that `Vary`, and not for want of trying.
+ * Next 16 computes its own `vary` for page responses (rsc, next-router-*) and
+ * replaces everything else — measured four ways, on a real deployment as well
+ * as locally: `NextResponse.next()`, a self-`rewrite`, `headers()` in
+ * next.config, and `headers` in vercel.json all lose it. The markdown rewrite
+ * keeps it only because a Route Handler response is not a page response.
+ *
+ * So the HTML half ships without `Vary: Accept`. Vercel is not exposed —
+ * proxy runs in front of its cache, verified in production against a STALE
+ * HTML cache entry that still negotiated correctly — but a cache between
+ * Vercel and the client could hand that HTML to an agent asking for markdown.
+ * Known and unfixable at this Next version; do not spend another afternoon on
+ * it. scripts/edge-vary.mjs reports the current state on any deployment.
  */
 const MARKDOWN_TYPES = ["text/markdown", "text/x-markdown", "text/plain"];
 
@@ -79,7 +90,7 @@ export function prefersMarkdown(accept: string | null): boolean {
   return markdown.weight === html.weight && markdown.specificity === EXACT;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (prefersMarkdown(request.headers.get("accept"))) {
@@ -90,9 +101,8 @@ export function middleware(request: NextRequest) {
     return rewritten;
   }
 
-  const response = NextResponse.next();
-  response.headers.set("Vary", "Accept, Accept-Encoding");
-  return response;
+  // No Vary here: Next replaces it on page responses. `vercel.json` adds it.
+  return NextResponse.next();
 }
 
 export const config = {
