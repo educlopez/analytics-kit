@@ -5,6 +5,12 @@ import { WidgetFrame } from "@wingtics/react";
 import { prefersMarkdown } from "../../middleware";
 import { MARKDOWN_PATHS, markdownFor } from "./markdown";
 import { CATALOG } from "../catalog/items";
+import {
+  BUILTIN_DIMENSIONS,
+  BUILTIN_METRICS,
+  DATE_RANGE_PRESETS,
+  TIME_GRANULARITIES,
+} from "@wingtics/core";
 
 describe("Accept negotiation", () => {
   it("serves markdown only when the client actually asked for it", () => {
@@ -88,5 +94,72 @@ describe("widget heading level", () => {
     );
     expect(html).toContain('<h2 class="ak-widget-title">');
     expect(html).not.toContain("<h3");
+  });
+});
+
+describe("Accept specificity, per RFC 9110", () => {
+  // Found in review: taking the highest weight anywhere in the header instead
+  // of the most specific matching range hands HTML to a client that explicitly
+  // asked for markdown at a lower q.
+  it("lets an exact range beat a wildcard with a higher q", () => {
+    expect(prefersMarkdown("text/markdown;q=0.8, text/html;q=0.7, text/*;q=1")).toBe(true);
+    expect(prefersMarkdown("text/markdown;q=0.4, text/html;q=0.9, text/*;q=1")).toBe(false);
+  });
+
+  it("does not turn a bare wildcard into a markdown request", () => {
+    // */* tolerates markdown but did not ask for it. Serving markdown to
+    // everything that sends */* would break plain HTTP clients.
+    expect(prefersMarkdown("*/*")).toBe(false);
+    expect(prefersMarkdown("text/*")).toBe(false);
+  });
+
+  it("reads markdown named only through a group wildcard as tolerance, not preference", () => {
+    expect(prefersMarkdown("text/*;q=1, application/json;q=0.5")).toBe(false);
+  });
+});
+
+describe("openapi spec", () => {
+  // The first draft of the spec typed its enums out by hand and got four value
+  // names wrong and ten values missing, advertising fields the API rejects.
+  // These pin every enum to the contract it describes.
+  it("takes its enums from the contract, not from prose", async () => {
+    const { GET } = await import("../../app/openapi.json/route");
+    const spec = (await (await GET()).json()) as Record<string, any>;
+    const query = spec.components.schemas.AnalyticsQuery.properties;
+
+    expect(query.metrics.items.enum).toEqual([...BUILTIN_METRICS]);
+    expect(query.dimensions.items.enum).toEqual([...BUILTIN_DIMENSIONS]);
+    expect(query.granularity.enum).toEqual([...TIME_GRANULARITIES]);
+    expect(query.range.oneOf[0].enum).toEqual([...DATE_RANGE_PRESETS]);
+
+    // The names that were wrong, named explicitly so a regression is obvious.
+    expect(query.dimensions.items.enum).toContain("path");
+    expect(query.dimensions.items.enum).not.toContain("page");
+    expect(query.metrics.items.enum).toContain("avgDuration");
+    expect(query.metrics.items.enum).not.toContain("duration");
+  });
+
+  it("describes every operation uniquely, which is what function calling needs", async () => {
+    const { GET } = await import("../../app/openapi.json/route");
+    const spec = (await (await GET()).json()) as Record<string, any>;
+    const operations = Object.values(spec.paths).flatMap((path: any) =>
+      Object.values(path),
+    ) as any[];
+
+    expect(operations.length).toBeGreaterThan(2);
+    const ids = operations.map((op) => op.operationId);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const op of operations) {
+      expect(op.operationId, JSON.stringify(op.summary)).toBeTruthy();
+      expect(op.description, op.operationId).toBeTruthy();
+    }
+  });
+
+  it("only advertises registry items that exist", async () => {
+    const { GET } = await import("../../app/openapi.json/route");
+    const spec = (await (await GET()).json()) as Record<string, any>;
+    const advertised: string[] = spec.paths["/r/{item}.json"].get.parameters[0].schema.enum;
+    const real = CATALOG.map((item) => item.registry ?? item.slug).sort();
+    expect(advertised).toEqual(real);
   });
 });

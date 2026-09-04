@@ -1,3 +1,9 @@
+import {
+  BUILTIN_DIMENSIONS,
+  BUILTIN_METRICS,
+  DATE_RANGE_PRESETS,
+  TIME_GRANULARITIES,
+} from "@wingtics/core";
 import { CATALOG } from "../../src/catalog/items";
 import { SITE_DESCRIPTION, SITE_URL, REPO_URL } from "../../src/site/meta";
 
@@ -9,8 +15,13 @@ import { SITE_DESCRIPTION, SITE_URL, REPO_URL } from "../../src/site/meta";
  * the spec does not invent one — a spec describing endpoints that do not exist
  * is worse for an agent than no spec.
  *
- * Generated rather than hand-written so the registry item enum cannot drift
- * from the catalog.
+ * Every enum is read from the source of truth rather than typed out here. The
+ * first draft of this file listed `page`, `utmSource`, `event` and `duration`,
+ * none of which exist — the contract calls them `path`, `source`, `eventName`
+ * and `avgDuration` — and it omitted four dimensions, two granularities and
+ * four range presets. A spec that advertises fields the API rejects is worse
+ * than no spec, so the values come from `@wingtics/core` and the catalog, and
+ * a test pins them to it.
  */
 export const dynamic = "force-static";
 
@@ -175,7 +186,10 @@ const spec = {
               metrics: { type: "array", items: { type: "string" } },
               dimensions: { type: "array", items: { type: "string" } },
               realtime: { type: "boolean" },
-              granularities: { type: "array", items: { type: "string", enum: ["hour", "day"] } },
+              granularities: {
+                type: "array",
+                items: { type: "string", enum: [...TIME_GRANULARITIES] },
+              },
             },
           },
         },
@@ -187,33 +201,20 @@ const spec = {
           metrics: {
             type: "array",
             minItems: 1,
-            items: {
-              type: "string",
-              enum: ["visitors", "visits", "pageviews", "bounceRate", "duration", "events"],
-            },
-            description: "Metrics to total, and to plot when a granularity is given.",
+            items: { type: "string", enum: [...BUILTIN_METRICS] },
+            description:
+              "Metrics to total, and to plot when a granularity is given. Custom metrics registered with `registerMetric` are also accepted.",
           },
           dimensions: {
             type: "array",
-            items: {
-              type: "string",
-              enum: [
-                "page",
-                "referrer",
-                "country",
-                "device",
-                "browser",
-                "os",
-                "utmSource",
-                "event",
-              ],
-            },
-            description: "Group by these. One breakdown is returned per dimension.",
+            items: { type: "string", enum: [...BUILTIN_DIMENSIONS] },
+            description:
+              "Group by these. One breakdown is returned per dimension. Custom dimensions registered with `registerDimension` are also accepted.",
           },
           range: {
             description: "A preset window or an explicit pair of ISO dates.",
             oneOf: [
-              { type: "string", enum: ["24h", "7d", "28d", "30d", "90d"] },
+              { type: "string", enum: [...DATE_RANGE_PRESETS] },
               {
                 type: "object",
                 required: ["from", "to"],
@@ -226,7 +227,7 @@ const spec = {
           },
           granularity: {
             type: "string",
-            enum: ["hour", "day"],
+            enum: [...TIME_GRANULARITIES],
             description: "Omit for totals only; set to also get a series.",
           },
           limit: { type: "integer", minimum: 1, description: "Rows per breakdown." },
