@@ -1,5 +1,12 @@
 # @analytics-kit/react
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @wingtics/core@0.6.1
+
 ## 0.6.0
 
 ### Minor Changes

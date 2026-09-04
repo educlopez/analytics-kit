@@ -1,6 +1,6 @@
 {
   "name": "@wingtics/connector-plausible",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Plausible Analytics Stats API connector for Wingtics.",
   "type": "module",
   "main": "./dist/index.cjs",
