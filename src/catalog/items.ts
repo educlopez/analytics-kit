@@ -25,8 +25,8 @@ export const CATALOG_GROUPS: { id: CatalogGroupId; label: string }[] = [
   { id: "layout", label: "Layout" },
 ];
 
-const REACT = { name: "@analytics-kit/react", version: "^0.1.0" };
-const CORE = { name: "@analytics-kit/core", version: "^0.1.0" };
+const REACT = { name: "@wingtics/react", version: "^0.1.0" };
+const CORE = { name: "@wingtics/core", version: "^0.1.0" };
 const RECHARTS = { name: "recharts", version: "^2.15.4" };
 const COBE = { name: "cobe", version: "^2.0.1" };
 

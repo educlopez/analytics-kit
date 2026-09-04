@@ -164,7 +164,7 @@ export interface SankeyLink {
   value: number;
 }
 
-/** Structurally matches @analytics-kit/core's provider-agnostic candle type. */
+/** Structurally matches @wingtics/core's provider-agnostic candle type. */
 export interface CandleDatum {
   date: string;
   open: number;

@@ -1,4 +1,4 @@
-import type { BreakdownRow, SeriesPoint } from "@analytics-kit/core";
+import type { BreakdownRow, SeriesPoint } from "@wingtics/core";
 import { useId } from "react";
 import { formatNumber } from "../charts/chart.js";
 import { AreaChart, type AreaChartVariant } from "../charts/area-chart.js";

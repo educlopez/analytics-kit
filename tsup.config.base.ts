@@ -10,7 +10,7 @@ export function packageConfig(options: Options = {}) {
     clean: true,
     treeshake: true,
     target: "es2022",
-    external: [/^@analytics-kit\//, "react", "react-dom", "react/jsx-runtime"],
+    external: [/^@wingtics\//, "react", "react-dom", "react/jsx-runtime"],
     ...options,
   });
 }

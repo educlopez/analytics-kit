@@ -117,7 +117,7 @@ export function Navigation() {
           ))}
           <div className="border-stroke-soft-200 w-full border-b last:border-b-0 lg:w-auto lg:border-b-0">
             <a
-              href="https://github.com/educlopez/analytics-kit"
+              href="https://github.com/educlopez/wingtics"
               className="text-text-sub-600 text-label-md lg:text-label-sm lg:rounded-10 hover:bg-bg-weak-50 hover:text-text-strong-950 flex h-16 w-full items-center gap-2 rounded-none px-6 transition-all duration-300 lg:h-8 lg:w-auto lg:px-3"
             >
               <RiGithubFill className="size-4.5 lg:hidden" />

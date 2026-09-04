@@ -1,7 +1,7 @@
 {
-  "name": "@analytics-kit/connector-plausible",
+  "name": "@wingtics/connector-plausible",
   "version": "0.6.0",
-  "description": "Plausible Analytics Stats API connector for Analytics Kit.",
+  "description": "Plausible Analytics Stats API connector for Wingtics.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,20 +28,20 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@analytics-kit/core": "workspace:*"
+    "@wingtics/core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },
   "author": "Edu Calvo <educlopez93@gmail.com>",
-  "homepage": "https://github.com/educlopez/analytics-kit/tree/main/packages/connector-plausible",
+  "homepage": "https://github.com/educlopez/wingtics/tree/main/packages/connector-plausible",
   "bugs": {
-    "url": "https://github.com/educlopez/analytics-kit/issues"
+    "url": "https://github.com/educlopez/wingtics/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/educlopez/analytics-kit.git",
+    "url": "git+https://github.com/educlopez/wingtics.git",
     "directory": "packages/connector-plausible"
   },
   "engines": {

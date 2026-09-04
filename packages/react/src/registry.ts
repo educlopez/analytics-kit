@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { DimensionId, MetricId } from "@analytics-kit/core";
+import type { DimensionId, MetricId } from "@wingtics/core";
 
 export interface WidgetRequirements {
   metrics?: MetricId[];

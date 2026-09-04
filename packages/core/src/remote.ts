@@ -11,8 +11,8 @@ export interface RemoteConnectorOptions {
 }
 
 /**
- * Browser/server connector that talks to an Analytics Kit HTTP endpoint
- * created by `@analytics-kit/next` (or any handler that speaks the same protocol).
+ * Browser/server connector that talks to an Wingtics HTTP endpoint
+ * created by `@wingtics/next` (or any handler that speaks the same protocol).
  */
 export function createHttpConnector(options: RemoteConnectorOptions): AnalyticsConnector {
   const headers = {

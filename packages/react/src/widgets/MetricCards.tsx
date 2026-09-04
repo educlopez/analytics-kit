@@ -5,7 +5,7 @@ import {
   percentDelta,
   type DateRangeInput,
   type MetricId,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { Sparkline } from "../primitives/Charts.js";
 import { useQuery } from "../hooks.js";

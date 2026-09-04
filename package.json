@@ -1,5 +1,5 @@
 {
-  "name": "analytics-kit",
+  "name": "wingtics",
   "version": "0.1.0",
   "private": true,
   "description": "Provider-agnostic analytics connectors and UI widgets for any website dashboard.",
@@ -19,7 +19,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "publint": "pnpm -r --filter=./packages/* exec publint",
-    "attw": "pnpm -r --filter=./packages/* --filter=!@analytics-kit/react exec attw --pack . && pnpm --filter @analytics-kit/react exec attw --pack . --exclude-entrypoints styles.css",
+    "attw": "pnpm -r --filter=./packages/* --filter=!@wingtics/react exec attw --pack . && pnpm --filter @wingtics/react exec attw --pack . --exclude-entrypoints styles.css",
     "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm typecheck && pnpm publint && pnpm attw",
     "dev": "next dev",
     "start": "next start",
@@ -38,15 +38,15 @@
   "homepage": "https://wingtics.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/educlopez/analytics-kit.git"
+    "url": "git+https://github.com/educlopez/wingtics.git"
   },
   "license": "MIT",
   "dependencies": {
-    "@analytics-kit/connector-mock": "workspace:*",
-    "@analytics-kit/connector-vercel": "workspace:*",
-    "@analytics-kit/core": "workspace:*",
-    "@analytics-kit/next": "workspace:*",
-    "@analytics-kit/react": "workspace:*",
+    "@wingtics/connector-mock": "workspace:*",
+    "@wingtics/connector-vercel": "workspace:*",
+    "@wingtics/core": "workspace:*",
+    "@wingtics/next": "workspace:*",
+    "@wingtics/react": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-label": "^2.1.15",

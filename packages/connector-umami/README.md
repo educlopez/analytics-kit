@@ -1,9 +1,9 @@
-# @analytics-kit/connector-umami
+# @wingtics/connector-umami
 
-Umami Analytics connector for Analytics Kit.
+Umami Analytics connector for Wingtics.
 
 ```bash
-pnpm add @analytics-kit/connector-umami
+pnpm add @wingtics/connector-umami
 ```
 
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

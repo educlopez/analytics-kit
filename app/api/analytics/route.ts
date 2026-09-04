@@ -1,6 +1,6 @@
-import { createAnalyticsKitMockConnector } from "@analytics-kit/connector-mock";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import { createRouteHandlers } from "@analytics-kit/next";
+import { createAnalyticsKitMockConnector } from "@wingtics/connector-mock";
+import { createVercelConnector } from "@wingtics/connector-vercel";
+import { createRouteHandlers } from "@wingtics/next";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

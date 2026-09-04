@@ -13,7 +13,7 @@ import * as LinkButton from "@/components/ui/link-button";
 import { BrandMark } from "@/site/BrandMark";
 
 const socialLinksData = [
-  { id: "github", href: "https://github.com/educlopez/analytics-kit", icon: RiGithubFill },
+  { id: "github", href: "https://github.com/educlopez/wingtics", icon: RiGithubFill },
   { id: "npm", href: "https://www.npmjs.com/org/analytics-kit", icon: RiNpmjsFill },
 ];
 
@@ -21,18 +21,18 @@ const footerLinksData = {
   packages: [
     {
       id: "pkg1",
-      href: "https://www.npmjs.com/package/@analytics-kit/react",
-      text: "@analytics-kit/react",
+      href: "https://www.npmjs.com/package/@wingtics/react",
+      text: "@wingtics/react",
     },
     {
       id: "pkg2",
-      href: "https://www.npmjs.com/package/@analytics-kit/core",
-      text: "@analytics-kit/core",
+      href: "https://www.npmjs.com/package/@wingtics/core",
+      text: "@wingtics/core",
     },
     {
       id: "pkg3",
-      href: "https://www.npmjs.com/package/@analytics-kit/next",
-      text: "@analytics-kit/next",
+      href: "https://www.npmjs.com/package/@wingtics/next",
+      text: "@wingtics/next",
     },
     { id: "pkg4", href: "https://www.npmjs.com/org/analytics-kit", text: "All connectors" },
   ],
@@ -46,10 +46,10 @@ const footerLinksData = {
     { id: "res1", href: "/components", text: "Components" },
     { id: "res5", href: "/demo", text: "Demo platform" },
     { id: "res2", href: "/llms.txt", text: "llms.txt" },
-    { id: "res3", href: "https://github.com/educlopez/analytics-kit/issues", text: "Issues" },
+    { id: "res3", href: "https://github.com/educlopez/wingtics/issues", text: "Issues" },
     {
       id: "res4",
-      href: "https://github.com/educlopez/analytics-kit/blob/main/LICENSE",
+      href: "https://github.com/educlopez/wingtics/blob/main/LICENSE",
       text: "MIT license",
     },
   ],

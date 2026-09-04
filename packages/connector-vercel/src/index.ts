@@ -13,7 +13,7 @@ import {
   type MetricId,
   type NormalizedQuery,
   type TimeGranularity,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export interface VercelConnectorOptions {
   token: string;

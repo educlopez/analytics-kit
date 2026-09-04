@@ -15,7 +15,7 @@ import {
   type ConnectorCapabilities,
   type MetricId,
   type NormalizedQuery,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export type ProviderProfile = "full" | "plausible" | "vercel" | "ga4" | "umami" | "posthog";
 
@@ -96,7 +96,7 @@ export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> =
   posthog: mergeCapabilities(fullCapabilities(), {
     metrics: { bounceRate: true, avgDuration: true },
   }),
-  // Mirrors @analytics-kit/connector-vercel's VERCEL_CAPABILITIES: Vercel's
+  // Mirrors @wingtics/connector-vercel's VERCEL_CAPABILITIES: Vercel's
   // Hobby plan 402s on UTM breakdowns and Custom Events, so this profile
   // (used for local/dev previews when no live token is configured) reports
   // the same limits instead of promising data the real connector can't serve.

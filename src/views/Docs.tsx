@@ -10,12 +10,11 @@ import { ConnectorGrid } from "@/site/ConnectorGrid";
 import { PropsTable } from "@/site/PropsTable";
 import { useRegistryCommand } from "@/site/useRegistryCommand";
 
-const INSTALL =
-  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
+const INSTALL = "pnpm add @wingtics/react @wingtics/core @wingtics/next @wingtics/connector-vercel";
 
-const PROVIDER = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import "@analytics-kit/react/styles.css";
+const PROVIDER = `import { AnalyticsProvider, Dashboard } from "@wingtics/react";
+import { createVercelConnector } from "@wingtics/connector-vercel";
+import "@wingtics/react/styles.css";
 
 const connector = createVercelConnector({
   token: process.env.VERCEL_TOKEN!,
@@ -39,7 +38,7 @@ const QUERY = `const result = await connector.query({
   includePrevious: true,
 });`;
 
-const CHART = `import { AreaChart } from "@analytics-kit/react";
+const CHART = `import { AreaChart } from "@wingtics/react";
 
 <AreaChart
   data={points}
@@ -49,8 +48,8 @@ const CHART = `import { AreaChart } from "@analytics-kit/react";
   config={{ value: { label: "Visitors", color: "var(--chart-1)" } }}
 />`;
 
-const HANDLER = `import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import { createRouteHandlers } from "@analytics-kit/next";
+const HANDLER = `import { createVercelConnector } from "@wingtics/connector-vercel";
+import { createRouteHandlers } from "@wingtics/next";
 
 const connector = createVercelConnector({
   token: process.env.VERCEL_TOKEN!,
@@ -108,18 +107,18 @@ export function DocsPage() {
             dashboard and the charts.
           </p>
           <CopyCommand command={INSTALL} id="install" />
-          {/* The project is Wingtics and the scope is still @analytics-kit, so
-              anyone arriving from the new name needs telling once — right where
-              they are about to type the old one. */}
+          {/* Said once, right where someone is about to install: anyone holding
+              the old scope needs to know it stops receiving versions. */}
           <p className="text-paragraph-sm text-text-soft-400 max-w-[70ch] [&_code]:font-mono [&_code]:text-[0.86em]">
-            Wingtics was called Analytics Kit until September 2026. The packages still publish under{" "}
-            <code>@analytics-kit/*</code>; only the project name changed.
+            Wingtics was called Analytics Kit until September 2026, and the packages moved from{" "}
+            <code>@analytics-kit/*</code> to <code>@wingtics/*</code>. The old scope still installs,
+            but new versions only land under the new one.
           </p>
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
-            Also: <code>@analytics-kit/connector-plausible</code>, <code>connector-ga4</code>,{" "}
+            Also: <code>@wingtics/connector-plausible</code>, <code>connector-ga4</code>,{" "}
             <code>connector-umami</code>, <code>connector-posthog</code>, and{" "}
-            <code>connector-mock</code> for tests. Import{" "}
-            <code>@analytics-kit/react/styles.css</code> once.
+            <code>connector-mock</code> for tests. Import <code>@wingtics/react/styles.css</code>{" "}
+            once.
           </p>
         </section>
 
@@ -451,8 +450,8 @@ export function DocsPage() {
             Keys stay on the server
           </h2>
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
-            Do not put vendor tokens in the browser bundle. <code>@analytics-kit/next</code> proxies
-            the connector. The client uses <code>createHttpConnector</code>.
+            Do not put vendor tokens in the browser bundle. <code>@wingtics/next</code> proxies the
+            connector. The client uses <code>createHttpConnector</code>.
           </p>
           <CodeBlock code={HANDLER} lang="ts" title="route.ts" />
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
@@ -477,7 +476,7 @@ export function DocsPage() {
           <CopyCommand command={registry} id="registry" />
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
             Items: every catalog chart plus <code>metric-card</code> and <code>dashboard</code>.
-            Also <code>educlopez/analytics-kit/dashboard</code> from the GitHub registry.
+            Also <code>educlopez/wingtics/dashboard</code> from the GitHub registry.
           </p>
         </section>
 

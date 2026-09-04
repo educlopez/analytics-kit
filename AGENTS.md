@@ -20,7 +20,7 @@ When you hit a papercut you cannot — or should not — fix inside the current
 change, file it before you forget:
 
 ```bash
-gh issue create --repo educlopez/analytics-kit --title "Friction: …" --label friction --body-file -
+gh issue create --repo educlopez/wingtics --title "Friction: …" --label friction --body-file -
 ```
 
 Full policy and the investigator contract:

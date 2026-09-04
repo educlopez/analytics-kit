@@ -7,7 +7,7 @@ import {
   type AnalyticsResult,
   type DateRangeInput,
   type RealtimeResult,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 import { useAnalytics } from "./context.js";
 
 export type QueryStatus = "idle" | "loading" | "success" | "error" | "unsupported";

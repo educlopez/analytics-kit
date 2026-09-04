@@ -1,4 +1,4 @@
-import { defineWidget, useQuery, WidgetFrame } from "@analytics-kit/react";
+import { defineWidget, useQuery, WidgetFrame } from "@wingtics/react";
 
 /**
  * Future UI components are just registry entries.

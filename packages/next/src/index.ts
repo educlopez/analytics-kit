@@ -1,8 +1,4 @@
-import {
-  isAnalyticsError,
-  type AnalyticsConnector,
-  type AnalyticsQuery,
-} from "@analytics-kit/core";
+import { isAnalyticsError, type AnalyticsConnector, type AnalyticsQuery } from "@wingtics/core";
 
 export interface AnalyticsHandlerOptions {
   connector: AnalyticsConnector;

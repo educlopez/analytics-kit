@@ -8,19 +8,19 @@ importers:
 
   .:
     dependencies:
-      '@analytics-kit/connector-mock':
+      '@wingtics/connector-mock':
         specifier: workspace:*
         version: link:packages/connector-mock
-      '@analytics-kit/connector-vercel':
+      '@wingtics/connector-vercel':
         specifier: workspace:*
         version: link:packages/connector-vercel
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:packages/core
-      '@analytics-kit/next':
+      '@wingtics/next':
         specifier: workspace:*
         version: link:packages/next
-      '@analytics-kit/react':
+      '@wingtics/react':
         specifier: workspace:*
         version: link:packages/react
       '@radix-ui/react-accordion':
@@ -162,7 +162,7 @@ importers:
 
   packages/connector-ga4:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -175,7 +175,7 @@ importers:
 
   packages/connector-mock:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -188,7 +188,7 @@ importers:
 
   packages/connector-plausible:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -201,7 +201,7 @@ importers:
 
   packages/connector-posthog:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -214,7 +214,7 @@ importers:
 
   packages/connector-umami:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -227,7 +227,7 @@ importers:
 
   packages/connector-vercel:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -249,11 +249,11 @@ importers:
 
   packages/next:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@analytics-kit/connector-mock':
+      '@wingtics/connector-mock':
         specifier: workspace:*
         version: link:../connector-mock
       tsup:
@@ -265,7 +265,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@analytics-kit/core':
+      '@wingtics/core':
         specifier: workspace:*
         version: link:../core
       clsx:
