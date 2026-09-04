@@ -219,7 +219,7 @@ export function DemoPlatform() {
         seed: 21,
         scale: 2.4,
         dataset: ANALYTICS_KIT_DATASET,
-        siteName: "analytics-kit-demo.vercel.app",
+        siteName: "wingtics.com",
       });
       return withSampleFallback({ connector: live, sample });
     }

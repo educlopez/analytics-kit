@@ -7,15 +7,19 @@ const outputDir = path.join(root, "public/r");
 const site = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-  "https://analytics-kit-demo.vercel.app"
+  "https://wingtics.com"
 )
   .replace(/\/$/, "")
   .replace(/^(?!https?:\/\/)/, "https://");
 
+// Every origin this project has ever served the registry from. They stay
+// listed so an item written against an older one is still rewritten to the
+// deployment's own origin instead of quietly pointing somewhere dead.
 const rewriteSite = (value) =>
   value
     .replaceAll("https://educlopez.github.io/analytics-kit", site)
-    .replaceAll("https://analytics-kit-demo.vercel.app", site);
+    .replaceAll("https://analytics-kit-demo.vercel.app", site)
+    .replaceAll("https://wingtics.com", site);
 
 const registry = JSON.parse(await readFile(path.join(root, "registry.json"), "utf8"));
 registry.homepage = `${site}/`;

@@ -146,22 +146,40 @@ async function run() {
 
     // Metadata routes: these only exist in a built app, so this is the only
     // place they get exercised.
-    for (const path of [
-      "/icon.svg",
-      "/apple-icon",
-      "/opengraph-image",
-      "/sitemap.xml",
-      "/manifest.webmanifest",
-      "/robots.txt",
-    ]) {
+    //
+    // Checked by content rather than by byte count. A flat "at least 100 bytes"
+    // floor looks like a size check but is really a check on how long the
+    // canonical domain is: moving to a shorter one dropped robots.txt from 127
+    // to 93 bytes with nothing wrong with it. What each route actually owes is
+    // the one line that makes it useful.
+    const META = {
+      "/icon.svg": (text) => (text.includes("<svg") ? null : "no <svg> element"),
+      "/apple-icon": (text) => (text.length > 500 ? null : "suspiciously small for an image"),
+      "/opengraph-image": (text) => (text.length > 500 ? null : "suspiciously small for an image"),
+      "/sitemap.xml": (text) =>
+        text.includes("<urlset") && text.includes("<loc>") ? null : "no urlset or no <loc>",
+      "/manifest.webmanifest": (text) => {
+        try {
+          return JSON.parse(text).name ? null : "manifest has no name";
+        } catch {
+          return "manifest is not valid JSON";
+        }
+      },
+      // Absolute, because a relative Sitemap line is ignored by every crawler.
+      "/robots.txt": (text) =>
+        /^Sitemap:\s*https?:\/\/\S+\/sitemap\.xml$/m.test(text) ? null : "no absolute Sitemap line",
+    };
+
+    for (const [path, check] of Object.entries(META)) {
       const response = await fetch(`${BASE}${path}`);
       if (!response.ok) {
         fail(`${path} responded ${response.status}`);
         continue;
       }
-      const bytes = (await response.arrayBuffer()).byteLength;
-      if (bytes < 100) fail(`${path} returned only ${bytes} bytes`);
-      console.log(`[meta] ${path} ${response.status} ${bytes}B`);
+      const text = await response.text();
+      const problem = check(text);
+      if (problem) fail(`${path}: ${problem}`);
+      console.log(`[meta] ${path} ${response.status} ${Buffer.byteLength(text)}B`);
     }
 
     // The one thing that silently breaks every social preview.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "analytics-kit",
-  "homepage": "https://analytics-kit-demo.vercel.app/",
+  "homepage": "https://wingtics.com/",
   "items": [
     {
       "name": "chart",
@@ -40,7 +40,7 @@
       "title": "Area chart",
       "description": "Trend with filled region and linear, log, or symlog y-axis scaling.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/area-chart.tsx",
@@ -56,7 +56,7 @@
       "title": "Line chart",
       "description": "Time series line with linear, log, or symlog y-axis scaling.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/line-chart.tsx",
@@ -72,7 +72,7 @@
       "title": "Bar chart",
       "description": "Category comparison. Variants: vertical, horizontal, rounded, hatched, dither, glow, gradient, duotone.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/bar-chart.tsx",
@@ -88,7 +88,7 @@
       "title": "Pie chart",
       "description": "Share of a whole. Variants: donut, pie, legend, dither, rounded, radial, glow.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/pie-chart.tsx",
@@ -103,7 +103,7 @@
       "type": "registry:ui",
       "title": "Funnel chart",
       "description": "Conversion stages. Variants: tape, steps, vertical.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/funnel-chart.tsx",
@@ -119,7 +119,7 @@
       "title": "Radar chart",
       "description": "Multi-axis comparison. Variants: stroke, fill, glow, dither.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/radar-chart.tsx",
@@ -135,7 +135,7 @@
       "title": "Composed chart",
       "description": "Two series on one axis. Variants: combo, highlight, overlay.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/composed-chart.tsx",
@@ -150,7 +150,7 @@
       "type": "registry:ui",
       "title": "Gauge",
       "description": "Single-value dial. Variants: arc, ring, tick.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/gauge-chart.tsx",
@@ -166,7 +166,7 @@
       "title": "Scatter chart",
       "description": "Correlation. Variants: dots, bubble, glow.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/scatter-chart.tsx",
@@ -182,7 +182,7 @@
       "title": "Sankey chart",
       "description": "Flow between stages. Variants: flow, gradient, dither.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/sankey-chart.tsx",
@@ -197,7 +197,7 @@
       "type": "registry:ui",
       "title": "Candlestick chart",
       "description": "Open, high, low, close, and optional volume. Variants: ohlc, hollow, wick, volume.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/candlestick-chart.tsx",
@@ -212,7 +212,7 @@
       "type": "registry:ui",
       "title": "Choropleth",
       "description": "Region tiles by intensity. Variants: tiles, heat, dither.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/choropleth-chart.tsx",
@@ -228,7 +228,7 @@
       "title": "Live line",
       "description": "Sliding window. Variants: stream, glow, dashed.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/live-line-chart.tsx",
@@ -243,7 +243,7 @@
       "type": "registry:ui",
       "title": "Ring chart",
       "description": "Concentric KPI rings. Variants: stack, nested, track.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/ring-chart.tsx",
@@ -258,7 +258,7 @@
       "type": "registry:ui",
       "title": "Heatmap",
       "description": "Calendar of intensity. Variants: calendar, matrix, dither.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/heatmap-chart.tsx",
@@ -273,7 +273,7 @@
       "type": "registry:ui",
       "title": "Sunburst",
       "description": "Hierarchy as rings. Variants: nest, burst.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/sunburst-chart.tsx",
@@ -289,7 +289,7 @@
       "title": "Profit / loss",
       "description": "Above and below zero. Variants: fill, stroke, bars.",
       "dependencies": ["recharts@2.15.4"],
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/profit-loss-chart.tsx",
@@ -304,7 +304,7 @@
       "type": "registry:ui",
       "title": "Horizon chart",
       "description": "Many series folded into bands. Variants: bands, mirror.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/horizon-chart.tsx",
@@ -319,7 +319,7 @@
       "type": "registry:ui",
       "title": "Treemap",
       "description": "Squarified treemap of share and change. Variants: heat, diverging.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/treemap-chart.tsx",
@@ -334,7 +334,7 @@
       "type": "registry:ui",
       "title": "Cohort grid",
       "description": "Retention by cohort and period. Variants: triangle, counts.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/cohort-grid.tsx",
@@ -349,7 +349,7 @@
       "type": "registry:ui",
       "title": "Waterfall",
       "description": "Floating bars bridging start to end. Variants: bridge, bars.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/waterfall-chart.tsx",
@@ -364,7 +364,7 @@
       "type": "registry:ui",
       "title": "Share band",
       "description": "One 100% band, optionally with a legend. Variants: segments, legend.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/share-band.tsx",
@@ -379,7 +379,7 @@
       "type": "registry:ui",
       "title": "Slope chart",
       "description": "Two dated axes joined per item. Variants: paired, change.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/slope-chart.tsx",
@@ -394,7 +394,7 @@
       "type": "registry:ui",
       "title": "Quota bar",
       "description": "Usage against a ceiling, with limit and projection.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/quota-bar.tsx",
@@ -409,7 +409,7 @@
       "type": "registry:ui",
       "title": "Bump chart",
       "description": "Rank over time. Variants: ribbon, line.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/bump-chart.tsx",
@@ -424,7 +424,7 @@
       "type": "registry:ui",
       "title": "Marimekko",
       "description": "Variable-width stacked bars: width is volume, height is share.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/marimekko-chart.tsx",
@@ -439,7 +439,7 @@
       "type": "registry:ui",
       "title": "Spark table",
       "description": "Table with trailing sparklines and signed deltas.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/spark-table.tsx",
@@ -454,7 +454,7 @@
       "type": "registry:ui",
       "title": "Timeline",
       "description": "Dated rail with alternating pins.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/timeline-chart.tsx",
@@ -469,7 +469,7 @@
       "type": "registry:ui",
       "title": "Strip chart",
       "description": "Raw event ticks per lane, no bucketing.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/strip-chart.tsx",
@@ -484,7 +484,7 @@
       "type": "registry:ui",
       "title": "Radial time",
       "description": "Hours around the circle, weekdays as rings.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/radial-time-chart.tsx",
@@ -499,7 +499,7 @@
       "type": "registry:ui",
       "title": "Odometer",
       "description": "A number that rolls to its new value.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/odometer.tsx",
@@ -514,7 +514,7 @@
       "type": "registry:ui",
       "title": "Small multiples",
       "description": "Grid of miniatures on a locked shared scale.",
-      "registryDependencies": ["https://analytics-kit-demo.vercel.app/r/chart.json"],
+      "registryDependencies": ["https://wingtics.com/r/chart.json"],
       "files": [
         {
           "path": "packages/react/src/charts/small-multiples.tsx",
