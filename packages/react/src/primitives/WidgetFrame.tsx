@@ -24,6 +24,15 @@ export interface WidgetFrameProps {
   rows?: number;
   /** Cells the real tracker will render, one per bucket in the active range. */
   cells?: number;
+  /**
+   * Heading level for the title, 2-6.
+   *
+   * A widget cannot know where it sits in the host's outline. Inside a
+   * dashboard `h3` is right; dropped straight under a page's `h1` it skips a
+   * level, which is a real accessibility defect and not a cosmetic one. The
+   * default keeps existing markup unchanged.
+   */
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
 }
 
 export function WidgetFrame({
@@ -41,7 +50,9 @@ export function WidgetFrame({
   onRetry,
   rows,
   cells,
+  headingLevel = 3,
 }: WidgetFrameProps) {
+  const Heading = `h${headingLevel}` as const;
   const slow = useSlowLoading(status === "loading");
   const pending = status === "loading" || status === "idle";
 
@@ -54,7 +65,7 @@ export function WidgetFrame({
     >
       <header className="ak-widget-header">
         <div>
-          <h3 className="ak-widget-title">
+          <Heading className="ak-widget-title">
             {title}
             {sample ? (
               <span className="ak-sample-badge">
@@ -62,7 +73,7 @@ export function WidgetFrame({
                 <span className="ak-sr-only"> data, not this site&rsquo;s real numbers</span>
               </span>
             ) : null}
-          </h3>
+          </Heading>
           {description ? <p className="ak-widget-desc">{description}</p> : null}
         </div>
         {trailing}

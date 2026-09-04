@@ -1,11 +1,61 @@
 # Wingtics
 
-Provider-agnostic analytics widgets for React. One query model, five connectors, the same dashboard.
+Provider-agnostic analytics widgets for React. One query model, six connectors — five
+providers plus a deterministic mock — and the same dashboard behind all of them.
 
 Site: https://wingtics.com
 Repo: https://github.com/educlopez/wingtics
 Docs: https://wingtics.com/docs
 Components: https://wingtics.com/components
+About: https://wingtics.com/about
+Contact: https://wingtics.com/contact
+Privacy: https://wingtics.com/privacy
+License: MIT
+
+## When to use this
+
+Reach for Wingtics when a task is one of these:
+
+- Build or extend an analytics dashboard in a React or Next.js app, where the data lives in
+  Vercel Web Analytics, Plausible, Google Analytics 4, Umami or PostHog.
+- Read website metrics without writing against one vendor's API, or migrate a dashboard from
+  one of those providers to another without rewriting the charts.
+- Add a specific chart — funnel, cohort grid, globe, sankey, treemap, breakdown card, metric
+  tabs — to an existing analytics view, either as an npm import or as owned source via the
+  shadcn registry.
+- Keep analytics credentials off the client: `@wingtics/next` proxies a connector from a route
+  handler so the token stays on the server.
+- Build a dashboard that degrades honestly across providers: connectors declare capabilities,
+  and a widget the provider cannot answer says so instead of rendering zero.
+
+Do not reach for Wingtics when:
+
+- You need to *collect* analytics. It has no tracker, no script and no ingest endpoint; it only
+  reads what a provider already holds.
+- You want a hosted dashboard. There is no service, no account and no API of ours to call —
+  it is a component library you deploy yourself.
+- Your data is product analytics in a warehouse rather than website analytics behind one of the
+  five supported providers. Writing a connector is possible, but there is no adapter to reuse.
+
+How to call it: install the packages below, construct one connector, wrap the tree in
+`AnalyticsProvider`, and render either `Dashboard` for the whole grid or individual components.
+Everything is typed; `useQuery` and `useCapabilities` are the two hooks worth knowing.
+
+## Machine-readable
+
+- https://wingtics.com/llms.txt — this file
+- https://wingtics.com/sitemap.xml — every page
+- https://wingtics.com/openapi.json — the HTTP surface: the component registry and the
+  analytics proxy contract, with operation ids, typed schemas and error codes
+- https://wingtics.com/r/registry.json — shadcn registry index
+- https://wingtics.com/r/{name}.json — one registry item
+
+The index and the component pages also answer `Accept: text/markdown` with a markdown
+representation of the same content, and send `Vary: Accept` so a cache cannot mix the two:
+
+```bash
+curl -H "Accept: text/markdown" https://wingtics.com/components/globe-chart
+```
 
 ## Install
 

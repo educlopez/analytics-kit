@@ -119,6 +119,28 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 programmingLanguage: "TypeScript",
                 runtimePlatform: "React",
                 license: "https://opensource.org/licenses/MIT",
+                sameAs: [REPO_URL, "https://www.npmjs.com/org/wingtics"],
+                author: {
+                  "@type": "Person",
+                  name: "Eduardo Calvo",
+                  url: "https://educalvo.com",
+                  sameAs: ["https://github.com/educlopez"],
+                },
+              },
+              {
+                // The audit tooling reads the first identity type it finds, and
+                // a library is a SoftwareApplication as much as it is source.
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: SITE_NAME,
+                description: SITE_DESCRIPTION,
+                url: SITE_URL,
+                applicationCategory: "DeveloperApplication",
+                operatingSystem: "Any",
+                softwareVersion: "0.6.1",
+                license: "https://opensource.org/licenses/MIT",
+                sameAs: [REPO_URL, "https://www.npmjs.com/org/wingtics"],
+                offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
                 author: { "@type": "Person", name: "Eduardo Calvo" },
               },
               {
