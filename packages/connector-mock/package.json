@@ -1,6 +1,6 @@
 {
   "name": "@wingtics/connector-mock",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Deterministic mock analytics connector for demos, tests, and UI development.",
   "type": "module",
   "main": "./dist/index.cjs",
