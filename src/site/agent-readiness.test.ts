@@ -118,13 +118,41 @@ describe("Accept specificity, per RFC 9110", () => {
   });
 });
 
+/** Only the parts of the document these tests assert on. */
+interface SpecOperation {
+  operationId?: string;
+  summary?: string;
+  description?: string;
+  parameters?: { schema: { enum: string[] } }[];
+}
+
+interface Spec {
+  paths: Record<string, Record<string, SpecOperation>>;
+  components: {
+    schemas: {
+      AnalyticsQuery: {
+        properties: {
+          metrics: { items: { enum: string[] } };
+          dimensions: { items: { enum: string[] } };
+          granularity: { enum: string[] };
+          range: { oneOf: { enum?: string[] }[] };
+        };
+      };
+    };
+  };
+}
+
+async function loadSpec(): Promise<Spec> {
+  const { GET } = await import("../../app/openapi.json/route");
+  return (await (await GET()).json()) as Spec;
+}
+
 describe("openapi spec", () => {
   // The first draft of the spec typed its enums out by hand and got four value
   // names wrong and ten values missing, advertising fields the API rejects.
   // These pin every enum to the contract it describes.
   it("takes its enums from the contract, not from prose", async () => {
-    const { GET } = await import("../../app/openapi.json/route");
-    const spec = (await (await GET()).json()) as Record<string, any>;
+    const spec = await loadSpec();
     const query = spec.components.schemas.AnalyticsQuery.properties;
 
     expect(query.metrics.items.enum).toEqual([...BUILTIN_METRICS]);
@@ -140,11 +168,8 @@ describe("openapi spec", () => {
   });
 
   it("describes every operation uniquely, which is what function calling needs", async () => {
-    const { GET } = await import("../../app/openapi.json/route");
-    const spec = (await (await GET()).json()) as Record<string, any>;
-    const operations = Object.values(spec.paths).flatMap((path: any) =>
-      Object.values(path),
-    ) as any[];
+    const spec = await loadSpec();
+    const operations = Object.values(spec.paths).flatMap((path) => Object.values(path));
 
     expect(operations.length).toBeGreaterThan(2);
     const ids = operations.map((op) => op.operationId);
@@ -156,9 +181,8 @@ describe("openapi spec", () => {
   });
 
   it("only advertises registry items that exist", async () => {
-    const { GET } = await import("../../app/openapi.json/route");
-    const spec = (await (await GET()).json()) as Record<string, any>;
-    const advertised: string[] = spec.paths["/r/{item}.json"].get.parameters[0].schema.enum;
+    const spec = await loadSpec();
+    const advertised = spec.paths["/r/{item}.json"].get.parameters![0].schema.enum;
     const real = CATALOG.map((item) => item.registry ?? item.slug).sort();
     expect(advertised).toEqual(real);
   });
