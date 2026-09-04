@@ -65,8 +65,8 @@ export function HomePage() {
           lede={
             <>
               Add the catalog from this site&apos;s <code className="text-label-sm">/r</code>{" "}
-              folder, or <code className="text-label-sm">educlopez/analytics-kit/dashboard</code>{" "}
-              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+              folder, or <code className="text-label-sm">educlopez/wingtics/dashboard</code> from
+              the repo. Runtime still comes from npm so connectors and queries stay canonical.
             </>
           }
         />

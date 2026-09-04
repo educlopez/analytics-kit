@@ -14,7 +14,7 @@ Read
 Do not write entries under `.agents/friction-log/` or `docs/friction-log/`.
 
 This is not a product feature request. Use a normal GitHub issue for those. Use
-this skill for developing `educlopez/analytics-kit`.
+this skill for developing `educlopez/wingtics`.
 
 ## File friction
 
@@ -24,7 +24,7 @@ file it before you forget.
 Search open issues first:
 
 ```bash
-gh issue list --repo educlopez/analytics-kit --label friction --state open --limit 200
+gh issue list --repo educlopez/wingtics --label friction --state open --limit 200
 ```
 
 Comment on a match instead of opening a duplicate.
@@ -55,7 +55,7 @@ Time lost, how often this happens, who it hits, and the workaround.
 ```
 
 ```bash
-gh issue create --repo educlopez/analytics-kit --title "Friction: …" --label friction --body-file -
+gh issue create --repo educlopez/wingtics --title "Friction: …" --label friction --body-file -
 ```
 
 One issue per papercut. Omit secrets. Quote the relevant excerpt, not a

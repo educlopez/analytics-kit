@@ -1,6 +1,6 @@
 # Wingtics
 
-[![CI](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml)
+[![CI](https://github.com/educlopez/wingtics/actions/workflows/ci.yml/badge.svg)](https://github.com/educlopez/wingtics/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@wingtics/core.svg)](https://www.npmjs.com/package/@wingtics/core)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -145,7 +145,7 @@ Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). I
 pnpm dlx shadcn@latest add https://wingtics.com/r/dashboard.json
 ```
 
-GitHub: `pnpm dlx shadcn@latest add educlopez/analytics-kit/metric-card`
+GitHub: `pnpm dlx shadcn@latest add educlopez/wingtics/metric-card`
 
 Items: every catalog chart plus `metric-card` and `dashboard`.
 
@@ -211,7 +211,7 @@ Live site: **https://wingtics.com**
 
 The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@wingtics/next`.
 
-1. Import `educlopez/analytics-kit` in Vercel.
+1. Import `educlopez/wingtics` in Vercel.
 2. Framework: **Next.js**. Root Directory: **empty** (repository root).
 3. Install / build commands come from `vercel.json` (workspace install, package build, registry, then `next build`).
 4. Enable **Web Analytics** on the project (Vercel dashboard → Analytics → Enable). Without it the

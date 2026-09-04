@@ -37,11 +37,11 @@ Packages are versioned together with [Changesets](https://github.com/changesets/
 
 First-time npm setup:
 
-1. Create the GitHub repo `educlopez/analytics-kit` and push `main`.
+1. Create the GitHub repo `educlopez/wingtics` and push `main`.
 2. Create the npm org [`wingtics`](https://www.npmjs.com/org/create) (scope `@wingtics`).
 3. Publish each package once by hand. npm can only attach a trusted publisher to
    a package that already exists, so this first release cannot come from CI.
-4. For each package, add the trusted publisher `educlopez/analytics-kit` +
+4. For each package, add the trusted publisher `educlopez/wingtics` +
    `release.yml` under Settings → Trusted Publisher, and tick **npm publish** as
    well as the default `npm stage publish` — `changeset publish` runs the former,
    so a stage-only publisher would leave every release staged and unreleased.

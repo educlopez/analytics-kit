@@ -71,10 +71,10 @@ export function Faq() {
         <div className="text-text-soft-400 text-paragraph-sm lg:text-center">
           Still have questions? Open an issue at{" "}
           <a
-            href="https://github.com/educlopez/analytics-kit/issues"
+            href="https://github.com/educlopez/wingtics/issues"
             className="text-label-sm text-text-sub-600 hover:text-text-strong-950 transition-all duration-300"
           >
-            educlopez/analytics-kit
+            educlopez/wingtics
           </a>
         </div>
       </div>

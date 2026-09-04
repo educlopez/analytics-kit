@@ -6,4 +6,4 @@ PostHog HogQL connector for Wingtics.
 pnpm add @wingtics/connector-posthog
 ```
 
-Part of [Wingtics](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

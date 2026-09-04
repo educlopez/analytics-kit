@@ -6,4 +6,4 @@ Deterministic mock analytics connector for demos, tests, and UI development.
 pnpm add @wingtics/connector-mock
 ```
 
-Part of [Wingtics](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

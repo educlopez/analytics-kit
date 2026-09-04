@@ -35,13 +35,13 @@
     "typescript": "^5.9.2"
   },
   "author": "Edu Calvo <educlopez93@gmail.com>",
-  "homepage": "https://github.com/educlopez/analytics-kit/tree/main/packages/connector-mock",
+  "homepage": "https://github.com/educlopez/wingtics/tree/main/packages/connector-mock",
   "bugs": {
-    "url": "https://github.com/educlopez/analytics-kit/issues"
+    "url": "https://github.com/educlopez/wingtics/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/educlopez/analytics-kit.git",
+    "url": "git+https://github.com/educlopez/wingtics.git",
     "directory": "packages/connector-mock"
   },
   "engines": {

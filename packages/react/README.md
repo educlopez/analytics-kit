@@ -61,4 +61,4 @@ Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs hatch
 pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/area-chart.json
 ```
 
-Part of [Wingtics](https://github.com/educlopez/analytics-kit).
+Part of [Wingtics](https://github.com/educlopez/wingtics).

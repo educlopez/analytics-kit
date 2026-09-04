@@ -38,7 +38,7 @@
   "homepage": "https://wingtics.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/educlopez/analytics-kit.git"
+    "url": "git+https://github.com/educlopez/wingtics.git"
   },
   "license": "MIT",
   "dependencies": {

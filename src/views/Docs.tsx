@@ -476,7 +476,7 @@ export function DocsPage() {
           <CopyCommand command={registry} id="registry" />
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
             Items: every catalog chart plus <code>metric-card</code> and <code>dashboard</code>.
-            Also <code>educlopez/analytics-kit/dashboard</code> from the GitHub registry.
+            Also <code>educlopez/wingtics/dashboard</code> from the GitHub registry.
           </p>
         </section>
 

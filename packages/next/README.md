@@ -8,4 +8,4 @@ pnpm add @wingtics/next
 
 The product site uses this in `app/api/analytics/route.ts`.
 
-Part of [Wingtics](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

@@ -13,7 +13,7 @@ const NAV: { label: string; links: { href: string; label: string; external?: boo
   {
     label: "Project",
     links: [
-      { href: "https://github.com/educlopez/analytics-kit", label: "GitHub", external: true },
+      { href: "https://github.com/educlopez/wingtics", label: "GitHub", external: true },
       { href: "/llms.txt", label: "llms.txt", external: true },
     ],
   },

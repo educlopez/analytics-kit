@@ -26,7 +26,7 @@ export function Cta() {
           asChild
           className="shadow-complex-7 border-static-white/[0.24] w-fit cursor-pointer gap-1.5 rounded-xl border pr-4.5 pl-5 transition-all duration-300 hover:[background:linear-gradient(180deg,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0)_100%),var(--color-primary-base)]"
         >
-          <a href="https://github.com/educlopez/analytics-kit">
+          <a href="https://github.com/educlopez/wingtics">
             Get started on GitHub
             <Button.Icon as={RiArrowRightUpLongLine} className="text-static-white/[0.64] size-5" />
           </a>
