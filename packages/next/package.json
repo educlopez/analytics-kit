@@ -1,6 +1,6 @@
 {
   "name": "@wingtics/next",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Next.js / Fetch handlers that proxy Wingtics connectors without exposing API keys.",
   "type": "module",
   "main": "./dist/index.cjs",
