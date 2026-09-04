@@ -6,7 +6,7 @@ import { SiteShell } from "../src/site/SiteShell";
 import { REPO_URL, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../src/site/meta";
 import "../src/tailwind.css";
 import "../src/site.css";
-import "@analytics-kit/react/styles.css";
+import "@wingtics/react/styles.css";
 
 // Inter is AlignUI's typeface; Geist Mono stays for code surfaces, which
 // AlignUI does not specify.

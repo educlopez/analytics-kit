@@ -16,7 +16,7 @@ import {
   type ConnectorCapabilities,
   type DateRangeInput,
   type RealtimeResult,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export type AnalyticsTheme = "dark" | "light";
 

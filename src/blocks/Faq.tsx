@@ -16,7 +16,7 @@ const faqData = [
     id: "faq2",
     question: "Where do API tokens live?",
     answer:
-      "On the server. Use @analytics-kit/next (or createHttpConnector against your own route). Do not put vendor keys in the browser bundle.",
+      "On the server. Use @wingtics/next (or createHttpConnector against your own route). Do not put vendor keys in the browser bundle.",
   },
   {
     id: "faq3",

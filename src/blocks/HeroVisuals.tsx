@@ -23,14 +23,14 @@ import {
   createMockConnector,
   PROVIDER_PROFILES,
   type ProviderProfile,
-} from "@analytics-kit/connector-mock";
+} from "@wingtics/connector-mock";
 import {
   AnalyticsProvider,
   AreaChart,
   MetricCard,
   useQuery,
   type AnalyticsTheme,
-} from "@analytics-kit/react";
+} from "@wingtics/react";
 import * as Badge from "@/components/ui/badge";
 import { ProviderMark } from "@/site/ProviderMark";
 import { cn } from "@/utils/cn";
@@ -353,8 +353,8 @@ function KeysVisual() {
       </div>
       <p className="text-label-sm text-text-soft-400 mt-5">
         The browser only ever talks to your endpoint. Swap{" "}
-        <code className="font-mono text-[12px]">@analytics-kit/next</code> in and the handler is
-        three lines.
+        <code className="font-mono text-[12px]">@wingtics/next</code> in and the handler is three
+        lines.
       </p>
     </Panel>
   );

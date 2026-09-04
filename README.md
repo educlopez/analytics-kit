@@ -1,24 +1,24 @@
 # Wingtics
 
 [![CI](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@analytics-kit/core.svg)](https://www.npmjs.com/package/@analytics-kit/core)
+[![npm](https://img.shields.io/npm/v/@wingtics/core.svg)](https://www.npmjs.com/package/@wingtics/core)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> Wingtics was called **Analytics Kit** until September 2026. The packages are
-> still published under the `@analytics-kit/*` scope and keep working
-> unchanged — only the project name moved. The scope will follow later, and
-> the old one will be deprecated with a pointer rather than removed.
+> Wingtics was called **Analytics Kit** until September 2026, and its packages
+> moved from `@analytics-kit/*` to `@wingtics/*` at 0.6.0. The old scope stays
+> on npm — deprecated with a pointer here, not removed — so nothing already
+> installed breaks. New versions only land under `@wingtics/*`.
 
 Provider-agnostic analytics for websites. You give users a **connector** for the analytics tool they already use, and **components** that render the data. Switching from Plausible to GA4 (or Vercel, Umami, PostHog) is a constructor change — the dashboard stays the same.
 
 ```bash
-pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/connector-plausible
+pnpm add @wingtics/react @wingtics/core @wingtics/connector-plausible
 ```
 
 ```tsx
-import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createPlausibleConnector } from "@analytics-kit/connector-plausible";
-import "@analytics-kit/react/styles.css";
+import { AnalyticsProvider, Dashboard } from "@wingtics/react";
+import { createPlausibleConnector } from "@wingtics/connector-plausible";
+import "@wingtics/react/styles.css";
 
 const connector = createPlausibleConnector({
   apiKey: process.env.PLAUSIBLE_API_KEY!,
@@ -38,17 +38,17 @@ This repo is a TypeScript monorepo designed so **new providers** and **new widge
 
 ## Packages
 
-| Package                              | What it is                                                              |
-| ------------------------------------ | ----------------------------------------------------------------------- |
-| `@analytics-kit/core`                | Canonical query/result types, connector contract, capabilities, caching |
-| `@analytics-kit/react`               | Provider, hooks, chart primitives, widget registry, dashboard           |
-| `@analytics-kit/next`                | Fetch / Next.js App Router handlers that keep API keys on the server    |
-| `@analytics-kit/connector-plausible` | Plausible Stats API v2                                                  |
-| `@analytics-kit/connector-vercel`    | Vercel Web Analytics API                                                |
-| `@analytics-kit/connector-ga4`       | Google Analytics 4 Data API                                             |
-| `@analytics-kit/connector-umami`     | Umami stats / metrics API                                               |
-| `@analytics-kit/connector-posthog`   | PostHog HogQL                                                           |
-| `@analytics-kit/connector-mock`      | Deterministic fake data + per-provider capability profiles              |
+| Package                         | What it is                                                              |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `@wingtics/core`                | Canonical query/result types, connector contract, capabilities, caching |
+| `@wingtics/react`               | Provider, hooks, chart primitives, widget registry, dashboard           |
+| `@wingtics/next`                | Fetch / Next.js App Router handlers that keep API keys on the server    |
+| `@wingtics/connector-plausible` | Plausible Stats API v2                                                  |
+| `@wingtics/connector-vercel`    | Vercel Web Analytics API                                                |
+| `@wingtics/connector-ga4`       | Google Analytics 4 Data API                                             |
+| `@wingtics/connector-umami`     | Umami stats / metrics API                                               |
+| `@wingtics/connector-posthog`   | PostHog HogQL                                                           |
+| `@wingtics/connector-mock`      | Deterministic fake data + per-provider capability profiles              |
 
 ## How it scales
 
@@ -69,7 +69,7 @@ widget registry                               vendor API mapping
 See [`examples/custom-connector.ts`](examples/custom-connector.ts). Minimum surface:
 
 ```ts
-import { defineConnector } from "@analytics-kit/core";
+import { defineConnector } from "@wingtics/core";
 
 export function createAcmeConnector(options) {
   return defineConnector({
@@ -139,7 +139,7 @@ Charts are Tailwind + Recharts, so they drop into a shadcn-style codebase withou
 
 ## shadcn registry
 
-Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@analytics-kit/react` for data:
+Widgets also ship as a [shadcn registry](https://ui.shadcn.com/docs/registry). Install a recipe; keep `@wingtics/react` for data:
 
 ```bash
 pnpm dlx shadcn@latest add https://wingtics.com/r/dashboard.json
@@ -156,13 +156,13 @@ Namespace:
 ```json
 {
   "registries": {
-    "@analytics-kit": "https://wingtics.com/r/{name}.json"
+    "@wingtics": "https://wingtics.com/r/{name}.json"
   }
 }
 ```
 
 ```bash
-pnpm dlx shadcn@latest add @analytics-kit/dashboard
+pnpm dlx shadcn@latest add @wingtics/dashboard
 ```
 
 ## Server vs browser
@@ -171,8 +171,8 @@ Never put vendor API keys in the client. Use the Next handler (or any runtime th
 
 ```ts
 // app/api/analytics/route.ts
-import { createPlausibleConnector } from "@analytics-kit/connector-plausible";
-import { createRouteHandlers } from "@analytics-kit/next";
+import { createPlausibleConnector } from "@wingtics/connector-plausible";
+import { createRouteHandlers } from "@wingtics/next";
 
 export const { GET, POST } = createRouteHandlers({
   connector: createPlausibleConnector({
@@ -184,7 +184,7 @@ export const { GET, POST } = createRouteHandlers({
 
 ```tsx
 // client
-import { createHttpConnector } from "@analytics-kit/core";
+import { createHttpConnector } from "@wingtics/core";
 
 const connector = createHttpConnector({ endpoint: "/api/analytics" });
 ```
@@ -209,7 +209,7 @@ Live site: **https://wingtics.com**
 - Components — https://wingtics.com/components
 - Area chart — https://wingtics.com/components/area-chart
 
-The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@analytics-kit/next`.
+The product site is the Next.js app at the repo root. The browser talks to `/api/analytics`; vendor keys stay on the server via `@wingtics/next`.
 
 1. Import `educlopez/analytics-kit` in Vercel.
 2. Framework: **Next.js**. Root Directory: **empty** (repository root).
@@ -243,6 +243,6 @@ pnpm workspace + TypeScript + Vitest + tsup (ESM and CJS). Node 20+.
 pnpm check   # lint, format, test, typecheck, build, publint
 ```
 
-CI runs that same gate on every pull request. Releases use [Changesets](https://github.com/changesets/changesets): merge to `main`, merge the Version Packages PR, and GitHub Actions publishes `@analytics-kit/*` to npm.
+CI runs that same gate on every pull request. Releases use [Changesets](https://github.com/changesets/changesets): merge to `main`, merge the Version Packages PR, and GitHub Actions publishes `@wingtics/*` to npm.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for first-time npm org setup (`NPM_TOKEN`) and how to add providers or widgets.

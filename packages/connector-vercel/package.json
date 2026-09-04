@@ -1,7 +1,7 @@
 {
-  "name": "@analytics-kit/connector-vercel",
+  "name": "@wingtics/connector-vercel",
   "version": "0.6.0",
-  "description": "Vercel Web Analytics API connector for Analytics Kit.",
+  "description": "Vercel Web Analytics API connector for Wingtics.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@analytics-kit/core": "workspace:*"
+    "@wingtics/core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

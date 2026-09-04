@@ -15,11 +15,10 @@ import { Section, SectionHead } from "@/site/Section";
 import { useSite } from "@/site/theme";
 import { useRegistryCommand } from "@/site/useRegistryCommand";
 
-const INSTALL =
-  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
+const INSTALL = "pnpm add @wingtics/react @wingtics/core @wingtics/next @wingtics/connector-vercel";
 
-const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createHttpConnector } from "@analytics-kit/core";
+const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@wingtics/react";
+import { createHttpConnector } from "@wingtics/core";
 
 const connector = createHttpConnector({ endpoint: "/api/analytics" });
 

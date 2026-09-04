@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMockConnector } from "@analytics-kit/connector-mock";
+import { createMockConnector } from "@wingtics/connector-mock";
 import { createAnalyticsHandler } from "./index.js";
 
 describe("createAnalyticsHandler", () => {

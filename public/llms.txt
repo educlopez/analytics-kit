@@ -1,4 +1,4 @@
-# Analytics Kit
+# Wingtics
 
 Provider-agnostic analytics widgets for React. One query model, five connectors, the same dashboard.
 
@@ -10,19 +10,19 @@ Components: https://analytics-kit-demo.vercel.app/components
 ## Install
 
 ```bash
-pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel
+pnpm add @wingtics/react @wingtics/core @wingtics/next @wingtics/connector-vercel
 ```
 
-Also: `@analytics-kit/connector-plausible`, `connector-ga4`, `connector-umami`, `connector-posthog`, `connector-mock`. Import `@analytics-kit/react/styles.css` once.
+Also: `@wingtics/connector-plausible`, `connector-ga4`, `connector-umami`, `connector-posthog`, `connector-mock`. Import `@wingtics/react/styles.css` once.
 
 Keep vendor tokens on the server. The browser talks to your `/api/analytics` via `createHttpConnector`.
 
 ## Provider
 
 ```tsx
-import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import "@analytics-kit/react/styles.css";
+import { AnalyticsProvider, Dashboard } from "@wingtics/react";
+import { createVercelConnector } from "@wingtics/connector-vercel";
+import "@wingtics/react/styles.css";
 
 const connector = createVercelConnector({
   token: process.env.VERCEL_TOKEN!,
@@ -38,7 +38,7 @@ export function Stats() {
 }
 ```
 
-Server route: `createRouteHandlers({ connector })` from `@analytics-kit/next`.
+Server route: `createRouteHandlers({ connector })` from `@wingtics/next`.
 
 ## Query model
 

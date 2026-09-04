@@ -4,15 +4,15 @@
   "commit": false,
   "fixed": [
     [
-      "@analytics-kit/core",
-      "@analytics-kit/react",
-      "@analytics-kit/next",
-      "@analytics-kit/connector-mock",
-      "@analytics-kit/connector-plausible",
-      "@analytics-kit/connector-vercel",
-      "@analytics-kit/connector-ga4",
-      "@analytics-kit/connector-umami",
-      "@analytics-kit/connector-posthog"
+      "@wingtics/core",
+      "@wingtics/react",
+      "@wingtics/next",
+      "@wingtics/connector-mock",
+      "@wingtics/connector-plausible",
+      "@wingtics/connector-vercel",
+      "@wingtics/connector-ga4",
+      "@wingtics/connector-umami",
+      "@wingtics/connector-posthog"
     ]
   ],
   "linked": [],

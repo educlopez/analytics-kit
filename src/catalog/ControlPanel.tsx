@@ -5,7 +5,7 @@ import { RiEqualizer2Line, RiRefreshLine, RiSidebarUnfoldLine } from "@remixicon
 import { DialRoot } from "dialkit";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import * as Button from "@/components/ui/button";
-import type { AnalyticsTheme } from "@analytics-kit/react";
+import type { AnalyticsTheme } from "@wingtics/react";
 import { cn } from "@/utils/cn";
 import "dialkit/styles.css";
 

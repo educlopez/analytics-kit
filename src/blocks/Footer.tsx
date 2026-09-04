@@ -21,18 +21,18 @@ const footerLinksData = {
   packages: [
     {
       id: "pkg1",
-      href: "https://www.npmjs.com/package/@analytics-kit/react",
-      text: "@analytics-kit/react",
+      href: "https://www.npmjs.com/package/@wingtics/react",
+      text: "@wingtics/react",
     },
     {
       id: "pkg2",
-      href: "https://www.npmjs.com/package/@analytics-kit/core",
-      text: "@analytics-kit/core",
+      href: "https://www.npmjs.com/package/@wingtics/core",
+      text: "@wingtics/core",
     },
     {
       id: "pkg3",
-      href: "https://www.npmjs.com/package/@analytics-kit/next",
-      text: "@analytics-kit/next",
+      href: "https://www.npmjs.com/package/@wingtics/next",
+      text: "@wingtics/next",
     },
     { id: "pkg4", href: "https://www.npmjs.com/org/analytics-kit", text: "All connectors" },
   ],

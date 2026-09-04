@@ -1,4 +1,4 @@
-import type { AnalyticsQuery } from "@analytics-kit/core";
+import type { AnalyticsQuery } from "@wingtics/core";
 
 const HOUR_MS = 3_600_000;
 

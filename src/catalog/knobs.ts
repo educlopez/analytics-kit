@@ -262,7 +262,7 @@ function buildJsx(item: CatalogItem, knobs: PreviewKnobs): string {
 
   if (item.slug === "area-chart" || item.slug === "line-chart") {
     const name = item.component;
-    return `import { ${name} } from "@analytics-kit/react";
+    return `import { ${name} } from "@wingtics/react";
 
 const points = [
   { date: "2026-08-01", value: 120 },
@@ -279,7 +279,7 @@ const points = [
   if (item.slug === "bar-chart" || item.slug === "pie-chart") {
     const name = item.component;
     const labelDefault = item.slug === "bar-chart" ? "rounded" : "donut";
-    return `import { ${name} } from "@analytics-kit/react";
+    return `import { ${name} } from "@wingtics/react";
 
 const rows = [
   { label: "Chrome", value: 420 },
@@ -294,7 +294,7 @@ const rows = [
   }
 
   if (item.slug === "funnel-chart") {
-    return `import { FunnelChart } from "@analytics-kit/react";
+    return `import { FunnelChart } from "@wingtics/react";
 
 const stages = [
   { label: "Visitors", value: 1240 },
@@ -308,7 +308,7 @@ const stages = [
   }
 
   if (item.slug === "radar-chart") {
-    return `import { RadarChart } from "@analytics-kit/react";
+    return `import { RadarChart } from "@wingtics/react";
 
 <RadarChart
   data={rows}
@@ -318,7 +318,7 @@ const stages = [
   }
 
   if (item.slug === "composed-chart") {
-    return `import { ComposedChart } from "@analytics-kit/react";
+    return `import { ComposedChart } from "@wingtics/react";
 
 <ComposedChart
   data={points}
@@ -328,7 +328,7 @@ const stages = [
   }
 
   if (item.slug === "scatter-chart") {
-    return `import { ScatterChart } from "@analytics-kit/react";
+    return `import { ScatterChart } from "@wingtics/react";
 
 <ScatterChart
   data={points}
@@ -338,7 +338,7 @@ const stages = [
   }
 
   if (item.slug === "sankey-chart") {
-    return `import { SankeyChart } from "@analytics-kit/react";
+    return `import { SankeyChart } from "@wingtics/react";
 
 <SankeyChart
   nodes={nodes}
@@ -347,7 +347,7 @@ const stages = [
   }
 
   if (item.slug === "candlestick-chart") {
-    return `import { CandlestickChart } from "@analytics-kit/react";
+    return `import { CandlestickChart } from "@wingtics/react";
 
 const candles = [
   { date: "2026-08-01", open: 120, high: 138, low: 114, close: 132, volume: 18400 },
@@ -360,7 +360,7 @@ const candles = [
   }
 
   if (item.slug === "choropleth-chart") {
-    return `import { ChoroplethChart } from "@analytics-kit/react";
+    return `import { ChoroplethChart } from "@wingtics/react";
 
 <ChoroplethChart
   data={regions}${attr("variant", knobs.variant, item.defaultVariant)}
@@ -368,7 +368,7 @@ const candles = [
   }
 
   if (item.slug === "live-line-chart") {
-    return `import { LiveLineChart } from "@analytics-kit/react";
+    return `import { LiveLineChart } from "@wingtics/react";
 
 <LiveLineChart
   data={points}${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
@@ -376,7 +376,7 @@ const candles = [
   }
 
   if (item.slug === "ring-chart") {
-    return `import { RingChart } from "@analytics-kit/react";
+    return `import { RingChart } from "@wingtics/react";
 
 <RingChart
   data={rows}${attr("variant", knobs.variant, item.defaultVariant)}
@@ -384,7 +384,7 @@ const candles = [
   }
 
   if (item.slug === "heatmap-chart") {
-    return `import { HeatmapChart } from "@analytics-kit/react";
+    return `import { HeatmapChart } from "@wingtics/react";
 
 <HeatmapChart
   data={points}${attr("variant", knobs.variant, item.defaultVariant)}
@@ -392,7 +392,7 @@ const candles = [
   }
 
   if (item.slug === "sunburst-chart") {
-    return `import { SunburstChart } from "@analytics-kit/react";
+    return `import { SunburstChart } from "@wingtics/react";
 
 <SunburstChart
   data={tree}${attr("variant", knobs.variant, item.defaultVariant)}
@@ -400,7 +400,7 @@ const candles = [
   }
 
   if (item.slug === "profit-loss-chart") {
-    return `import { ProfitLossChart } from "@analytics-kit/react";
+    return `import { ProfitLossChart } from "@wingtics/react";
 
 <ProfitLossChart
   data={deltas}${attr("variant", knobs.variant, item.defaultVariant)}${attr("className", heightClass)}
@@ -408,7 +408,7 @@ const candles = [
   }
 
   if (item.slug === "gauge-chart") {
-    return `import { GaugeChart } from "@analytics-kit/react";
+    return `import { GaugeChart } from "@wingtics/react";
 
 <GaugeChart
   value={42}
@@ -418,7 +418,7 @@ const candles = [
   }
 
   if (item.slug === "metric-card") {
-    return `import { MetricCard } from "@analytics-kit/react";
+    return `import { MetricCard } from "@wingtics/react";
 
 <MetricCard
   metric="${knobs.metric}"${attr("variant", knobs.variant, item.defaultVariant)}
@@ -426,7 +426,7 @@ const candles = [
   }
 
   if (item.slug === "ranked-list") {
-    return `import { RankedList } from "@analytics-kit/react";
+    return `import { RankedList } from "@wingtics/react";
 
 <RankedList
   rows={rows}
@@ -434,7 +434,7 @@ const candles = [
 />`;
   }
 
-  return `import { Dashboard, defaultDashboard } from "@analytics-kit/react";
+  return `import { Dashboard, defaultDashboard } from "@wingtics/react";
 
 <Dashboard
   widgets={defaultDashboard}${attr("columns", knobs.columns, 4)}${attr("showRange", knobs.showRange, true)}

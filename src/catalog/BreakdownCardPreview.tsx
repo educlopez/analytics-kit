@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import type { BreakdownRow } from "@analytics-kit/core";
-import { BreakdownCard, type BreakdownCardVariant } from "@analytics-kit/react";
+import type { BreakdownRow } from "@wingtics/core";
+import { BreakdownCard, type BreakdownCardVariant } from "@wingtics/react";
 
 /**
  * The card is presentational — the host owns which dimension is selected — so

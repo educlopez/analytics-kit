@@ -21,19 +21,14 @@ import {
   ANALYTICS_KIT_DATASET,
   createMockConnector,
   type ProviderProfile,
-} from "@analytics-kit/connector-mock";
+} from "@wingtics/connector-mock";
 import {
   createHttpConnector,
   DATE_RANGE_PRESETS,
   withSampleFallback,
   type DateRangePreset,
-} from "@analytics-kit/core";
-import {
-  AnalyticsProvider,
-  Dashboard,
-  useCapabilities,
-  type DashboardItem,
-} from "@analytics-kit/react";
+} from "@wingtics/core";
+import { AnalyticsProvider, Dashboard, useCapabilities, type DashboardItem } from "@wingtics/react";
 import * as Badge from "@/components/ui/badge";
 import * as Button from "@/components/ui/button";
 import * as StatusBadge from "@/components/ui/status-badge";
@@ -248,8 +243,8 @@ export function DemoPlatform() {
           An analytics platform, built with the kit
         </h1>
         <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 mt-3 max-w-[72ch]">
-          Every panel below is a widget from <code className="font-mono">@analytics-kit/react</code>
-          , wired through one <code className="font-mono">AnalyticsProvider</code>. Switch the
+          Every panel below is a widget from <code className="font-mono">@wingtics/react</code>,
+          wired through one <code className="font-mono">AnalyticsProvider</code>. Switch the
           provider in the top right: the layout never changes, but the widgets a provider cannot
           answer step aside on their own.
         </p>

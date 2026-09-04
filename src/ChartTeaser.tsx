@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { createMockConnector, mockQuery } from "@analytics-kit/connector-mock";
-import type { AnalyticsQuery } from "@analytics-kit/core";
+import { createMockConnector, mockQuery } from "@wingtics/connector-mock";
+import type { AnalyticsQuery } from "@wingtics/core";
 import {
   AnalyticsProvider,
   AreaChart,
   PieChart,
   useQuery,
   type AnalyticsTheme,
-} from "@analytics-kit/react";
+} from "@wingtics/react";
 import Link from "next/link";
 import * as Button from "@/components/ui/button";
 

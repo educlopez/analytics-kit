@@ -1,4 +1,4 @@
-import { DATE_RANGE_PRESETS, type DateRangePreset } from "@analytics-kit/core";
+import { DATE_RANGE_PRESETS, type DateRangePreset } from "@wingtics/core";
 import { getWidget } from "./registry.js";
 import { useAnalytics } from "./context.js";
 import "./widgets/MetricCards.js";

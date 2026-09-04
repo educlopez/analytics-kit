@@ -1,9 +1,9 @@
-# @analytics-kit/connector-posthog
+# @wingtics/connector-posthog
 
-PostHog HogQL connector for Analytics Kit.
+PostHog HogQL connector for Wingtics.
 
 ```bash
-pnpm add @analytics-kit/connector-posthog
+pnpm add @wingtics/connector-posthog
 ```
 
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.

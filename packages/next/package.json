@@ -1,7 +1,7 @@
 {
-  "name": "@analytics-kit/next",
+  "name": "@wingtics/next",
   "version": "0.6.0",
-  "description": "Next.js / Fetch handlers that proxy Analytics Kit connectors without exposing API keys.",
+  "description": "Next.js / Fetch handlers that proxy Wingtics connectors without exposing API keys.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,10 +28,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@analytics-kit/core": "workspace:*"
+    "@wingtics/core": "workspace:*"
   },
   "devDependencies": {
-    "@analytics-kit/connector-mock": "workspace:*",
+    "@wingtics/connector-mock": "workspace:*",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   },

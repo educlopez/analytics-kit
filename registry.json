@@ -529,7 +529,7 @@
       "type": "registry:block",
       "title": "Metric card",
       "description": "KPI card wired to Wingtics. Variants: default, spark, compact, hero.",
-      "dependencies": ["@analytics-kit/react"],
+      "dependencies": ["@wingtics/react"],
       "files": [
         {
           "path": "registry/default/blocks/metric-card.tsx",
@@ -544,7 +544,7 @@
       "type": "registry:block",
       "title": "Analytics dashboard",
       "description": "Widget catalog on a 4-column grid, fed by a connector.",
-      "dependencies": ["@analytics-kit/react"],
+      "dependencies": ["@wingtics/react"],
       "files": [
         {
           "path": "registry/default/blocks/dashboard.tsx",
@@ -552,7 +552,7 @@
           "target": "@components/analytics/dashboard.tsx"
         }
       ],
-      "docs": "pnpm add @analytics-kit/react @analytics-kit/core recharts\nimport \"@analytics-kit/react/styles.css\";",
+      "docs": "pnpm add @wingtics/react @wingtics/core recharts\nimport \"@wingtics/react/styles.css\";",
       "categories": ["analytics", "dashboard"]
     }
   ]

@@ -12,7 +12,7 @@ import {
   queryNeeds,
   type ConnectorCapabilities,
   type NormalizedQuery,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export interface AcmeConnectorOptions {
   apiKey: string;

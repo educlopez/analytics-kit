@@ -37,5 +37,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No npm token on purpose: npm prefers a token whenever one is present,
           # and only falls back to OIDC trusted publishing when none is set. Every
-          # @analytics-kit/* package trusts educlopez/analytics-kit + release.yml.
+          # @wingtics/* package trusts educlopez/analytics-kit + release.yml.
           NPM_CONFIG_PROVENANCE: true

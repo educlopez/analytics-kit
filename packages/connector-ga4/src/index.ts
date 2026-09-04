@@ -11,7 +11,7 @@ import {
   type ConnectorCapabilities,
   type DimensionId,
   type MetricId,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export interface Ga4ConnectorOptions {
   /** OAuth or service-account access token */

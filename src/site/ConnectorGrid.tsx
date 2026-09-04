@@ -19,7 +19,7 @@ const CONNECTORS: {
     label: "Vercel",
     ctor: "createVercelConnector",
     options: "{ token, projectId, teamId? }",
-    pkg: "@analytics-kit/connector-vercel",
+    pkg: "@wingtics/connector-vercel",
     note: "Web Analytics API",
   },
   {
@@ -27,7 +27,7 @@ const CONNECTORS: {
     label: "Plausible",
     ctor: "createPlausibleConnector",
     options: "{ apiKey, siteId }",
-    pkg: "@analytics-kit/connector-plausible",
+    pkg: "@wingtics/connector-plausible",
     note: "Stats API v2",
   },
   {
@@ -35,7 +35,7 @@ const CONNECTORS: {
     label: "Google Analytics 4",
     ctor: "createGa4Connector",
     options: "{ accessToken, propertyId }",
-    pkg: "@analytics-kit/connector-ga4",
+    pkg: "@wingtics/connector-ga4",
     note: "Data API",
   },
   {
@@ -43,14 +43,14 @@ const CONNECTORS: {
     label: "Umami",
     ctor: "createUmamiConnector",
     options: "{ apiKey, websiteId, host? }",
-    pkg: "@analytics-kit/connector-umami",
+    pkg: "@wingtics/connector-umami",
   },
   {
     id: "posthog",
     label: "PostHog",
     ctor: "createPostHogConnector",
     options: "{ apiKey, projectId, host? }",
-    pkg: "@analytics-kit/connector-posthog",
+    pkg: "@wingtics/connector-posthog",
     note: "HogQL",
   },
 ];

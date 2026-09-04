@@ -1,5 +1,5 @@
 {
-  "name": "@analytics-kit/react",
+  "name": "@wingtics/react",
   "version": "0.6.0",
   "description": "Provider-agnostic analytics widgets and dashboard primitives for React.",
   "type": "module",
@@ -33,7 +33,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@analytics-kit/core": "workspace:*",
+    "@wingtics/core": "workspace:*",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
     "d3-scale": "^4.0.2",

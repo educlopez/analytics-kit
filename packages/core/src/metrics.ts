@@ -13,7 +13,7 @@ export type BuiltinMetric = (typeof BUILTIN_METRICS)[number];
 /**
  * Augment this interface in your app to add first-class metric IDs:
  *
- * declare module "@analytics-kit/core" {
+ * declare module "@wingtics/core" {
  *   interface MetricCatalog {
  *     revenue: MetricDefinition;
  *   }
