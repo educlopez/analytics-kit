@@ -35,6 +35,10 @@ const BASE = process.argv[2] ?? "http://localhost:3100";
  * which is how it shipped.
  */
 const PASSES = [
+  // 320px is the narrowest viewport worth supporting, and nothing used to run
+  // there: a fixed-width sidebar pushed the document 32px sideways on every
+  // component page and both other passes were too wide to see it.
+  { width: 320, locale: "en-US" },
   { width: 390, locale: "en-US" },
   { width: 1440, locale: "de-DE" },
 ];
