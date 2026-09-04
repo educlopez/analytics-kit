@@ -24,6 +24,8 @@
  */
 import { chromium } from "playwright";
 
+import { varies } from "../src/site/vary.mjs";
+
 const BASE = process.argv[2] ?? "http://localhost:3100";
 /**
  * One pass runs the browser in a non-English locale on purpose. Server-rendered
@@ -221,22 +223,30 @@ async function run() {
     }
 
     // Markdown negotiation, and the Vary that keeps a cache from mixing the
-    // two variants. Both halves, because the second one fails silently.
+    // two variants.
+    //
+    // `Accept` has to be matched as a whole list member. The obvious
+    // `/\baccept\b/i` also matches `Accept-Encoding` — `-` is a non-word
+    // character, so the trailing `\b` closes — which made this assertion pass
+    // on a response whose Vary never mentioned Accept at all. It sat here green
+    // and vacuous.
+    //
+    // Only the markdown half is checked here: Next 16 replaces `vary` on page
+    // responses, so the HTML half cannot carry Accept at all. See proxy.ts.
+    // Whether negotiation survives on a real deployment is a different
+    // question, and `next start` cannot answer it — scripts/edge-vary.mjs does.
     for (const path of ["/", "/components", "/components/globe-chart"]) {
       const md = await fetch(`${BASE}${path}`, { headers: { accept: "text/markdown" } });
       const type = md.headers.get("content-type") ?? "";
       const vary = md.headers.get("vary") ?? "";
       const body = await md.text();
       if (!type.includes("text/markdown")) fail(`${path} with Accept: text/markdown gave ${type}`);
-      if (!/\baccept\b/i.test(vary))
-        fail(`${path} markdown response has Vary: ${vary || "(none)"}`);
+      if (!varies(vary, "accept")) fail(`${path} markdown response has Vary: ${vary || "(none)"}`);
       if (!body.startsWith("# ")) fail(`${path} markdown does not start with a heading`);
 
       const html = await fetch(`${BASE}${path}`, { headers: { accept: "text/html" } });
       const htmlType = html.headers.get("content-type") ?? "";
       if (!htmlType.includes("text/html")) fail(`${path} with Accept: text/html gave ${htmlType}`);
-      if (!/\baccept\b/i.test(html.headers.get("vary") ?? ""))
-        fail(`${path} html response is missing Vary: Accept`);
       console.log(`[agent] ${path} md ${Buffer.byteLength(body)}B · html ok · Vary ok`);
     }
 

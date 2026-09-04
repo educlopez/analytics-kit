@@ -1,7 +1,7 @@
 import { markdownFor } from "../../../src/site/markdown";
 
 /**
- * The markdown half of the Accept negotiation in `middleware.ts`. Reached only
+ * The markdown half of the Accept negotiation in `proxy.ts`. Reached only
  * by rewrite, never linked, so it carries `noindex`: the HTML page at the same
  * path is the canonical one.
  */

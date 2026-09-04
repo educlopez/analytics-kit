@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { WidgetFrame } from "@wingtics/react";
-import { prefersMarkdown } from "../../middleware";
+import { prefersMarkdown } from "../../proxy";
 import { MARKDOWN_PATHS, markdownFor } from "./markdown";
 import { CATALOG } from "../catalog/items";
 import {

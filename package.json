@@ -28,7 +28,8 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "edge-vary": "node scripts/edge-vary.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
