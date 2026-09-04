@@ -1,7 +1,7 @@
 /** Canonical origin. Every absolute URL on the site is built from this. */
 export const SITE_URL = "https://analytics-kit-demo.vercel.app";
 
-export const SITE_NAME = "Analytics Kit";
+export const SITE_NAME = "Wingtics";
 
 export const SITE_TAGLINE = "One dashboard. Any analytics tool.";
 

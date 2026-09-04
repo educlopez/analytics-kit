@@ -63,7 +63,7 @@ export function Footer() {
           <div className="border-stroke-soft-200 mb-8 flex flex-col gap-6 border-b pb-8 lg:mb-0 lg:gap-8 lg:border-b-0 lg:pb-0">
             <Link href="/" className="flex items-center gap-2.5">
               <BrandMark className="text-primary-base h-7 w-auto" />
-              <div className="text-title-h5 text-text-strong-950">Analytics Kit</div>
+              <div className="text-title-h5 text-text-strong-950">Wingtics</div>
             </Link>
             <div className="flex flex-col gap-5">
               <div className="text-label-sm text-text-soft-400">

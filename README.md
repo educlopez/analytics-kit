@@ -1,8 +1,13 @@
-# Analytics Kit
+# Wingtics
 
 [![CI](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/educlopez/analytics-kit/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@analytics-kit/core.svg)](https://www.npmjs.com/package/@analytics-kit/core)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> Wingtics was called **Analytics Kit** until September 2026. The packages are
+> still published under the `@analytics-kit/*` scope and keep working
+> unchanged — only the project name moved. The scope will follow later, and
+> the old one will be deprecated with a pointer rather than removed.
 
 Provider-agnostic analytics for websites. You give users a **connector** for the analytics tool they already use, and **components** that render the data. Switching from Plausible to GA4 (or Vercel, Umami, PostHog) is a constructor change — the dashboard stays the same.
 

@@ -108,6 +108,13 @@ export function DocsPage() {
             dashboard and the charts.
           </p>
           <CopyCommand command={INSTALL} id="install" />
+          {/* The project is Wingtics and the scope is still @analytics-kit, so
+              anyone arriving from the new name needs telling once — right where
+              they are about to type the old one. */}
+          <p className="text-paragraph-sm text-text-soft-400 max-w-[70ch] [&_code]:font-mono [&_code]:text-[0.86em]">
+            Wingtics was called Analytics Kit until September 2026. The packages still publish under{" "}
+            <code>@analytics-kit/*</code>; only the project name changed.
+          </p>
           <p className="text-paragraph-sm lg:text-paragraph-md text-text-sub-600 max-w-[70ch] [&_a]:text-primary-base [&_a]:hover:underline [&_code]:font-mono [&_code]:text-[0.86em]">
             Also: <code>@analytics-kit/connector-plausible</code>, <code>connector-ga4</code>,{" "}
             <code>connector-umami</code>, <code>connector-posthog</code>, and{" "}

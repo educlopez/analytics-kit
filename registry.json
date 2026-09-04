@@ -7,7 +7,7 @@
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
-      "description": "Recharts container used by every Analytics Kit chart. Colors inherit --chart-1…5 from the host theme.",
+      "description": "Recharts container used by every Wingtics chart. Colors inherit --chart-1…5 from the host theme.",
       "dependencies": ["recharts@2.15.4", "d3-scale@4.0.2", "clsx", "tailwind-merge"],
       "files": [
         {
@@ -528,7 +528,7 @@
       "name": "metric-card",
       "type": "registry:block",
       "title": "Metric card",
-      "description": "KPI card wired to Analytics Kit. Variants: default, spark, compact, hero.",
+      "description": "KPI card wired to Wingtics. Variants: default, spark, compact, hero.",
       "dependencies": ["@analytics-kit/react"],
       "files": [
         {

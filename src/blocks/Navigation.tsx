@@ -92,7 +92,7 @@ export function Navigation() {
       <div className="flex flex-1 items-center gap-6 lg:order-1">
         <Link href="/" className="flex items-center gap-2.5">
           <BrandMark className="text-primary-base h-6 w-auto" />
-          <span className="text-label-md text-text-strong-950">Analytics Kit</span>
+          <span className="text-label-md text-text-strong-950">Wingtics</span>
         </Link>
 
         <nav
