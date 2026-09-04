@@ -1,6 +1,6 @@
 {
   "name": "@wingtics/react",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Provider-agnostic analytics widgets and dashboard primitives for React.",
   "type": "module",
   "main": "./dist/index.cjs",
