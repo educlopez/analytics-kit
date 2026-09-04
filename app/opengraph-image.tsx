@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { CATALOG } from "../src/catalog/items";
 
-export const alt = "Analytics Kit — one dashboard, any analytics tool";
+export const alt = "Wingtics — one dashboard, any analytics tool";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -51,9 +51,7 @@ export default function OpengraphImage() {
           <path d="m3.76562 27.8951 21.73568-12.5492-.8189 12.6994-17.15081 9.902z" opacity="0.5" />
           <path d="m7.5293 37.9477 12.566-7.255-.8189 12.6994-7.9811 4.6079z" opacity="0.25" />
         </svg>
-        <div style={{ fontSize: 30, color: "#000000", letterSpacing: "-0.02em" }}>
-          Analytics Kit
-        </div>
+        <div style={{ fontSize: 30, color: "#000000", letterSpacing: "-0.02em" }}>Wingtics</div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

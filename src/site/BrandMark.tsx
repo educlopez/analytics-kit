@@ -1,5 +1,5 @@
 /**
- * The Analytics Kit logomark: three slabs stepping down in perspective, with a
+ * The Wingtics logomark: three slabs stepping down in perspective, with a
  * fading opacity ramp — a trend receding into the past.
  *
  * Based on the "Foresight" mark from Untitled UI's free placeholder company

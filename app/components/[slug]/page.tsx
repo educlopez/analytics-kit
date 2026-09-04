@@ -21,7 +21,7 @@ export async function generateMetadata({
     description: item.blurb,
     alternates: { canonical: url },
     openGraph: {
-      title: `${item.title} — Analytics Kit`,
+      title: `${item.title} — Wingtics`,
       description: item.blurb,
       url,
     },
