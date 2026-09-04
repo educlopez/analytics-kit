@@ -281,8 +281,10 @@ function CapabilitiesVisual({ theme }: { theme: AnalyticsTheme }) {
       <AnalyticsProvider connector={connector} theme={theme} range="7d">
         <div className="ak-dashboard">
           <div className="ak-grid" style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
-            <MetricCard metric="visitors" />
-            <MetricCard metric="bounceRate" />
+            {/* Straight under the page h1, so h3 would skip a level. The
+                cards are illustration here, but the outline is still real. */}
+            <MetricCard metric="visitors" headingLevel={2} />
+            <MetricCard metric="bounceRate" headingLevel={2} />
           </div>
         </div>
       </AnalyticsProvider>

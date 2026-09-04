@@ -54,6 +54,9 @@ const PATHS = [
   "/components/globe-chart",
   "/components/metric-tabs",
   "/docs",
+  "/about",
+  "/contact",
+  "/privacy",
 ];
 
 const failures = [];
@@ -170,7 +173,31 @@ async function run() {
         /^Sitemap:\s*https?:\/\/\S+\/sitemap\.xml$/m.test(text) ? null : "no absolute Sitemap line",
     };
 
-    for (const [path, check] of Object.entries(META)) {
+    // Agent-facing surfaces. Every one of these is something a machine reads
+    // and a person never sees, which is exactly why nothing else catches them.
+    const AGENT = {
+      "/openapi.json": (text) => {
+        try {
+          const spec = JSON.parse(text);
+          if (!spec.openapi?.startsWith("3.")) return "not an OpenAPI 3 document";
+          const ops = Object.values(spec.paths ?? {}).flatMap((p) => Object.values(p));
+          if (!ops.length) return "no operations";
+          const ids = ops.map((o) => o.operationId);
+          if (ids.some((id) => !id)) return "an operation has no operationId";
+          if (new Set(ids).size !== ids.length) return "duplicate operationId";
+          if (ops.some((o) => !o.description)) return "an operation has no description";
+          return null;
+        } catch {
+          return "not valid JSON";
+        }
+      },
+      "/llms.txt": (text) =>
+        text.includes("## When to use this") && text.includes("## Machine-readable")
+          ? null
+          : "missing when-to-use or machine-readable guidance",
+    };
+
+    for (const [path, check] of Object.entries({ ...META, ...AGENT })) {
       const response = await fetch(`${BASE}${path}`);
       if (!response.ok) {
         fail(`${path} responded ${response.status}`);
@@ -180,6 +207,48 @@ async function run() {
       const problem = check(text);
       if (problem) fail(`${path}: ${problem}`);
       console.log(`[meta] ${path} ${response.status} ${Buffer.byteLength(text)}B`);
+    }
+
+    // A 200 on an unknown path makes an agent believe every path exists.
+    {
+      const response = await fetch(`${BASE}/definitely-not-a-real-path-9f3a`);
+      if (response.status !== 404) fail(`unknown path answered ${response.status}, not 404`);
+      const body = await response.text();
+      for (const pointer of ["/llms.txt", "/sitemap.xml", "/docs"]) {
+        if (!body.includes(pointer)) fail(`404 body does not point at ${pointer}`);
+      }
+      console.log(`[meta] 404 ${response.status} ${Buffer.byteLength(body)}B`);
+    }
+
+    // Markdown negotiation, and the Vary that keeps a cache from mixing the
+    // two variants. Both halves, because the second one fails silently.
+    for (const path of ["/", "/components", "/components/globe-chart"]) {
+      const md = await fetch(`${BASE}${path}`, { headers: { accept: "text/markdown" } });
+      const type = md.headers.get("content-type") ?? "";
+      const vary = md.headers.get("vary") ?? "";
+      const body = await md.text();
+      if (!type.includes("text/markdown")) fail(`${path} with Accept: text/markdown gave ${type}`);
+      if (!/\baccept\b/i.test(vary))
+        fail(`${path} markdown response has Vary: ${vary || "(none)"}`);
+      if (!body.startsWith("# ")) fail(`${path} markdown does not start with a heading`);
+
+      const html = await fetch(`${BASE}${path}`, { headers: { accept: "text/html" } });
+      const htmlType = html.headers.get("content-type") ?? "";
+      if (!htmlType.includes("text/html")) fail(`${path} with Accept: text/html gave ${htmlType}`);
+      if (!/\baccept\b/i.test(html.headers.get("vary") ?? ""))
+        fail(`${path} html response is missing Vary: Accept`);
+      console.log(`[agent] ${path} md ${Buffer.byteLength(body)}B · html ok · Vary ok`);
+    }
+
+    // Every API failure has to be JSON an agent can branch on.
+    {
+      const response = await fetch(`${BASE}/api/analytics`, { method: "DELETE" });
+      const type = response.headers.get("content-type") ?? "";
+      if (response.status !== 405) fail(`DELETE /api/analytics answered ${response.status}`);
+      if (!type.includes("application/json")) fail(`405 answered ${type}, not JSON`);
+      const body = await response.json().catch(() => null);
+      if (!body?.code || !body?.hint) fail("405 JSON has no code or hint");
+      console.log(`[agent] /api/analytics DELETE ${response.status} ${body?.code}`);
     }
 
     // The one thing that silently breaks every social preview.

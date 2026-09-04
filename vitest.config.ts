@@ -4,7 +4,9 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["packages/**/*.test.ts"],
+    // The site carries real logic now — Accept negotiation and the derived
+    // markdown representations — so its tests run alongside the packages'.
+    include: ["packages/**/*.test.ts", "src/**/*.test.ts"],
   },
   resolve: {
     alias: {
@@ -17,6 +19,7 @@ export default defineConfig({
       "@wingtics/connector-ga4": path.resolve("packages/connector-ga4/src/index.ts"),
       "@wingtics/connector-umami": path.resolve("packages/connector-umami/src/index.ts"),
       "@wingtics/connector-posthog": path.resolve("packages/connector-posthog/src/index.ts"),
+      "@": path.resolve("src"),
     },
   },
 });
