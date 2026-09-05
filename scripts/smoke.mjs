@@ -294,6 +294,60 @@ async function run() {
       console.log(`[agent] ${path} md ${Buffer.byteLength(body)}B · html ok · Vary ok`);
     }
 
+    // A path under /api that no route handles must still answer JSON. Falling
+    // through to the HTML 404 hands a client that asked for JSON a 60KB page
+    // shell, which reads as "there is no API here" rather than "wrong path".
+    {
+      for (const [path, method] of [
+        ["/api/does-not-exist", "GET"],
+        ["/api/nope/deeper", "POST"],
+      ]) {
+        const response = await fetch(`${BASE}${path}`, {
+          method,
+          headers: { accept: "application/json" },
+        });
+        const type = response.headers.get("content-type") ?? "";
+        if (response.status !== 404) fail(`${method} ${path} answered ${response.status}, not 404`);
+        if (!type.includes("application/json")) fail(`${method} ${path} answered ${type}`);
+        const body = await response.json().catch(() => null);
+        if (!body?.code) fail(`${method} ${path} has no error code`);
+        if (!body?.hint) fail(`${method} ${path} has no hint`);
+        console.log(`[agent] ${method} ${path} ${response.status} ${body?.code}`);
+      }
+    }
+
+    // An agent asking for markdown on a missing path gets a short markdown
+    // body it can act on, not the HTML shell. The HTML 404 is unchanged for
+    // everyone else — both halves, because either one can regress alone.
+    {
+      const path = "/definitely-not-a-real-path-md";
+      const md = await fetch(`${BASE}${path}`, { headers: { accept: "text/markdown" } });
+      const type = md.headers.get("content-type") ?? "";
+      const body = await md.text();
+      if (md.status !== 404) fail(`${path} with Accept: text/markdown answered ${md.status}`);
+      if (!type.includes("text/markdown")) fail(`${path} markdown 404 answered ${type}`);
+      if (!varies(md.headers.get("vary") ?? "", "accept"))
+        fail(`${path} markdown 404 has Vary: ${md.headers.get("vary") || "(none)"}`);
+      if (!body.startsWith("# ")) fail(`${path} markdown 404 does not start with a heading`);
+      for (const pointer of ["/llms.txt", "/sitemap.xml", "/docs"]) {
+        if (!body.includes(pointer)) fail(`${path} markdown 404 does not point at ${pointer}`);
+      }
+      if (body.length > 1000) fail(`${path} markdown 404 is ${body.length}B, not a short body`);
+
+      const html = await fetch(`${BASE}${path}`, { headers: { accept: "text/html" } });
+      if (html.status !== 404) fail(`${path} with Accept: text/html answered ${html.status}`);
+      if (!(html.headers.get("content-type") ?? "").includes("text/html"))
+        fail(`${path} html 404 stopped being HTML`);
+      console.log(`[agent] 404 md ${Buffer.byteLength(body)}B · html ok`);
+    }
+
+    // A page that exists must not answer a markdown request with the stub.
+    for (const path of ["/about", "/contact", "/privacy", "/docs"]) {
+      const response = await fetch(`${BASE}${path}`, { headers: { accept: "text/markdown" } });
+      if (response.status !== 200 || !(response.headers.get("content-type") ?? "").includes("html"))
+        fail(`${path} answered ${response.status} ${response.headers.get("content-type")}`);
+    }
+
     // Every API failure has to be JSON an agent can branch on.
     {
       const response = await fetch(`${BASE}/api/analytics`, { method: "DELETE" });
