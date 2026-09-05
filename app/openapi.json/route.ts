@@ -1,3 +1,4 @@
+import type { AnalyticsErrorCode } from "@wingtics/core";
 import {
   BUILTIN_DIMENSIONS,
   BUILTIN_METRICS,
@@ -26,6 +27,52 @@ import { SITE_DESCRIPTION, SITE_URL, REPO_URL } from "../../src/site/meta";
 export const dynamic = "force-static";
 
 const REGISTRY_ITEMS = CATALOG.map((item) => item.registry ?? item.slug).sort();
+
+/**
+ * `ConnectorCapabilities` states support per id — `{ visitors: true, events: false }` —
+ * not as a list of the supported ones. The first version of this schema said
+ * `array of string` for both maps and named a `granularities` field the contract
+ * does not have, so an agent generating a call from the spec parsed the real
+ * response wrong. The enums here were already read from the source of truth;
+ * the shape around them was not.
+ */
+/**
+ * Every `code` a caller can receive: the connector's own, from
+ * `AnalyticsErrorCode`, plus the ones the transport raises before a connector
+ * is reached. Listing them by hand is how `ENDPOINT_NOT_FOUND` shipped without
+ * reaching the spec, so `AssertCoversConnectorCodes` below fails the build if
+ * core ever adds a code that is not here.
+ */
+const ERROR_CODES = [
+  "UNSUPPORTED",
+  "AUTH",
+  "RATE_LIMIT",
+  "NETWORK",
+  "INVALID_QUERY",
+  "PROVIDER",
+  // Raised by the route handler, not by a connector.
+  "METHOD_NOT_ALLOWED",
+  "ENDPOINT_NOT_FOUND",
+  "INTERNAL",
+] as const;
+
+type AssertCoversConnectorCodes = AnalyticsErrorCode extends (typeof ERROR_CODES)[number]
+  ? true
+  : [
+      "missing error code in ERROR_CODES",
+      Exclude<AnalyticsErrorCode, (typeof ERROR_CODES)[number]>,
+    ];
+const _errorCodesCoverContract: AssertCoversConnectorCodes = true;
+void _errorCodesCoverContract;
+
+function supportMap(ids: readonly string[], what: string) {
+  return {
+    type: "object",
+    description: `Whether this provider can answer each ${what}. An absent key means no.`,
+    properties: Object.fromEntries(ids.map((id) => [id, { type: "boolean" }])),
+    additionalProperties: false,
+  };
+}
 
 const spec = {
   openapi: "3.1.0",
@@ -57,6 +104,7 @@ const spec = {
               "application/json": { schema: { $ref: "#/components/schemas/RegistryIndex" } },
             },
           },
+          "500": { $ref: "#/components/responses/Error" },
         },
       },
     },
@@ -83,7 +131,7 @@ const spec = {
               "application/json": { schema: { $ref: "#/components/schemas/RegistryItem" } },
             },
           },
-          "404": { description: "No such item." },
+          "404": { $ref: "#/components/responses/Error" },
         },
       },
     },
@@ -101,6 +149,8 @@ const spec = {
               "application/json": { schema: { $ref: "#/components/schemas/Connector" } },
             },
           },
+          "405": { $ref: "#/components/responses/Error" },
+          "500": { $ref: "#/components/responses/Error" },
         },
       },
       post: {
@@ -159,16 +209,7 @@ const spec = {
           code: {
             type: "string",
             description: "Stable code to branch on.",
-            enum: [
-              "AUTH",
-              "RATE_LIMIT",
-              "UNSUPPORTED",
-              "INVALID_QUERY",
-              "NETWORK",
-              "PROVIDER",
-              "METHOD_NOT_ALLOWED",
-              "INTERNAL",
-            ],
+            enum: [...ERROR_CODES],
           },
           hint: { type: "string", description: "What a caller can do about it." },
         },
@@ -178,17 +219,36 @@ const spec = {
         required: ["id", "name", "capabilities"],
         properties: {
           id: { type: "string", example: "vercel" },
-          name: { type: "string", example: "wingtics.com" },
+          name: { type: "string", example: "Vercel Analytics" },
           capabilities: {
             type: "object",
-            description: "What this provider can answer.",
+            description:
+              "What this provider can answer. `metrics` and `dimensions` are maps, " +
+              "not lists: a provider states a verdict for each one, and an absent key " +
+              "means the same as false.",
+            required: [
+              "metrics",
+              "dimensions",
+              "granularity",
+              "filters",
+              "realtime",
+              "previousPeriod",
+            ],
             properties: {
-              metrics: { type: "array", items: { type: "string" } },
-              dimensions: { type: "array", items: { type: "string" } },
-              realtime: { type: "boolean" },
-              granularities: {
+              metrics: supportMap(BUILTIN_METRICS, "metric"),
+              dimensions: supportMap(BUILTIN_DIMENSIONS, "dimension"),
+              granularity: {
                 type: "array",
+                description: "Buckets this provider can group a time series into.",
                 items: { type: "string", enum: [...TIME_GRANULARITIES] },
+              },
+              filters: { type: "boolean" },
+              realtime: { type: "boolean" },
+              previousPeriod: { type: "boolean" },
+              presets: {
+                type: "array",
+                description: "Named ranges, when the provider restricts them.",
+                items: { type: "string", enum: [...DATE_RANGE_PRESETS] },
               },
             },
           },
