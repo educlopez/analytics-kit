@@ -14,7 +14,20 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
 
   if (!body) {
     return new Response(
-      `# Not found\n\nNo markdown representation exists for \`${pathname}\`.\n\nSee /llms.txt for the machine-readable index, or /sitemap.xml for every page.\n`,
+      [
+        "# Not found",
+        "",
+        `Nothing is published at \`${pathname}\`.`,
+        "",
+        "Where to look next:",
+        "",
+        "- /llms.txt — machine-readable index of this site",
+        "- /sitemap.xml — every page",
+        "- /docs — the documentation index",
+        "- /components — every component, each with a markdown variant",
+        "- /openapi.json — the API surface",
+        "",
+      ].join("\n"),
       {
         status: 404,
         headers: {

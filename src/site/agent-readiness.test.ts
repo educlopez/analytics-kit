@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { WidgetFrame } from "@wingtics/react";
-import { prefersMarkdown } from "../../proxy";
+import { config as proxyConfig, prefersMarkdown } from "../../proxy";
 import { MARKDOWN_PATHS, markdownFor } from "./markdown";
 import { CATALOG } from "../catalog/items";
 import {
@@ -185,5 +185,59 @@ describe("openapi spec", () => {
     const advertised = spec.paths["/r/{item}.json"].get.parameters![0].schema.enum;
     const real = CATALOG.map((item) => item.registry ?? item.slug).sort();
     expect(advertised).toEqual(real);
+  });
+});
+
+/**
+ * The matcher decides which paths can negotiate markdown at all. Getting it
+ * wrong is silent in both directions: too narrow and an agent asking for
+ * markdown on a missing path gets a 63KB HTML shell it cannot recover from;
+ * too wide and a real page like /about answers a markdown request with a
+ * "not found" stub, which is worse than never offering negotiation.
+ */
+describe("proxy matcher", () => {
+  /** Next matches a matcher string against the pathname; `:param` is one segment. */
+  const matches = (pathname: string) =>
+    proxyConfig.matcher.some((pattern) => {
+      const source = pattern.replace(/:[a-zA-Z]+\*/g, ".*").replace(/:[a-zA-Z]+/g, "[^/]+");
+      return new RegExp(`^${source}$`).test(pathname);
+    });
+
+  it("covers the paths that have a markdown variant", () => {
+    for (const path of ["/", "/components", "/components/globe-chart"]) {
+      expect(matches(path), path).toBe(true);
+    }
+  });
+
+  it("covers unknown paths, so they can answer with the markdown 404", () => {
+    for (const path of ["/no-such-page", "/deeply/nested/nothing", "/Components"]) {
+      expect(matches(path), path).toBe(true);
+    }
+  });
+
+  // Each of these renders real HTML. Rewriting them to /md would answer a
+  // markdown request with a "not found" stub for a page that exists.
+  it("leaves the prose pages alone", () => {
+    for (const path of ["/about", "/contact", "/privacy", "/docs", "/demo"]) {
+      expect(matches(path), path).toBe(false);
+    }
+  });
+
+  it("leaves the API, the markdown route and Next internals alone", () => {
+    for (const path of [
+      "/api/analytics",
+      "/api/does-not-exist",
+      "/md/components",
+      "/_next/static/chunk.js",
+    ]) {
+      expect(matches(path), path).toBe(false);
+    }
+  });
+
+  // Anything with a dot: the machine-readable files and every static asset.
+  it("leaves the machine-readable files alone", () => {
+    for (const path of ["/openapi.json", "/llms.txt", "/sitemap.xml", "/robots.txt", "/og.png"]) {
+      expect(matches(path), path).toBe(false);
+    }
   });
 });

@@ -101,12 +101,27 @@ export function proxy(request: NextRequest) {
     return rewritten;
   }
 
-  // No Vary here: Next replaces it on page responses. `vercel.json` adds it.
+  // No Vary here: Next replaces it on page responses. See the note above.
   return NextResponse.next();
 }
 
 export const config = {
-  // Only the paths with a real markdown variant. Advertising negotiation on a
-  // page that would answer with a stub is worse than not advertising it.
-  matcher: ["/", "/components", "/components/:slug"],
+  matcher: [
+    // The paths with a real markdown variant.
+    "/",
+    "/components",
+    "/components/:slug",
+    // …and everything that has no page of its own, so a request for markdown
+    // gets the markdown 404 in app/md — a short body naming /llms.txt and
+    // /sitemap.xml — instead of a 63KB HTML shell an agent cannot recover
+    // from. An HTML request to the same path is untouched and still renders
+    // the normal 404 page.
+    //
+    // The exclusions are the routes that DO exist: every HTML page, the API,
+    // the markdown route itself, Next's internals, and anything with a dot,
+    // which covers /openapi.json, /sitemap.xml, /robots.txt, /llms.txt and
+    // every static asset. Advertising negotiation on a real page that would
+    // answer with a stub is still worse than not advertising it.
+    "/((?!_next/|api/|md/|about$|contact$|demo$|docs$|privacy$|.*\\.).*)",
+  ],
 };
