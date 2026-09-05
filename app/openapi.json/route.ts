@@ -6,6 +6,8 @@ import {
   TIME_GRANULARITIES,
 } from "@wingtics/core";
 import { CATALOG } from "../../src/catalog/items";
+import { RATE_LIMIT } from "../../src/site/rate-limit";
+import { version as CORE_VERSION } from "../../packages/core/package.json";
 import { SITE_DESCRIPTION, SITE_URL, REPO_URL } from "../../src/site/meta";
 
 /**
@@ -78,9 +80,27 @@ const spec = {
   openapi: "3.1.0",
   info: {
     title: "Wingtics",
-    version: "0.6.1",
+    // Read from the package, not typed out: this said 0.6.1 while the
+    // packages were on 0.7.0 — the same drift this file has been bitten by
+    // twice before, once for enums and once for the response shape.
+    version: CORE_VERSION,
     summary: "Component registry and analytics proxy for the Wingtics kit.",
-    description: `${SITE_DESCRIPTION}\n\nTwo surfaces are exposed over HTTP: the shadcn-compatible component registry served from this site, and the analytics proxy that \`@wingtics/next\` mounts inside a consumer's own application. The proxy is documented here because its contract is part of the packages — this site runs one instance of it at /api/analytics against its own analytics.`,
+    description: [
+      SITE_DESCRIPTION,
+      "",
+      "Two surfaces are exposed over HTTP: the shadcn-compatible component registry served from this site, and the analytics proxy that `@wingtics/next` mounts inside a consumer's own application. The proxy is documented here because its contract is part of the packages — this site runs one instance of it against its own analytics.",
+      "",
+      "## Versioning",
+      "",
+      "Pin `/api/v1/`. A change that breaks a caller becomes `/api/v2/`; the previous major keeps answering for at least 6 months from the day its successor ships, and every response on it carries `Deprecation: true` and a `Sunset` date in HTTP-date form from that day. Additive changes — a new field, a new optional parameter, a new enum member — happen in place and do not move the version, so parse defensively.",
+      "",
+      "`/api/analytics`, without a version, is an alias that always tracks the newest major. It is not deprecated and is not going away; it is the wrong thing to build against precisely because it moves. Pin the versioned path if you want a contract that does not.",
+      "",
+      "## Rate limits",
+      `Every response carries \`RateLimit-Limit\`, \`RateLimit-Remaining\`, \`RateLimit-Reset\` and \`RateLimit-Policy\`, so a caller can pace itself before it is refused rather than after. Over budget answers 429 with \`Retry-After\`, in the same JSON error shape as every other failure.`,
+      "",
+      `The limit is ${RATE_LIMIT.limit} requests per ${RATE_LIMIT.window} seconds per client address. Counters are held per serving instance, so the effective ceiling across a deployment is that figure times the number of warm instances: treat the advertised number as a floor you can rely on, not a quota being metered exactly.`,
+    ].join("\n"),
     license: { name: "MIT", identifier: "MIT" },
     contact: { name: "Issues", url: `${REPO_URL}/issues` },
   },
@@ -135,7 +155,7 @@ const spec = {
         },
       },
     },
-    "/api/analytics": {
+    "/api/v1/analytics": {
       get: {
         operationId: "getConnectorCapabilities",
         tags: ["analytics"],
@@ -145,11 +165,18 @@ const spec = {
         responses: {
           "200": {
             description: "Connector description.",
+            headers: {
+              "RateLimit-Limit": { $ref: "#/components/headers/RateLimit-Limit" },
+              "RateLimit-Remaining": { $ref: "#/components/headers/RateLimit-Remaining" },
+              "RateLimit-Reset": { $ref: "#/components/headers/RateLimit-Reset" },
+              "RateLimit-Policy": { $ref: "#/components/headers/RateLimit-Policy" },
+            },
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/Connector" } },
             },
           },
           "405": { $ref: "#/components/responses/Error" },
+          "429": { $ref: "#/components/responses/RateLimited" },
           "500": { $ref: "#/components/responses/Error" },
         },
       },
@@ -178,6 +205,12 @@ const spec = {
         responses: {
           "200": {
             description: "Query result.",
+            headers: {
+              "RateLimit-Limit": { $ref: "#/components/headers/RateLimit-Limit" },
+              "RateLimit-Remaining": { $ref: "#/components/headers/RateLimit-Remaining" },
+              "RateLimit-Reset": { $ref: "#/components/headers/RateLimit-Reset" },
+              "RateLimit-Policy": { $ref: "#/components/headers/RateLimit-Policy" },
+            },
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/AnalyticsResult" } },
             },
@@ -185,7 +218,7 @@ const spec = {
           "400": { $ref: "#/components/responses/Error" },
           "401": { $ref: "#/components/responses/Error" },
           "405": { $ref: "#/components/responses/Error" },
-          "429": { $ref: "#/components/responses/Error" },
+          "429": { $ref: "#/components/responses/RateLimited" },
           "500": { $ref: "#/components/responses/Error" },
           "502": { $ref: "#/components/responses/Error" },
         },
@@ -193,7 +226,43 @@ const spec = {
     },
   },
   components: {
+    headers: {
+      "RateLimit-Limit": {
+        description: "Requests allowed per window.",
+        schema: { type: "integer", example: RATE_LIMIT.limit },
+      },
+      "RateLimit-Remaining": {
+        description: "Requests left in the current window. Pace yourself on this.",
+        schema: { type: "integer", example: RATE_LIMIT.limit - 1 },
+      },
+      "RateLimit-Reset": {
+        description: "Seconds until the window resets.",
+        schema: { type: "integer", example: RATE_LIMIT.window },
+      },
+      "RateLimit-Policy": {
+        description: "The policy in force, as quota and window.",
+        schema: {
+          type: "string",
+          example: `"${RATE_LIMIT.policy}";q=${RATE_LIMIT.limit};w=${RATE_LIMIT.window}`,
+        },
+      },
+    },
     responses: {
+      RateLimited: {
+        description:
+          "Over budget. The body is the usual error shape with code RATE_LIMIT; `Retry-After` says how long to wait.",
+        headers: {
+          "Retry-After": {
+            description: "Seconds to wait before retrying.",
+            schema: { type: "integer", example: RATE_LIMIT.window },
+          },
+          "RateLimit-Limit": { $ref: "#/components/headers/RateLimit-Limit" },
+          "RateLimit-Remaining": { $ref: "#/components/headers/RateLimit-Remaining" },
+          "RateLimit-Reset": { $ref: "#/components/headers/RateLimit-Reset" },
+          "RateLimit-Policy": { $ref: "#/components/headers/RateLimit-Policy" },
+        },
+        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+      },
       Error: {
         description:
           "Every failure answers in this shape: a message, a code to branch on, and a hint describing what to do about it.",

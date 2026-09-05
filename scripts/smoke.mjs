@@ -348,6 +348,60 @@ async function run() {
         fail(`${path} answered ${response.status} ${response.headers.get("content-type")}`);
     }
 
+    // The versioned path and its alias are the same endpoint, and every answer
+    // has to carry the budget — a client that only learns its limit once it has
+    // been refused cannot pace itself, which is the point of these fields.
+    {
+      const FIELDS = [
+        "ratelimit-limit",
+        "ratelimit-remaining",
+        "ratelimit-reset",
+        "ratelimit-policy",
+      ];
+      for (const path of ["/api/v1/analytics", "/api/analytics"]) {
+        const response = await fetch(`${BASE}${path}`, {
+          headers: { "x-forwarded-for": `203.0.113.${Math.floor(Math.random() * 200) + 1}` },
+        });
+        if (response.status !== 200) fail(`${path} answered ${response.status}`);
+        for (const field of FIELDS) {
+          if (!response.headers.get(field)) fail(`${path} is missing ${field}`);
+        }
+        console.log(
+          `[agent] ${path} ${response.status} limit=${response.headers.get("ratelimit-limit")}` +
+            ` remaining=${response.headers.get("ratelimit-remaining")}`,
+        );
+      }
+
+      // Over budget must be a 429 an agent can act on: the usual JSON error
+      // shape, a code to branch on, and Retry-After. Exhausting a real window
+      // is the only way to see it, so this uses an address of its own.
+      const address = `198.51.100.${Math.floor(Math.random() * 200) + 1}`;
+      const limit = Number(
+        (
+          await fetch(`${BASE}/api/v1/analytics`, { headers: { "x-forwarded-for": address } })
+        ).headers.get("ratelimit-limit"),
+      );
+      let refused = null;
+      for (let i = 0; i < limit + 2 && !refused; i++) {
+        const response = await fetch(`${BASE}/api/v1/analytics`, {
+          headers: { "x-forwarded-for": address },
+        });
+        if (response.status === 429) refused = response;
+      }
+      if (!refused) {
+        fail(`no 429 after ${limit + 3} requests from one address`);
+      } else {
+        const body = await refused.json().catch(() => null);
+        if (body?.code !== "RATE_LIMIT") fail(`429 body code is ${body?.code}, not RATE_LIMIT`);
+        if (!refused.headers.get("retry-after")) fail("429 has no Retry-After");
+        if (!refused.headers.get("ratelimit-remaining"))
+          fail("429 drops the RateLimit fields, so a client cannot see when to return");
+        console.log(
+          `[agent] 429 after ${limit} · retry-after=${refused.headers.get("retry-after")}`,
+        );
+      }
+    }
+
     // Every API failure has to be JSON an agent can branch on.
     {
       const response = await fetch(`${BASE}/api/analytics`, { method: "DELETE" });

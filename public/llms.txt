@@ -49,6 +49,24 @@ Everything is typed; `useQuery` and `useCapabilities` are the two hooks worth kn
   analytics proxy contract, with operation ids, typed schemas and error codes
 - https://wingtics.com/r/registry.json — shadcn registry index
 - https://wingtics.com/r/{name}.json — one registry item
+- https://wingtics.com/api/v1/analytics — the analytics proxy this site runs against its
+  own traffic. GET describes the connector and its capabilities; POST runs a query.
+
+## API versioning and limits
+
+Pin `/api/v1/`. A change that breaks a caller becomes `/api/v2/`; the previous major keeps
+answering for at least 6 months from the day its successor ships, and carries
+`Deprecation: true` and a `Sunset` date on every response from that day. Additive changes
+happen in place, so parse defensively.
+
+`/api/analytics`, unversioned, is an alias that always tracks the newest major. It is not
+deprecated and is not going away — it is simply the wrong thing to pin, because it moves.
+
+Every response carries `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset` and
+`RateLimit-Policy`, so pace yourself before being refused rather than after. Over budget
+answers 429 with `Retry-After` and `"code": "RATE_LIMIT"`. The limit is 60 requests per 60
+seconds per client address, counted per serving instance — treat it as a floor you can rely
+on, not a quota metered exactly.
 
 The index and the component pages also answer `Accept: text/markdown` with a markdown
 representation of the same content, and send `Vary: Accept` so a cache cannot mix the two:
@@ -65,7 +83,7 @@ pnpm add @wingtics/react @wingtics/core @wingtics/next @wingtics/connector-verce
 
 Also: `@wingtics/connector-plausible`, `connector-ga4`, `connector-umami`, `connector-posthog`, `connector-mock`. Import `@wingtics/react/styles.css` once.
 
-Keep vendor tokens on the server. The browser talks to your `/api/analytics` via `createHttpConnector`.
+Keep vendor tokens on the server. The browser talks to your own route — this site serves one at `/api/v1/analytics` — via `createHttpConnector`.
 
 ## Provider
 

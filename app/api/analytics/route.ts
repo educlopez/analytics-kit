@@ -1,20 +1,11 @@
-import { createWingticsMockConnector } from "@wingtics/connector-mock";
-import { createVercelConnector } from "@wingtics/connector-vercel";
-import { createRouteHandlers } from "@wingtics/next";
-
+/**
+ * Unversioned alias of /api/v1/analytics, kept for good.
+ *
+ * It is published in llms.txt, in the docs and in every spec shipped so far.
+ * It tracks the newest major rather than being frozen or deprecated; see
+ * src/site/analytics-api.ts.
+ */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const token = process.env.ANALYTICS_VERCEL_TOKEN;
-const projectId = process.env.ANALYTICS_VERCEL_PROJECT_ID;
-
-const connector =
-  token && projectId
-    ? createVercelConnector({
-        token,
-        projectId,
-        teamId: process.env.ANALYTICS_VERCEL_TEAM_ID,
-      })
-    : createWingticsMockConnector({ profile: "vercel" });
-
-export const { GET, POST, OPTIONS, PUT, PATCH, DELETE } = createRouteHandlers({ connector });
+export { GET, POST, OPTIONS, PUT, PATCH, DELETE } from "../../../src/site/analytics-api";

@@ -9,14 +9,14 @@
  * A more specific route wins over a catch-all in the App Router, so
  * /api/analytics is untouched by this file.
  */
-const KNOWN_ENDPOINTS = ["/api/analytics"] as const;
+const KNOWN_ENDPOINTS = ["/api/v1/analytics", "/api/analytics"] as const;
 
 function notFound(pathname: string) {
   return Response.json(
     {
       error: `No API endpoint at ${pathname}.`,
       code: "ENDPOINT_NOT_FOUND",
-      hint: `This API exposes ${KNOWN_ENDPOINTS.join(", ")}. Fetch /openapi.json for the full machine-readable surface, including parameters and response schemas.`,
+      hint: `This API exposes ${KNOWN_ENDPOINTS.join(" (pin this) and ")} (an alias that tracks the newest major). Fetch /openapi.json for the full machine-readable surface, including parameters and response schemas.`,
       endpoints: KNOWN_ENDPOINTS,
       documentation: "https://wingtics.com/openapi.json",
     },
