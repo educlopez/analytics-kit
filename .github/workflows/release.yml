@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
+      actions: write
       contents: write
       pull-requests: write
       id-token: write
@@ -28,6 +29,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - uses: changesets/action@v1
+        id: changesets
         with:
           version: pnpm version-packages
           publish: pnpm exec changeset publish
@@ -39,3 +41,26 @@ jobs:
           # and only falls back to OIDC trusted publishing when none is set. Every
           # @wingtics/* package trusts educlopez/wingtics + release.yml.
           NPM_CONFIG_PROVENANCE: true
+      # GITHUB_TOKEN pushes do not trigger pull_request workflows, so the release
+      # PR never gets lint · test · build unless we dispatch CI on its branch.
+      - name: Trigger CI on release PR branch
+        if: steps.changesets.outputs.published != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # `git ls-remote --exit-code` exits 2 for an absent branch and 128
+          # when the lookup itself fails. Collapsing both into one `if` skips
+          # the dispatch on a network blip and leaves the release PR without
+          # its required check — the exact failure this step exists to prevent,
+          # only now on a bad day, which is worse than never having worked.
+          # `|| status=$?` is load-bearing: these steps run under `bash -e`.
+          status=0
+          git ls-remote --exit-code --heads origin changeset-release/main >/dev/null 2>&1 || status=$?
+          if [ "$status" -eq 0 ]; then
+            gh workflow run ci.yml --ref changeset-release/main
+          elif [ "$status" -eq 2 ]; then
+            echo "No changeset-release/main branch — nothing to dispatch."
+          else
+            echo "::error::git ls-remote failed ($status); cannot tell whether the release branch exists."
+            exit 1
+          fi
