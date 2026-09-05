@@ -48,19 +48,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # `git ls-remote --exit-code` exits 2 for an absent branch and 128
-          # when the lookup itself fails. Collapsing both into one `if` skips
-          # the dispatch on a network blip and leaves the release PR without
-          # its required check — the exact failure this step exists to prevent,
-          # only now on a bad day, which is worse than never having worked.
+          # Ask whether there is an open release PR, not whether the branch
+          # exists. changesets leaves `changeset-release/main` behind after a
+          # release merges, and a dispatch resolves `ci.yml` from the *ref* it
+          # targets — so a leftover branch predating a change to ci.yml's
+          # triggers answers `HTTP 422: Workflow does not have
+          # 'workflow_dispatch' trigger` and reds the release job on every
+          # later push to main. Measured, the first time this step ever ran.
+          # Keying on the PR also stops us spending a CI run on a branch whose
+          # release already shipped.
+          #
           # `|| status=$?` is load-bearing: these steps run under `bash -e`.
           status=0
-          git ls-remote --exit-code --heads origin changeset-release/main >/dev/null 2>&1 || status=$?
-          if [ "$status" -eq 0 ]; then
-            gh workflow run ci.yml --ref changeset-release/main
-          elif [ "$status" -eq 2 ]; then
-            echo "No changeset-release/main branch — nothing to dispatch."
-          else
-            echo "::error::git ls-remote failed ($status); cannot tell whether the release branch exists."
+          pr=$(gh pr list --head changeset-release/main --state open --json number --jq '.[0].number // ""') || status=$?
+          if [ "$status" -ne 0 ]; then
+            echo "::error::could not list release PRs ($status); refusing to assume there is none."
             exit 1
+          fi
+          if [ -n "$pr" ]; then
+            echo "Dispatching CI for release PR #$pr."
+            gh workflow run ci.yml --ref changeset-release/main
+          else
+            echo "No open release PR — nothing to dispatch."
           fi
