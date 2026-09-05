@@ -48,6 +48,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if git ls-remote --exit-code --heads origin changeset-release/main >/dev/null 2>&1; then
+          # `git ls-remote --exit-code` exits 2 for an absent branch and 128
+          # when the lookup itself fails. Collapsing both into one `if` skips
+          # the dispatch on a network blip and leaves the release PR without
+          # its required check — the exact failure this step exists to prevent,
+          # only now on a bad day, which is worse than never having worked.
+          # `|| status=$?` is load-bearing: these steps run under `bash -e`.
+          status=0
+          git ls-remote --exit-code --heads origin changeset-release/main >/dev/null 2>&1 || status=$?
+          if [ "$status" -eq 0 ]; then
             gh workflow run ci.yml --ref changeset-release/main
+          elif [ "$status" -eq 2 ]; then
+            echo "No changeset-release/main branch — nothing to dispatch."
+          else
+            echo "::error::git ls-remote failed ($status); cannot tell whether the release branch exists."
+            exit 1
           fi
