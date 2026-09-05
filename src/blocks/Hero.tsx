@@ -15,7 +15,7 @@ import {
   RiStackLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import type { AnalyticsTheme } from "@analytics-kit/react";
+import type { AnalyticsTheme } from "@wingtics/react";
 import { HeroVisual } from "@/blocks/HeroVisuals";
 import { ProviderMark } from "@/site/ProviderMark";
 import * as Badge from "@/components/ui/badge";

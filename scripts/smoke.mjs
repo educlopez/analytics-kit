@@ -24,6 +24,8 @@
  */
 import { chromium } from "playwright";
 
+import { varies } from "../src/site/vary.mjs";
+
 const BASE = process.argv[2] ?? "http://localhost:3100";
 /**
  * One pass runs the browser in a non-English locale on purpose. Server-rendered
@@ -33,6 +35,10 @@ const BASE = process.argv[2] ?? "http://localhost:3100";
  * which is how it shipped.
  */
 const PASSES = [
+  // 320px is the narrowest viewport worth supporting, and nothing used to run
+  // there: a fixed-width sidebar pushed the document 32px sideways on every
+  // component page and both other passes were too wide to see it.
+  { width: 320, locale: "en-US" },
   { width: 390, locale: "en-US" },
   { width: 1440, locale: "de-DE" },
 ];
@@ -54,6 +60,9 @@ const PATHS = [
   "/components/globe-chart",
   "/components/metric-tabs",
   "/docs",
+  "/about",
+  "/contact",
+  "/privacy",
 ];
 
 const failures = [];
@@ -129,11 +138,51 @@ async function run() {
           fail(`[${width} ${locale}] ${path} — blank mark — ${mark}`);
         }
 
-        const overflow = await page.evaluate(
-          () => document.body.scrollWidth - document.body.clientWidth,
-        );
-        if (overflow > 2) {
-          fail(`[${width} ${locale}] ${path} — body scrolls horizontally by ${overflow}px`);
+        // Naming the element matters more than the number: text metrics differ
+        // between this machine and CI, so an overflow can reproduce only there,
+        // and "4px" alone gives the next person nothing to look at.
+        const overflow = await page.evaluate(() => {
+          const px = document.body.scrollWidth - document.body.clientWidth;
+          if (px <= 2) return { px, culprits: [] };
+          const doc = document.documentElement;
+          const limit = doc.clientWidth;
+          // An element wider than the viewport only pushes the page when no
+          // ancestor clips or scrolls it — otherwise every code block inside
+          // an overflow-x:auto wrapper would be reported.
+          const contained = (el) => {
+            for (let p = el.parentElement; p && p !== doc; p = p.parentElement) {
+              const ox = getComputedStyle(p).overflowX;
+              if (ox === "auto" || ox === "scroll" || ox === "hidden") return true;
+            }
+            return false;
+          };
+          const culprits = [];
+          for (const el of document.querySelectorAll("*")) {
+            const r = el.getBoundingClientRect();
+            if (r.width === 0 || r.right <= limit + 0.5) continue;
+            if (contained(el)) continue;
+            if (culprits.some((c) => c.el.contains(el))) continue; // outermost only
+            culprits.push({ el, right: Math.round(r.right), width: Math.round(r.width) });
+          }
+          return {
+            px,
+            culprits: culprits.slice(0, 3).map((c) => {
+              const cls = (c.el.className?.baseVal ?? c.el.className ?? "").toString();
+              return (
+                `<${c.el.tagName.toLowerCase()}> right=${c.right} w=${c.width}` +
+                ` "${(c.el.textContent ?? "").trim().slice(0, 30)}"` +
+                (cls ? ` .${cls.slice(0, 70)}` : "")
+              );
+            }),
+          };
+        });
+        if (overflow.px > 2) {
+          const who = overflow.culprits.length
+            ? ` — ${overflow.culprits.join(" | ")}`
+            : " — no uncontained element found; likely an intrinsic min-width";
+          fail(
+            `[${width} ${locale}] ${path} — body scrolls horizontally by ${overflow.px}px${who}`,
+          );
         }
 
         for (const error of consoleErrors) {
@@ -170,7 +219,31 @@ async function run() {
         /^Sitemap:\s*https?:\/\/\S+\/sitemap\.xml$/m.test(text) ? null : "no absolute Sitemap line",
     };
 
-    for (const [path, check] of Object.entries(META)) {
+    // Agent-facing surfaces. Every one of these is something a machine reads
+    // and a person never sees, which is exactly why nothing else catches them.
+    const AGENT = {
+      "/openapi.json": (text) => {
+        try {
+          const spec = JSON.parse(text);
+          if (!spec.openapi?.startsWith("3.")) return "not an OpenAPI 3 document";
+          const ops = Object.values(spec.paths ?? {}).flatMap((p) => Object.values(p));
+          if (!ops.length) return "no operations";
+          const ids = ops.map((o) => o.operationId);
+          if (ids.some((id) => !id)) return "an operation has no operationId";
+          if (new Set(ids).size !== ids.length) return "duplicate operationId";
+          if (ops.some((o) => !o.description)) return "an operation has no description";
+          return null;
+        } catch {
+          return "not valid JSON";
+        }
+      },
+      "/llms.txt": (text) =>
+        text.includes("## When to use this") && text.includes("## Machine-readable")
+          ? null
+          : "missing when-to-use or machine-readable guidance",
+    };
+
+    for (const [path, check] of Object.entries({ ...META, ...AGENT })) {
       const response = await fetch(`${BASE}${path}`);
       if (!response.ok) {
         fail(`${path} responded ${response.status}`);
@@ -180,6 +253,56 @@ async function run() {
       const problem = check(text);
       if (problem) fail(`${path}: ${problem}`);
       console.log(`[meta] ${path} ${response.status} ${Buffer.byteLength(text)}B`);
+    }
+
+    // A 200 on an unknown path makes an agent believe every path exists.
+    {
+      const response = await fetch(`${BASE}/definitely-not-a-real-path-9f3a`);
+      if (response.status !== 404) fail(`unknown path answered ${response.status}, not 404`);
+      const body = await response.text();
+      for (const pointer of ["/llms.txt", "/sitemap.xml", "/docs"]) {
+        if (!body.includes(pointer)) fail(`404 body does not point at ${pointer}`);
+      }
+      console.log(`[meta] 404 ${response.status} ${Buffer.byteLength(body)}B`);
+    }
+
+    // Markdown negotiation, and the Vary that keeps a cache from mixing the
+    // two variants.
+    //
+    // `Accept` has to be matched as a whole list member. The obvious
+    // `/\baccept\b/i` also matches `Accept-Encoding` — `-` is a non-word
+    // character, so the trailing `\b` closes — which made this assertion pass
+    // on a response whose Vary never mentioned Accept at all. It sat here green
+    // and vacuous.
+    //
+    // Only the markdown half is checked here: Next 16 replaces `vary` on page
+    // responses, so the HTML half cannot carry Accept at all. See proxy.ts.
+    // Whether negotiation survives on a real deployment is a different
+    // question, and `next start` cannot answer it — scripts/edge-vary.mjs does.
+    for (const path of ["/", "/components", "/components/globe-chart"]) {
+      const md = await fetch(`${BASE}${path}`, { headers: { accept: "text/markdown" } });
+      const type = md.headers.get("content-type") ?? "";
+      const vary = md.headers.get("vary") ?? "";
+      const body = await md.text();
+      if (!type.includes("text/markdown")) fail(`${path} with Accept: text/markdown gave ${type}`);
+      if (!varies(vary, "accept")) fail(`${path} markdown response has Vary: ${vary || "(none)"}`);
+      if (!body.startsWith("# ")) fail(`${path} markdown does not start with a heading`);
+
+      const html = await fetch(`${BASE}${path}`, { headers: { accept: "text/html" } });
+      const htmlType = html.headers.get("content-type") ?? "";
+      if (!htmlType.includes("text/html")) fail(`${path} with Accept: text/html gave ${htmlType}`);
+      console.log(`[agent] ${path} md ${Buffer.byteLength(body)}B · html ok · Vary ok`);
+    }
+
+    // Every API failure has to be JSON an agent can branch on.
+    {
+      const response = await fetch(`${BASE}/api/analytics`, { method: "DELETE" });
+      const type = response.headers.get("content-type") ?? "";
+      if (response.status !== 405) fail(`DELETE /api/analytics answered ${response.status}`);
+      if (!type.includes("application/json")) fail(`405 answered ${type}, not JSON`);
+      const body = await response.json().catch(() => null);
+      if (!body?.code || !body?.hint) fail("405 JSON has no code or hint");
+      console.log(`[agent] /api/analytics DELETE ${response.status} ${body?.code}`);
     }
 
     // The one thing that silently breaks every social preview.

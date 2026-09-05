@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { AnalyticsTheme } from "@analytics-kit/react";
+import type { AnalyticsTheme } from "@wingtics/react";
 
 export interface SiteContextValue {
   theme: AnalyticsTheme;

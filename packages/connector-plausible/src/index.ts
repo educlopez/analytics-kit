@@ -11,7 +11,7 @@ import {
   type DimensionId,
   type MetricId,
   type NormalizedQuery,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export interface PlausibleConnectorOptions {
   apiKey: string;

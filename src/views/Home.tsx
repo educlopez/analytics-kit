@@ -15,11 +15,10 @@ import { Section, SectionHead } from "@/site/Section";
 import { useSite } from "@/site/theme";
 import { useRegistryCommand } from "@/site/useRegistryCommand";
 
-const INSTALL =
-  "pnpm add @analytics-kit/react @analytics-kit/core @analytics-kit/next @analytics-kit/connector-vercel";
+const INSTALL = "pnpm add @wingtics/react @wingtics/core @wingtics/next @wingtics/connector-vercel";
 
-const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@analytics-kit/react";
-import { createHttpConnector } from "@analytics-kit/core";
+const SNIPPET = `import { AnalyticsProvider, Dashboard } from "@wingtics/react";
+import { createHttpConnector } from "@wingtics/core";
 
 const connector = createHttpConnector({ endpoint: "/api/analytics" });
 
@@ -66,8 +65,8 @@ export function HomePage() {
           lede={
             <>
               Add the catalog from this site&apos;s <code className="text-label-sm">/r</code>{" "}
-              folder, or <code className="text-label-sm">educlopez/analytics-kit/dashboard</code>{" "}
-              from the repo. Runtime still comes from npm so connectors and queries stay canonical.
+              folder, or <code className="text-label-sm">educlopez/wingtics/dashboard</code> from
+              the repo. Runtime still comes from npm so connectors and queries stay canonical.
             </>
           }
         />

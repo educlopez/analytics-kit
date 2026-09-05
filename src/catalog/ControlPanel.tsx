@@ -5,7 +5,7 @@ import { RiEqualizer2Line, RiRefreshLine, RiSidebarUnfoldLine } from "@remixicon
 import { DialRoot } from "dialkit";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import * as Button from "@/components/ui/button";
-import type { AnalyticsTheme } from "@analytics-kit/react";
+import type { AnalyticsTheme } from "@wingtics/react";
 import { cn } from "@/utils/cn";
 import "dialkit/styles.css";
 
@@ -54,12 +54,19 @@ export function ControlPanel({
           onAnimationStart={() => setAnimating(true)}
           onAnimationComplete={() => setAnimating(false)}
           className={cn(
-            "mt-8 shrink-0 self-start xl:mt-0 xl:pt-14",
+            // `max-w-full` because the animated width is a fixed 328px and the
+            // panel stacks under the preview below `xl`: at a 320px viewport
+            // that fixed width is wider than the column it sits in, and pushed
+            // the whole document sideways by 32px.
+            "mt-8 max-w-full shrink-0 self-start xl:mt-0 xl:pt-14",
             animating ? "overflow-hidden" : "overflow-visible",
           )}
           aria-label="Customize"
         >
-          <div style={{ width: PANEL_WIDTH }} className="ak-dial-sticky flex flex-col gap-3">
+          <div
+            style={{ width: PANEL_WIDTH, maxWidth: "100%" }}
+            className="ak-dial-sticky flex flex-col gap-3"
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="text-subheading-xs text-text-soft-400 uppercase">Customize</span>
               <div className="flex items-center gap-1.5">

@@ -15,7 +15,7 @@ import {
   type ConnectorCapabilities,
   type MetricId,
   type NormalizedQuery,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 
 export type ProviderProfile = "full" | "plausible" | "vercel" | "ga4" | "umami" | "posthog";
 
@@ -54,7 +54,7 @@ const DEFAULT_DATASET: Required<MockDataset> = {
 };
 
 /** Real routes and sources from this site — used when live Vercel credentials are not available. */
-export const ANALYTICS_KIT_DATASET: Required<MockDataset> = {
+export const WINGTICS_DATASET: Required<MockDataset> = {
   paths: [
     "/",
     "/docs",
@@ -96,7 +96,7 @@ export const PROVIDER_PROFILES: Record<ProviderProfile, ConnectorCapabilities> =
   posthog: mergeCapabilities(fullCapabilities(), {
     metrics: { bounceRate: true, avgDuration: true },
   }),
-  // Mirrors @analytics-kit/connector-vercel's VERCEL_CAPABILITIES: Vercel's
+  // Mirrors @wingtics/connector-vercel's VERCEL_CAPABILITIES: Vercel's
   // Hobby plan 402s on UTM breakdowns and Custom Events, so this profile
   // (used for local/dev previews when no live token is configured) reports
   // the same limits instead of promising data the real connector can't serve.
@@ -159,7 +159,7 @@ export function createMockConnector(options: MockConnectorOptions = {}): Analyti
   });
 }
 
-export function createAnalyticsKitMockConnector(
+export function createWingticsMockConnector(
   options: Omit<MockConnectorOptions, "dataset" | "siteName"> = {},
 ): AnalyticsConnector {
   return createMockConnector({
@@ -167,10 +167,23 @@ export function createAnalyticsKitMockConnector(
     profile: "vercel",
     scale: 2.4,
     ...options,
-    siteName: "analytics-kit-demo.vercel.app",
-    dataset: ANALYTICS_KIT_DATASET,
+    siteName: "wingtics.com",
+    dataset: WINGTICS_DATASET,
   });
 }
+
+/**
+ * @deprecated Renamed to `WINGTICS_DATASET` when the project became Wingtics.
+ * The old name still works and is the same object; it will go in a later major.
+ */
+export const ANALYTICS_KIT_DATASET = WINGTICS_DATASET;
+
+/**
+ * @deprecated Renamed to `createWingticsMockConnector` when the project became
+ * Wingtics. The old name still works and behaves identically; it will go in a
+ * later major.
+ */
+export const createAnalyticsKitMockConnector = createWingticsMockConnector;
 
 function buildResult(
   query: NormalizedQuery,

@@ -1,9 +1,9 @@
-# @analytics-kit/connector-plausible
+# @wingtics/connector-plausible
 
-Plausible Analytics Stats API connector for Analytics Kit.
+Plausible Analytics Stats API connector for Wingtics.
 
 ```bash
-pnpm add @analytics-kit/connector-plausible
+pnpm add @wingtics/connector-plausible
 ```
 
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

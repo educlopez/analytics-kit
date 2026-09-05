@@ -4,12 +4,12 @@ import { DocsPage } from "../../src/views/Docs";
 export const metadata: Metadata = {
   title: "Docs",
   description:
-    "Install Wingtics, wire a connector, and keep vendor keys on the server with @analytics-kit/next.",
+    "Install Wingtics, wire a connector, and keep vendor keys on the server with @wingtics/next.",
   alternates: { canonical: "/docs" },
   openGraph: {
     title: "Docs — Wingtics",
     description:
-      "Install Wingtics, wire a connector, and keep vendor keys on the server with @analytics-kit/next.",
+      "Install Wingtics, wire a connector, and keep vendor keys on the server with @wingtics/next.",
     url: "/docs",
   },
 };

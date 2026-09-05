@@ -26,7 +26,7 @@ export interface DimensionDefinition {
 /**
  * Augment to add custom dimensions:
  *
- * declare module "@analytics-kit/core" {
+ * declare module "@wingtics/core" {
  *   interface DimensionCatalog {
  *     plan: DimensionDefinition;
  *   }

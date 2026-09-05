@@ -6,7 +6,7 @@ import { SiteShell } from "../src/site/SiteShell";
 import { REPO_URL, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../src/site/meta";
 import "../src/tailwind.css";
 import "../src/site.css";
-import "@analytics-kit/react/styles.css";
+import "@wingtics/react/styles.css";
 
 // Inter is AlignUI's typeface; Geist Mono stays for code surfaces, which
 // AlignUI does not specify.
@@ -53,6 +53,7 @@ export const metadata: Metadata = {
     canonical: "/",
     types: {
       "text/plain": "/llms.txt",
+      "application/json": "/openapi.json",
     },
   },
   openGraph: {
@@ -105,6 +106,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SiteShell>{children}</SiteShell>
         {/* Structured data: SoftwareSourceCode is the accurate type for a
             library. WebSite carries the search action target. */}
+        {/* The IANA-registered relation for an API description, so a client
+            can discover the spec from any page instead of guessing its URL. */}
+        <link rel="service-desc" type="application/json" href="/openapi.json" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -119,6 +123,28 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 programmingLanguage: "TypeScript",
                 runtimePlatform: "React",
                 license: "https://opensource.org/licenses/MIT",
+                sameAs: [REPO_URL, "https://www.npmjs.com/org/wingtics"],
+                author: {
+                  "@type": "Person",
+                  name: "Eduardo Calvo",
+                  url: "https://educalvo.com",
+                  sameAs: ["https://github.com/educlopez"],
+                },
+              },
+              {
+                // The audit tooling reads the first identity type it finds, and
+                // a library is a SoftwareApplication as much as it is source.
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: SITE_NAME,
+                description: SITE_DESCRIPTION,
+                url: SITE_URL,
+                applicationCategory: "DeveloperApplication",
+                operatingSystem: "Any",
+                softwareVersion: "0.6.1",
+                license: "https://opensource.org/licenses/MIT",
+                sameAs: [REPO_URL, "https://www.npmjs.com/org/wingtics"],
+                offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
                 author: { "@type": "Person", name: "Eduardo Calvo" },
               },
               {

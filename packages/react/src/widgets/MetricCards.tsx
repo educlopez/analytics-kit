@@ -5,7 +5,7 @@ import {
   percentDelta,
   type DateRangeInput,
   type MetricId,
-} from "@analytics-kit/core";
+} from "@wingtics/core";
 import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { Sparkline } from "../primitives/Charts.js";
 import { useQuery } from "../hooks.js";
@@ -18,9 +18,22 @@ export interface MetricCardProps {
   range?: DateRangeInput;
   span?: number;
   variant?: MetricCardVariant;
+  /**
+   * Heading level for the card title. A metric card is the one widget that
+   * regularly sits on its own rather than inside a dashboard, so its level
+   * has to follow the page it lands on.
+   */
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
 }
 
-export function MetricCard({ metric, title, range, span, variant = "default" }: MetricCardProps) {
+export function MetricCard({
+  metric,
+  title,
+  range,
+  span,
+  variant = "default",
+  headingLevel,
+}: MetricCardProps) {
   const definition = getMetric(metric);
   const { data, status, missing, error, sample, reload } = useQuery({
     metrics: [metric],
@@ -46,6 +59,7 @@ export function MetricCard({ metric, title, range, span, variant = "default" }: 
       kind="metric"
       sample={sample}
       onRetry={reload}
+      headingLevel={headingLevel}
       trailing={
         variant === "compact" || bleed || variant === "histogram" ? null : (
           <Sparkline fill values={series} />

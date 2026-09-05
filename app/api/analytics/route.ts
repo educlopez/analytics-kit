@@ -1,6 +1,6 @@
-import { createAnalyticsKitMockConnector } from "@analytics-kit/connector-mock";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import { createRouteHandlers } from "@analytics-kit/next";
+import { createWingticsMockConnector } from "@wingtics/connector-mock";
+import { createVercelConnector } from "@wingtics/connector-vercel";
+import { createRouteHandlers } from "@wingtics/next";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +15,6 @@ const connector =
         projectId,
         teamId: process.env.ANALYTICS_VERCEL_TEAM_ID,
       })
-    : createAnalyticsKitMockConnector({ profile: "vercel" });
+    : createWingticsMockConnector({ profile: "vercel" });
 
-export const { GET, POST, OPTIONS } = createRouteHandlers({ connector });
+export const { GET, POST, OPTIONS, PUT, PATCH, DELETE } = createRouteHandlers({ connector });

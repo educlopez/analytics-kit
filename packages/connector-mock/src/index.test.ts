@@ -43,7 +43,7 @@ describe("createMockConnector", () => {
 
   it("uses this site's routes for the landing dataset", async () => {
     const connector = createAnalyticsKitMockConnector();
-    expect(connector.name).toBe("analytics-kit-demo.vercel.app");
+    expect(connector.name).toBe("wingtics.com");
     const result = await connector.query({
       range: "7d",
       metrics: ["pageviews"],

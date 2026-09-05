@@ -77,7 +77,13 @@ export function Stats({ componentCount }: { componentCount: number }) {
             >
               <StatusBadge.Root
                 variant="light"
-                className={`${stat.badgeBgClass} ${stat.badgeTextClass} text-label-sm lg:text-paragraph-sm xl:text-label-sm mb-6 h-7 w-fit gap-1.5 rounded-[9px] px-2`}
+                // The badge is `whitespace-nowrap` at a fixed height by
+                // default, and this copy is ~267px wide inside a 208px card at
+                // a 320px viewport — enough to push the whole page sideways,
+                // and by a margin small enough that it only showed up under
+                // CI's font metrics. Below `sm` it may wrap and grow; from
+                // `sm` up it is exactly what it was.
+                className={`${stat.badgeBgClass} ${stat.badgeTextClass} text-label-sm lg:text-paragraph-sm xl:text-label-sm mb-6 h-auto min-h-7 max-w-full w-fit gap-1.5 rounded-[9px] px-2 py-0.5 whitespace-normal sm:h-7 sm:py-0 sm:whitespace-nowrap`}
               >
                 <StatusBadge.Icon
                   as={stat.badgeIcon}

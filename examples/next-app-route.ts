@@ -1,8 +1,8 @@
-import { createPlausibleConnector } from "@analytics-kit/connector-plausible";
-import { createVercelConnector } from "@analytics-kit/connector-vercel";
-import { createGa4Connector } from "@analytics-kit/connector-ga4";
-import { createHttpConnector } from "@analytics-kit/core";
-import { createRouteHandlers } from "@analytics-kit/next";
+import { createPlausibleConnector } from "@wingtics/connector-plausible";
+import { createVercelConnector } from "@wingtics/connector-vercel";
+import { createGa4Connector } from "@wingtics/connector-ga4";
+import { createHttpConnector } from "@wingtics/core";
+import { createRouteHandlers } from "@wingtics/next";
 
 /**
  * Server route — keep provider secrets here.

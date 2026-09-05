@@ -1,9 +1,9 @@
-# @analytics-kit/connector-vercel
+# @wingtics/connector-vercel
 
-Vercel Web Analytics API connector for Analytics Kit.
+Vercel Web Analytics API connector for Wingtics.
 
 ```bash
-pnpm add @analytics-kit/connector-vercel
+pnpm add @wingtics/connector-vercel
 ```
 
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit). See the [root README](../../README.md) for setup, the connector contract, and publishing.
+Part of [Wingtics](https://github.com/educlopez/wingtics). See the [root README](../../README.md) for setup, the connector contract, and publishing.

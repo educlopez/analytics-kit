@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createMockConnector, mockQuery } from "@analytics-kit/connector-mock";
-import { createHttpConnector, type AnalyticsQuery, type SeriesPoint } from "@analytics-kit/core";
+import { createMockConnector, mockQuery } from "@wingtics/connector-mock";
+import { createHttpConnector, type AnalyticsQuery, type SeriesPoint } from "@wingtics/core";
 import {
   AnalyticsProvider,
   AreaChart,
@@ -81,7 +81,7 @@ import {
   type SankeyChartVariant,
   type ScatterChartVariant,
   type SunburstChartVariant,
-} from "@analytics-kit/react";
+} from "@wingtics/react";
 import { BreakdownCardPreview } from "./BreakdownCardPreview";
 import { MetricTabsPreview } from "./MetricTabsPreview";
 import type { PreviewKnobs } from "./knobs";

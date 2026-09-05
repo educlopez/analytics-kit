@@ -1,5 +1,31 @@
 # @analytics-kit/connector-mock
 
+## 0.7.0
+
+### Minor Changes
+
+- [#53](https://github.com/educlopez/wingtics/pull/53) [`5b8be89`](https://github.com/educlopez/wingtics/commit/5b8be893f46d528fad12a56bfc02ff13316b30d8) Thanks [@educlopez](https://github.com/educlopez)! - Three changes that came out of auditing how the site and the packages read to an automated client.
+
+  `WidgetFrame` and `MetricCard` take a `headingLevel` (2-6, default 3). A widget cannot know where it sits in the host's outline: inside a dashboard `h3` is right, but dropped straight under a page's `h1` it skips a level, which is a real accessibility defect. The default keeps existing markup byte-identical.
+
+  `@wingtics/next` now answers every failure in one shape. Unsupported methods used to fall through to the framework, which replies with an empty 405 and no content type, while every other error on the endpoint was JSON — so a client could not use one parser for the whole surface. `createRouteHandlers` exports `PUT`, `PATCH` and `DELETE` alongside the rest so they reach the handler, and each error now carries a `hint` saying what a caller can do about it next to the existing `error` and `code`.
+
+  `@wingtics/connector-mock` renames `createAnalyticsKitMockConnector` to `createWingticsMockConnector` and `ANALYTICS_KIT_DATASET` to `WINGTICS_DATASET`, which were the last public identifiers still carrying the old project name. The old names remain as deprecated aliases of the same values, so nothing breaks.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @wingtics/core@0.7.0
+
+## 0.6.1
+
+### Patch Changes
+
+- [#51](https://github.com/educlopez/wingtics/pull/51) [`b8c4960`](https://github.com/educlopez/wingtics/commit/b8c4960e3ce60b1e6a4c6e6b64c8ec720c885525) Thanks [@educlopez](https://github.com/educlopez)! - The mock connector reported `analytics-kit-demo.vercel.app` as its site name, which the demo dashboard shows verbatim — so the old brand was still on screen. It now reports `wingtics.com`.
+
+- Updated dependencies []:
+  - @wingtics/core@0.6.1
+
 ## 0.6.0
 
 ### Patch Changes

@@ -1,14 +1,14 @@
-# @analytics-kit/react
+# @wingtics/react
 
 Provider-agnostic analytics widgets and dashboard primitives for React.
 
 ```bash
-pnpm add @analytics-kit/react
+pnpm add @wingtics/react
 ```
 
 ```tsx
-import { AnalyticsProvider, Dashboard, AreaChart } from "@analytics-kit/react";
-import "@analytics-kit/react/styles.css";
+import { AnalyticsProvider, Dashboard, AreaChart } from "@wingtics/react";
+import "@wingtics/react/styles.css";
 
 <AnalyticsProvider connector={connector} theme="light">
   <Dashboard />
@@ -58,7 +58,7 @@ Charts are Tailwind + Recharts. `variant` changes the drawing (gradient vs hatch
 ## shadcn registry
 
 ```bash
-pnpm dlx shadcn@latest add https://analytics-kit-demo.vercel.app/r/area-chart.json
+pnpm dlx shadcn@latest add https://wingtics.com/r/area-chart.json
 ```
 
-Part of [Analytics Kit](https://github.com/educlopez/analytics-kit).
+Part of [Wingtics](https://github.com/educlopez/wingtics).

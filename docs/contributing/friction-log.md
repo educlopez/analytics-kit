@@ -4,7 +4,7 @@ Contributor and agent papercuts while working in this repository live as GitHub
 issues labeled `friction`. They are not files in the tree.
 
 This is not a product feature request. File those as ordinary issues. This page
-is for developing `educlopez/analytics-kit`: confusing docs, a command that needs a secret
+is for developing `educlopez/wingtics`: confusing docs, a command that needs a secret
 handshake, a type that lies, a test that only fails locally.
 
 The policy lives here. Agents that load skills on demand read the same policy
@@ -27,7 +27,7 @@ Label: `friction`.
 Use the [Friction issue form](../../.github/ISSUE_TEMPLATE/friction.yml) or:
 
 ```bash
-gh issue create --repo educlopez/analytics-kit --title "Friction: …" --label friction --body-file -
+gh issue create --repo educlopez/wingtics --title "Friction: …" --label friction --body-file -
 ```
 
 Write one issue per papercut. Include what you were doing, the unexpected cost,
@@ -42,7 +42,7 @@ GitHub is the log.
 The `Friction log` GitHub Action runs daily at 04:00 UTC. It uses
 `educlopez/friction-log@v1` to list open `friction` issues and, when any are
 eligible and `CURSOR_API_KEY` is set, spawn one Cursor Cloud Agent on
-`educlopez/analytics-kit` `main`.
+`educlopez/wingtics` `main`.
 
 The investigator chooses one outcome per issue:
 

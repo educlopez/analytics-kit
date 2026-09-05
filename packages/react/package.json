@@ -1,6 +1,6 @@
 {
-  "name": "@analytics-kit/react",
-  "version": "0.6.0",
+  "name": "@wingtics/react",
+  "version": "0.7.0",
   "description": "Provider-agnostic analytics widgets and dashboard primitives for React.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -33,7 +33,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@analytics-kit/core": "workspace:*",
+    "@wingtics/core": "workspace:*",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
     "d3-scale": "^4.0.2",
@@ -50,13 +50,13 @@
     "typescript": "^5.9.2"
   },
   "author": "Edu Calvo <educlopez93@gmail.com>",
-  "homepage": "https://github.com/educlopez/analytics-kit/tree/main/packages/react",
+  "homepage": "https://github.com/educlopez/wingtics/tree/main/packages/react",
   "bugs": {
-    "url": "https://github.com/educlopez/analytics-kit/issues"
+    "url": "https://github.com/educlopez/wingtics/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/educlopez/analytics-kit.git",
+    "url": "git+https://github.com/educlopez/wingtics.git",
     "directory": "packages/react"
   },
   "engines": {

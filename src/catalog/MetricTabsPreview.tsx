@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { LineChart, MetricTabs, type MetricTabsVariant } from "@analytics-kit/react";
-import { formatMetric } from "@analytics-kit/core";
+import { LineChart, MetricTabs, type MetricTabsVariant } from "@wingtics/react";
+import { formatMetric } from "@wingtics/core";
 
 /**
  * The strip is only half the pattern — the point is that the chart underneath

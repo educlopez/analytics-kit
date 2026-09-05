@@ -1,5 +1,5 @@
-import type { DateRangeInput, MetricId } from "@analytics-kit/core";
-import { getMetric } from "@analytics-kit/core";
+import type { DateRangeInput, MetricId } from "@wingtics/core";
+import { getMetric } from "@wingtics/core";
 import { WidgetFrame } from "../primitives/WidgetFrame.js";
 import { Donut, RankedList, Timeseries } from "../primitives/Charts.js";
 import { useQuery, useRealtime } from "../hooks.js";
